@@ -12,7 +12,6 @@ export const dogsApiSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,
             transformResponse: responseData => {
                 const loadedDogs = responseData.map(dog => {
                     dog.id = dog._id

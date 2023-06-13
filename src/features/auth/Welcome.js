@@ -8,6 +8,11 @@ const Welcome = () => {
   return (
     <div>
       <p>{today}</p>
+      <h1>Welcome!</h1>
+      <p><Link to="/dash/dogs">View Dogs</Link></p>
+      <p><Link to="/dash/dogs/new">Add New Dog</Link></p>
+      <p><Link to="/dash/users">View Users</Link></p>
+      <p><Link to="/dash/users/new">Add New User</Link></p>
     </div>
   )
 }

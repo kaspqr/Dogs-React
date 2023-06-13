@@ -1,30 +1,33 @@
 import { useState, useEffect } from "react"
-import { useAddNewUserMutation } from "./usersApiSlice"
+import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
+import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 
-const USERNAME_REGEX = /^[A-z]{6,20}$/
 const NAME_REGEX = /^[A-z]{2,20}$/
 const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
 const LOCATION_REGEX = /^[A-z]{4,50}$/
 const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
-const NewUserForm = () => {
 
-    const [addNewUser, {
+const EditUserForm = ({ user }) => {
+
+    const [updateUser, {
         isLoading,
         isSuccess,
         isError,
         error
-    }] = useAddNewUserMutation()
+    }] = useUpdateUserMutation()
+
+    const [deleteUser, {
+        isSuccess: isDelSuccess,
+        isError: isDelError,
+        error: delerror
+    }] = useDeleteUserMutation()
 
 
     const navigate = useNavigate()
 
-
-    const [username, setUsername] = useState('')
-    const [validUsername, setValidUsername] = useState(false)
 
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
@@ -38,10 +41,7 @@ const NewUserForm = () => {
     const [location, setLocation] = useState('')
     const [validLocation, setValidLocation] = useState(false)
 
-
-    useEffect(() => {
-        setValidUsername(USERNAME_REGEX.test(username))
-    }, [username])
+    const [active, setActive] = useState(user.active)
 
     useEffect(() => {
         setValidPassword(PASSWORD_REGEX.test(password))
@@ -59,67 +59,71 @@ const NewUserForm = () => {
         setValidLocation(LOCATION_REGEX.test(location))
     }, [location])
 
+
     useEffect(() => {
-        if (isSuccess) {
-            setUsername('')
+        if (isSuccess || isDelSuccess) {
             setPassword('')
             setName('')
             setEmail('')
             setLocation('')
             navigate('/dash/users')
         }
-    }, [isSuccess, navigate])
+    }, [isSuccess, isDelSuccess, navigate])
 
-
-    const handleUsernameChanged = e => setUsername(e.target.value)
     const handlePasswordChanged = e => setPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
     const handleLocationChanged = e => setLocation(e.target.value)
 
-    const canSave = [validUsername, validPassword, validName, validEmail, validLocation].every(Boolean) && !isLoading
+    const handleActiveChanged = () => setActive(prev => !prev)
 
-    const handleSaveUserClicked = async (e) => {
-        e.preventDefault()
-        if (canSave) {
-            await addNewUser({ username, password, name, email, location })
+    const handleSaveUserClicked = async () => {
+        if (password) {
+            await updateUser({ id: user.id, password, name, email, location, active })
+        } else {
+            await updateUser({ id: user.id, name, email, location, active })
         }
     }
 
-    const errClass = isError ? "errmsg" : "offscreen"
+    const handleDeleteUserClicked = async () => {
+        await deleteUser({ id: user.id })
+    }
+
+    let canSave
+
+    if (password) {
+        canSave = [validPassword, validName, validEmail, validLocation].every(Boolean) && !isLoading
+    } else {
+        canSave = [validName, validEmail, validLocation].every(Boolean) && !isLoading
+    }
+
+    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
+
 
     const content = (
         <>
-            <p className={errClass}>{error?.data?.message}</p>
+            <p>{errContent}</p>
 
-            <form onSubmit={handleSaveUserClicked}>
+            <form onSubmit={e => e.preventDefault()}>
                 <div>
-                    <h2>Register</h2>
+                    <h2>Edit Profile</h2>
                     <div>
                         <button
                             title="Save"
+                            onClick={handleSaveUserClicked}
                             disabled={!canSave}
                         >
                             <FontAwesomeIcon icon={faSave} />
                         </button>
+                        <button
+                            title="Delete"
+                            onClick={handleDeleteUserClicked}
+                        >
+                            <FontAwesomeIcon icon={faTrashCan} />
+                        </button>
                     </div>
                 </div>
-                
-                <label htmlFor="username">
-                    Username: [6-20 letters]
-                </label>
-                <input 
-                    type="text" 
-                    id="username"
-                    name="username"
-                    autoComplete="off"
-                    value={username}
-                    onChange={handleUsernameChanged}
-                />
-
-                <label htmlFor="password">
-                    Password: [8-20 characters, including !@#%]
-                </label>
+                <label htmlFor="password">Password: [8-20 characters, including !@#%]</label>
                 <input 
                     type="password" 
                     id="password"
@@ -160,6 +164,17 @@ const NewUserForm = () => {
                     value={location}
                     onChange={handleLocationChanged}
                 />
+
+                <label htmlFor="user-active">
+                    Active:
+                </label>
+                <input 
+                    type="checkbox"
+                    checked={active} 
+                    id="user-active"
+                    name="user-active"
+                    onChange={handleActiveChanged}
+                />
             </form>
         </>
     )
@@ -167,4 +182,5 @@ const NewUserForm = () => {
   return content
 }
 
-export default NewUserForm
+export default EditUserForm
+
