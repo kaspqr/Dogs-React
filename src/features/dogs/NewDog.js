@@ -5,7 +5,9 @@ import NewDogForm from './NewDogForm'
 const NewDog = () => {
   const users = useSelector(selectAllUsers)
 
-  const content = users ? <NewDogForm users={users} /> : <p>Loading...</p>
+  if (!users?.length) return <p>Not Currently Available</p>
+
+  const content = <NewDogForm users={users} />
 
   return content
 }
