@@ -8,10 +8,12 @@ const initialState = dogsAdapter.getInitialState()
 export const dogsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getDogs: builder.query({
-            query: () => '/dogs',
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+            query: () => ({
+                url: '/dogs',
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
             transformResponse: responseData => {
                 const loadedDogs = responseData.map(dog => {
                     dog.id = dog._id

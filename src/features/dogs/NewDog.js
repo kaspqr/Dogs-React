@@ -1,11 +1,15 @@
-import { useSelector } from "react-redux"
-import { selectAllUsers } from "../users/usersApiSlice"
 import NewDogForm from './NewDogForm'
+import { useGetUsersQuery } from "../users/usersApiSlice"
+import { PulseLoader } from "react-spinners"
 
 const NewDog = () => {
-  const users = useSelector(selectAllUsers)
+  const { users } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      users: data?.ids.map(id => data?.entities[id])
+    }),
+  })
 
-  if (!users?.length) return <p>Not Currently Available</p>
+  if (!users?.length) return <PulseLoader color='#000' />
 
   const content = <NewDogForm users={users} />
 

@@ -1,13 +1,16 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
-
-import { useSelector } from "react-redux"
-import { selectDogById } from "./dogsApiSlice"
+import { useGetDogsQuery } from "./dogsApiSlice"
+import { memo } from "react"
 
 const Dog = ({ dogId }) => {
 
-    const dog = useSelector(state => selectDogById(state, dogId))
+    const { dog } = useGetDogsQuery("dogsList", {
+        selectFromResult: ({ data }) => ({
+            dog: data?.entities[dogId]
+        }),
+    })
 
     const navigate = useNavigate()
 
@@ -35,4 +38,6 @@ const Dog = ({ dogId }) => {
     } else return null
 }
 
-export default Dog
+const memoizedDog = memo(Dog)
+
+export default memoizedDog

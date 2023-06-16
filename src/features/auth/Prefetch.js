@@ -7,15 +7,8 @@ import { Outlet } from 'react-router-dom'
 
 const Prefetch = () => {
     useEffect(() => {
-        console.log('subscribing')
-        const dogs = store.dispatch(dogsApiSlice.endpoints.getDogs.initiate())
-        const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())
-
-        return () => {
-            console.log('unsubscribing')
-            dogs.unsubscribe()
-            users.unsubscribe()
-        }
+        store.dispatch(dogsApiSlice.util.prefetch('getDogs', 'dogsList', { force: true }))
+        store.dispatch(usersApiSlice.util.prefetch('getUsers', 'usersList', { force: true }))
     }, [])
 
     return <Outlet />

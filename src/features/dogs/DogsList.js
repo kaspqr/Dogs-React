@@ -4,7 +4,7 @@ import Dog from "./Dog"
 const DogsList = () => {
 
   const {
-    data: notes,
+    data: dogs,
     isLoading,
     isSuccess,
     isError,
@@ -24,7 +24,7 @@ const DogsList = () => {
   }
 
   if (isSuccess) {
-    const { ids } = notes
+    const { ids } = dogs
 
     const tableContent = ids?.length
       ? ids.map(dogId => <Dog key={dogId} dogId={dogId} />)
