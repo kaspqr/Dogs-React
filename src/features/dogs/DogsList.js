@@ -9,7 +9,7 @@ const DogsList = () => {
     isSuccess,
     isError,
     error
-  } = useGetDogsQuery(undefined, {
+  } = useGetDogsQuery('dogsList', {
     pollingInterval: 15000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
