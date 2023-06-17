@@ -29,7 +29,7 @@ const EditDog = () => {
   if (!dog || !users?.length) return <PulseLoader color={'#000'} />
 
   if (!isAdmin && !isSuperAdmin) {
-    if (dog.user !== userId) { // Need to change this to compare ids, not id and username
+    if (dog.user !== userId) { 
       return <p>No access</p>
     }
   }

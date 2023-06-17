@@ -1,15 +1,16 @@
 import { useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
+import { faRightFromBracket, faDoorOpen } from "@fortawesome/free-solid-svg-icons"
 import { Link, useNavigate, useLocation } from "react-router-dom"
-
+import useAuth from "../hooks/useAuth"
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
 
-const DASH_REGEX = /^\/dash(\/)?$/
-const DOGS_REGEX = /^\/dash\/dogs(\/)?$/
-const USERS_REGEX = /^\/dash\/users(\/)?$/
+const DASH_REGEX = /^\/(\/)?$/
+const DOGS_REGEX = /^\/\/dogs(\/)?$/
+const USERS_REGEX = /^\/\/users(\/)?$/
 
-const DashHeader = () => {
+const Header = () => {
+  const { userId } = useAuth()
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
@@ -44,14 +45,23 @@ const DashHeader = () => {
     </button>
   )
 
+  const loginButton = (
+    <button
+      title="Login"
+      onClick={() => navigate('/login')}
+    >
+      <FontAwesomeIcon icon={faDoorOpen} />
+    </button>
+  )
+
   const content = (
     <header>
-      <div className={`dash-header__container ${dashClass}`}>
-        <Link to="/dash">
+      <div>
+        <Link to="/">
           <h1>Dogs</h1>
         </Link>
         <nav>
-          {logoutButton}
+          {userId ? logoutButton : loginButton}
         </nav>
       </div>
     </header>
@@ -60,4 +70,4 @@ const DashHeader = () => {
   return content
 }
 
-export default DashHeader
+export default Header

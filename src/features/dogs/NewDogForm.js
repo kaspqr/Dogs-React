@@ -84,7 +84,7 @@ const NewDogForm = () => {
             setLocation('')
             setFemale(true)
             setUser('')
-            navigate('/dash/dogs')
+            navigate('/dogs')
         }
     }, [isSuccess, navigate])
 

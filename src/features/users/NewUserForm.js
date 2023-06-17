@@ -66,7 +66,7 @@ const NewUserForm = () => {
             setName('')
             setEmail('')
             setLocation('')
-            navigate('/dash/users')
+            navigate('/users')
         }
     }, [isSuccess, navigate])
 

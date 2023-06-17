@@ -74,7 +74,7 @@ const EditDogForm = ({ dog }) => {
 
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
-            navigate('/dash/dogs')
+            navigate('/dogs')
         }
     }, [isSuccess, isDelSuccess, navigate])
 

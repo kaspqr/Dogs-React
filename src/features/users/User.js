@@ -1,8 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
-import { useNavigate } from "react-router-dom"
 import { useGetUsersQuery } from "./usersApiSlice"
 import { memo } from "react"
+import { Link } from "react-router-dom"
 
 const User = ({ userId }) => {
 
@@ -12,28 +10,14 @@ const User = ({ userId }) => {
         }),
     })
 
-    const navigate = useNavigate()
-
     if (user) {
-        const handleEdit = () => navigate(`/dash/users/${userId}`)
-        const userRolesString = user.roles.toString().replaceAll(',', ', ')
 
         return (
             <tr>
-                <td>{user.username}</td>
-                <td>{userRolesString}</td>
-                <td>
-                    <button
-                        onClick={handleEdit}
-                    >
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                    </button>
-                </td>
+                <td><Link to={`/users/${userId}`}>{user.username}</Link></td>
             </tr>
         )
     } else return null
-
-
 }
 
 const memoizedUser = memo(User)

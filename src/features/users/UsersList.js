@@ -35,8 +35,6 @@ const UsersList = () => {
         <thead>
           <tr>
             <th>Username</th>
-            <th>Roles</th>
-            <th>Edit</th>
           </tr>
         </thead>
         <tbody>

@@ -18,7 +18,7 @@ const Dog = ({ dogId }) => {
         const birth = new Date(dog.birth).toLocaleString('en-US', { day: 'numeric', month: 'long' })
         const death = new Date(dog.death).toLocaleString('en-US', { day: 'numeric', month: 'long' })
 
-        const handleEdit = () => navigate(`/dash/dogs/${dogId}`)
+        const handleEdit = () => navigate(`/dogs/${dogId}`)
 
         return (
             <tr>

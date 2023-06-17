@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom"
-
 const Public = () => {
   const content = (
     <section>
@@ -9,9 +7,6 @@ const Public = () => {
       <main>
         <p>Kasparblabla</p>
       </main>
-      <footer>
-        <Link to="/login">User Login</Link>
-      </footer>
     </section>
   )
   

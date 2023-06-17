@@ -66,7 +66,7 @@ const EditUserForm = ({ user }) => {
             setName('')
             setEmail('')
             setLocation('')
-            navigate('/dash/users')
+            navigate('/users')
         }
     }, [isSuccess, isDelSuccess, navigate])
 
