@@ -1,10 +1,11 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
 import { useGetDogsQuery } from "./dogsApiSlice"
+import { useGetUsersQuery } from "../users/usersApiSlice"
 import { memo } from "react"
 
 const Dog = ({ dogId }) => {
+
+    const navigate = useNavigate()
 
     const { dog } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
@@ -12,27 +13,38 @@ const Dog = ({ dogId }) => {
         }),
     })
 
-    const navigate = useNavigate()
+    const { user } = useGetUsersQuery("usersList", {
+        selectFromResult: ({ data }) => ({
+            user: data?.entities[dog?.user]
+        }),
+    })
+
+    if (!dog) {
+        return null
+    }
+
+    let gender
+
+    if (typeof dog?.female === 'boolean') {
+        if (dog?.female === true) {
+            gender = 'Female' 
+        } else {
+            gender = 'Male'
+        }
+    }
 
     if (dog) {
         const birth = new Date(dog.birth).toLocaleString('en-US', { day: 'numeric', month: 'long' })
-        const death = new Date(dog.death).toLocaleString('en-US', { day: 'numeric', month: 'long' })
-
-        const handleEdit = () => navigate(`/dogs/${dogId}`)
 
         return (
-            <tr>
-                <td>{dog.user}</td>
-                <td>{dog.owner}</td>
+            <tr 
+                onClick={() => navigate(`/dogs/${dogId}`)}
+            >
                 <td>{dog.name}</td>
+                <td>{user.username}</td>
                 <td>{dog.breed}</td>
-                <td>
-                    <button
-                     onClick={handleEdit}
-                    >
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                    </button>
-                </td>
+                <td>{gender}</td>
+                <td>{birth}</td>
             </tr>
         )
     } else return null

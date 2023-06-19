@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { useRefreshMutation } from "./authApiSlice"
 import usePersist from "../../hooks/usePersist"
@@ -6,6 +6,7 @@ import { useSelector } from "react-redux"
 import { selectCurrentToken } from "./authSlice"
 
 const PersistLogin = () => {
+
     const [persist] = usePersist()
     const token = useSelector(selectCurrentToken)
     const effectRan = useRef(false)
@@ -42,34 +43,28 @@ const PersistLogin = () => {
 
         // eslint-disable-next-line
     }, [])
-
-
-    let content
     
     if (!persist) { // persist: no
         console.log('no persist')
-        content = <Outlet />
+        return <Outlet />
     } else if (isLoading) { // persist: yes, token: no
         console.log('loading')
-        content = <p>Loading...</p>
+        return <p>Loading...</p>
     } else if (isError) { // persist: yes, token: no
-        console.log('error')
-        content = (
-            <p>
-                {`${error?.data?.message} - `}
-                <Link to="/login">Please login again</Link>.
-            </p>
-        )
+        console.log('You are not logged in')
+        return <Outlet />
     } else if (isSuccess && trueSuccess) { // persist: yes, token: yes
         console.log('success')
-        content = <Outlet />
+        return <Outlet />
     } else if (token && isUninitialized) { // persist: yes, token: yes
         console.log('token and uninit')
         console.log(isUninitialized)
-        content = <Outlet />
+        return <Outlet />
     }
 
-    return content
+    console.log('You are logged out.')
+
+    return <Outlet />
 }
 
 export default PersistLogin

@@ -8,7 +8,7 @@ import { PulseLoader } from "react-spinners"
 const EditDog = () => {
   const { id } = useParams()
 
-  const { isAdmin, isSuperAdmin, userId } = useAuth()
+  const { userId } = useAuth()
 
   const { dog } = useGetDogsQuery("dogsList", {
     selectFromResult: ({ data }) => ({
@@ -28,10 +28,8 @@ const EditDog = () => {
 
   if (!dog || !users?.length) return <PulseLoader color={'#000'} />
 
-  if (!isAdmin && !isSuperAdmin) {
-    if (dog.user !== userId) { 
-      return <p>No access</p>
-    }
+  if (dog.user !== userId) { 
+    return <p>No access</p>
   }
 
   const content = <EditDogForm dog={dog} users={users} />

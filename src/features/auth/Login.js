@@ -1,22 +1,25 @@
 import { useRef, useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
-
 import { useDispatch } from "react-redux"
 import { setCredentials } from "./authSlice"
 import { useLoginMutation } from "./authApiSlice"
 import usePersist from "../../hooks/usePersist"
+import useAuth from "../../hooks/useAuth"
 
 
 const Login = () => {
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const auth = useAuth()
+
   const userRef = useRef()
   const errRef = useRef()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errMsg, setErrMsg] = useState('')
   const [persist, setPersist] = usePersist()
-
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
 
   const [login, { isLoading }] = useLoginMutation()
 
@@ -58,6 +61,10 @@ const Login = () => {
   const errClass = errMsg ? "errmsg" : "offscreen"
 
   if (isLoading) return <p>Loading...</p>
+
+  if (auth?.username?.length) {
+    return <p>You are already logged in.</p>
+  }
 
   const content = (
     <section>

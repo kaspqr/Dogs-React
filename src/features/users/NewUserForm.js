@@ -3,6 +3,7 @@ import { useAddNewUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave } from "@fortawesome/free-solid-svg-icons"
+import useAuth from "../../hooks/useAuth"
 
 const USERNAME_REGEX = /^[A-z]{6,20}$/
 const NAME_REGEX = /^[A-z]{2,20}$/
@@ -11,6 +12,12 @@ const LOCATION_REGEX = /^[A-z]{4,50}$/
 const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
 const NewUserForm = () => {
+
+    const auth = useAuth()
+
+    if (auth?.username?.length) {
+        return <p>You are currently logged in. Please logout before registering a new user.</p>
+    }
 
     const [addNewUser, {
         isLoading,
@@ -164,7 +171,7 @@ const NewUserForm = () => {
         </>
     )
 
-  return content
+    return content
 }
 
 export default NewUserForm
