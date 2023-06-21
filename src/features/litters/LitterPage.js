@@ -42,11 +42,28 @@ const LitterPage = () => {
     }
     
     if (isSuccess) {
-        const { ids } = dogs
-      
-        const tableContent = ids?.length
-            ? ids.map(dogId => <Dog key={dogId} dogId={dogId} />)
-            : null
+        const { ids, entities } = dogs
+
+        let filteredDogs
+
+        const filteredIds = ids.filter(dogId => entities[dogId].mother === litter.mother)
+
+        if (filteredIds?.length) {
+            filteredDogs = filteredIds.map(dogId => entities[dogId])
+        }
+
+        let tableContent
+
+        if (filteredDogs?.length) {
+            tableContent = filteredDogs.map(dog => (
+               <Dog key={dog.id} dogId={dog.id} />
+            ))
+        }
+
+        console.log(ids)
+        console.log(filteredIds)
+        console.log(filteredDogs)
+        console.log(tableContent)
       
         dogContent = (
             <table>
