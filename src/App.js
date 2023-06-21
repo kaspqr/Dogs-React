@@ -13,6 +13,10 @@ import EditUser from "./features/users/EditUser"
 import NewUserForm from "./features/users/NewUserForm"
 import UserPage from "./features/users/UserPage"
 
+import LittersList from "./features/litters/LittersList"
+import NewLitter from "./features/litters/NewLitter"
+import LitterPage from "./features/litters/LitterPage"
+
 import Prefetch from "./features/auth/Prefetch"
 import PersistLogin from "./features/auth/PersistLogin"
 import RequireAuth from "./features/auth/RequireAuth"
@@ -52,6 +56,17 @@ function App() {
               <Route element={<RequireAuth />}>
                 <Route path="edit/:id" element={<EditDog />} />
                 <Route path="new" element={<NewDog />} />
+              </Route>
+            </Route>
+
+
+            <Route path="litters">
+
+              <Route index element={<LittersList />} />
+              <Route path=":litterid" element={<LitterPage />} />
+
+              <Route element={<RequireAuth />}>
+                <Route path="new" element={<NewLitter />} />
               </Route>
             </Route>
 
