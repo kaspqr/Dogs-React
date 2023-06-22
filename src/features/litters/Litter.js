@@ -15,15 +15,22 @@ const Litter = ({ litterId }) => {
 
     const { mother } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
-            dog: data?.entities[litter?.mother]
+            mother: data?.entities[litter?.mother]
         }),
     })
+
+    console.log(mother)
+    console.log(litter.mother)
 
     if (!litter) {
         return null
     }
 
-    if (litter) {
+    if (!mother) {
+        return null
+    }
+
+    if (litter && mother) {
         const born = new Date(litter.born).toLocaleString('en-US', { day: 'numeric', month: 'long' })
 
         return (
@@ -31,7 +38,8 @@ const Litter = ({ litterId }) => {
                 onClick={() => navigate(`/litters/${litterId}`)}
             >
                 <td>{litter.id}</td>
-                <td>{mother}</td>
+                <td>{mother.name}</td>
+                <td>{mother.id}</td>
                 <td>{born}</td>
             </tr>
         )

@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useGetDogsQuery } from "./dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { memo } from "react"
 
 const Dog = ({ dogId }) => {
-
-    const navigate = useNavigate()
 
     const { dog } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
@@ -33,21 +31,16 @@ const Dog = ({ dogId }) => {
         }
     }
 
-    if (dog) {
-        const birth = new Date(dog.birth).toLocaleString('en-US', { day: 'numeric', month: 'long' })
-
-        return (
-            <tr 
-                onClick={() => navigate(`/dogs/${dogId}`)}
-            >
-                <td>{dog.name}</td>
-                <td>{user.username}</td>
-                <td>{dog.breed}</td>
-                <td>{gender}</td>
-                <td>{birth}</td>
-            </tr>
-        )
-    } else return null
+    return (
+        <tr>
+            <td><Link to={`/dogs/${dogId}`}>{dog.name}</Link></td>
+            <td>{dogId}</td>
+            <td><Link to={`/users/${user.id}`}>{user.username}</Link></td>
+            <td>{dog.breed}</td>
+            <td>{gender}</td>
+            <td>{dog.birth}</td>
+        </tr>
+    )
 }
 
 const memoizedDog = memo(Dog)

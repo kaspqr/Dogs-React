@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react"
 import { useAddNewDogMutation } from "./dogsApiSlice"
 import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
+import { Breeds } from "../../config/breeds"
+import useAuth from "../../hooks/useAuth"
 
 const NAME_REGEX = /^[A-z]{2,20}$/
 const INFO_REGEX = /^[A-z0-9,.!?]{3,200}$/
 
 const NewDogForm = () => {
+
+    const { userId } = useAuth()
 
     const [addNewDog, {
         isLoading,
@@ -24,12 +26,6 @@ const NewDogForm = () => {
     const [validName, setValidName] = useState(false)
 
     const [owner, setOwner] = useState('')
-
-    const [mother, setMother] = useState('')
-
-    const [father, setFather] = useState('')
-
-    const [litter, setLitter] = useState('')
 
     const [heat, setHeat] = useState(false)
 
@@ -54,7 +50,11 @@ const NewDogForm = () => {
 
     const [location, setLocation] = useState('')
 
-    const [user, setUser] = useState('')
+
+    const breeds = [ ...Object.values(Breeds) ]
+    const breedOptions = breeds.map(breed => (
+        <option key={breed} value={breed}>{breed}</option>
+    ))
 
 
     useEffect(() => {
@@ -69,21 +69,17 @@ const NewDogForm = () => {
         if (isSuccess) {
             setName('')
             setOwner('')
-            setMother('')
-            setFather('')
             setSterilized(false)
             setHeat(false)
             setPassport(false)
             setMicrochipped(false)
             setChipnumber('')
-            setLitter('')
             setBirth('')
             setDeath('')
             setBreed('')
             setInfo('')
             setLocation('')
             setFemale(true)
-            setUser('')
             navigate('/dogs')
         }
     }, [isSuccess, navigate])
@@ -92,8 +88,6 @@ const NewDogForm = () => {
     const handleNameChanged = e => setName(e.target.value)
     const handleOwnerChanged = e => setOwner(e.target.value)
     const handleBreedChanged = e => setBreed(e.target.value)
-    const handleMotherChanged = e => setMother(e.target.value)
-    const handleFatherChanged = e => setFather(e.target.value)
     const handleSterilizedChanged = e => setSterilized(e.target.value)
     const handlePassportChanged = e => setPassport(e.target.value)
     const handleMicrochippedChanged = e => setMicrochipped(e.target.value)
@@ -103,8 +97,6 @@ const NewDogForm = () => {
     const handleBirthChanged = e => setBirth(e.target.value)
     const handleDeathChanged = e => setDeath(e.target.value)
     const handleInfoChanged = e => setInfo(e.target.value)
-    const handleLitterChanged = e => setLitter(e.target.value)
-    const handleUserChanged = e => setUser(e.target.value)
     const handleFemaleChanged = e => setFemale(e.target.value === "female" ? true : false)
 
     const canSave = typeof validName === 'boolean' && !isLoading && breed.length
@@ -112,7 +104,7 @@ const NewDogForm = () => {
     const handleSaveDogClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
-            await addNewDog({ name, location, owner, breed, mother, father, heat, sterilized, passport, microchipped, chipnumber, birth, death, info, litter, female, user })
+            await addNewDog({ name, location, owner, breed, heat, sterilized, passport, microchipped, chipnumber, birth, death, info, female, "user": userId })
         }
     }
 
@@ -130,7 +122,7 @@ const NewDogForm = () => {
                             title="Save"
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} />
+                            Save
                         </button>
                     </div>
                 </div>
@@ -138,6 +130,7 @@ const NewDogForm = () => {
                 <label htmlFor="dogname">
                     Dog's name: [2-20 letters]
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="dogname"
@@ -146,10 +139,12 @@ const NewDogForm = () => {
                     value={name}
                     onChange={handleNameChanged}
                 />
+                <br />
 
                 <label htmlFor="owner">
                     Owner:
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="owner"
@@ -157,31 +152,40 @@ const NewDogForm = () => {
                     value={owner}
                     onChange={handleOwnerChanged}
                 />
+                <br />
 
                 <label htmlFor="breed">
                     Breed:
                 </label>
-                <input 
+                <br />
+                <select 
                     type="text" 
                     id="breed"
                     name="breed"
                     value={breed}
                     onChange={handleBreedChanged}
-                />
+                >
+                    <option value="" disabled={true}>Breed</option>
+                    {breedOptions}
+                </select>
+                <br />
 
                 <label htmlFor="isFemale">
                     Gender:
                 </label>
+                <br />
                 <select 
                     onChange={handleFemaleChanged}
                 >
                   <option value="female">Female</option>
                   <option value="male">Male</option>
                 </select>
+                <br />
 
                 <label htmlFor="location">
                     Location:
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="location"
@@ -189,43 +193,12 @@ const NewDogForm = () => {
                     value={location}
                     onChange={handleLocationChanged}
                 />
-
-                <label htmlFor="mother">
-                    Mother:
-                </label>
-                <input 
-                    type="text" 
-                    id="mother"
-                    name="mother"
-                    value={mother}
-                    onChange={handleMotherChanged}
-                />
-
-                <label htmlFor="father">
-                    Father:
-                </label>
-                <input 
-                    type="text" 
-                    id="father"
-                    name="father"
-                    value={father}
-                    onChange={handleFatherChanged}
-                />
-
-                <label htmlFor="litter">
-                    Litter:
-                </label>
-                <input 
-                    type="text" 
-                    id="litter"
-                    name="litter"
-                    value={litter}
-                    onChange={handleLitterChanged}
-                />
+                <br />
 
                 <label htmlFor="heat">
                     Heat:
                 </label>
+                <br />
                 <input 
                     type="checkbox" 
                     id="heat"
@@ -233,10 +206,12 @@ const NewDogForm = () => {
                     checked={heat}
                     onChange={handleHeatChanged}
                 />
+                <br />
 
                 <label htmlFor="sterilized">
                     Sterilized:
                 </label>
+                <br />
                 <input 
                     type="checkbox" 
                     id="sterilized"
@@ -244,10 +219,12 @@ const NewDogForm = () => {
                     checked={sterilized}
                     onChange={handleSterilizedChanged}
                 />
+                <br />
 
                 <label htmlFor="microchipped">
                     Microchipped:
                 </label>
+                <br />
                 <input 
                     type="checkbox" 
                     id="microchipped"
@@ -255,10 +232,12 @@ const NewDogForm = () => {
                     checked={microchipped}
                     onChange={handleMicrochippedChanged}
                 />
+                <br />
 
                 <label htmlFor="chipnumber">
                     Chipnumber:
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="chipnumber"
@@ -266,10 +245,12 @@ const NewDogForm = () => {
                     value={chipnumber}
                     onChange={handleChipnumberChanged}
                 />
+                <br />
 
                 <label htmlFor="passport">
                     Passport:
                 </label>
+                <br />
                 <input 
                     type="checkbox" 
                     id="passport"
@@ -277,10 +258,12 @@ const NewDogForm = () => {
                     checked={passport}
                     onChange={handlePassportChanged}
                 />
+                <br />
 
                 <label htmlFor="birth">
                     Birth:
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="birth"
@@ -288,10 +271,12 @@ const NewDogForm = () => {
                     value={birth}
                     onChange={handleBirthChanged}
                 />
+                <br />
 
                 <label htmlFor="death">
                     Death:
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="death"
@@ -299,27 +284,18 @@ const NewDogForm = () => {
                     value={death}
                     onChange={handleDeathChanged}
                 />
+                <br />
 
                 <label htmlFor="info">
                     Info:
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="info"
                     name="info"
                     value={info}
                     onChange={handleInfoChanged}
-                />
-
-                <label htmlFor="user">
-                    User:
-                </label>
-                <input 
-                    type="text" 
-                    id="user"
-                    name="user"
-                    value={user}
-                    onChange={handleUserChanged}
                 />
             </form>
         </>

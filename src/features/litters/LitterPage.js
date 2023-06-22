@@ -1,7 +1,7 @@
 import { useGetLittersQuery } from "./littersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave } from "@fortawesome/free-solid-svg-icons"
@@ -46,7 +46,7 @@ const LitterPage = () => {
 
         let filteredDogs
 
-        const filteredIds = ids.filter(dogId => entities[dogId].mother === litter.mother)
+        const filteredIds = ids.filter(dogId => entities[dogId].litter === litter.id)
 
         if (filteredIds?.length) {
             filteredDogs = filteredIds.map(dogId => entities[dogId])
@@ -120,8 +120,8 @@ const LitterPage = () => {
     return (
         <>
             {content}
-            <p>Mother: {litter.mother}</p>
-            <p>ID: {litter.id}</p>
+            <Link to={`/dogs/${mother.id}`}><p>Mother: {mother.name}, ID {mother.id}</p></Link>
+            <p>Litter ID: {litter.id}</p>
             <p>Born: {litter?.born}</p>
             <br />
             <p>Dogs:</p>

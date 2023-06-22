@@ -37,12 +37,8 @@ const NewLitterForm = () => {
 
     useEffect(() => {
         if (born.length) {
-            console.log('born' + born)
-            console.log(mother)
             setValidBorn(true)
         } else {
-            console.log(mother)
-            console.log('born' + born)
             setValidBorn(false)
         }
     }, [born])
@@ -99,13 +95,10 @@ const NewLitterForm = () => {
 
         const { ids, entities } = dogs
 
-        const filteredIds = ids.filter(dogId => entities[dogId].user === userId)
+        const filteredIds = ids.filter(dogId => entities[dogId].user === userId && entities[dogId].female === true)
         const filteredDogs = filteredIds.map(dogId => entities[dogId])
 
         if (!filteredIds.length) return <p>You have no dogs.</p>
-
-        console.log(filteredIds)
-        console.log(filteredDogs)
 
         if (filteredDogs?.length) {
             ownedDogs = filteredDogs.map(dog => (

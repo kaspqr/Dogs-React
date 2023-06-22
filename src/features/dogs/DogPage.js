@@ -1,6 +1,6 @@
 import { useGetDogsQuery } from "./dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave } from "@fortawesome/free-solid-svg-icons"
@@ -22,6 +22,12 @@ const DogPage = () => {
     const { user } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             user: data?.entities[dog?.user]
+        }),
+    })
+
+    const { owner } = useGetUsersQuery("usersList", {
+        selectFromResult: ({ data }) => ({
+            owner: data?.entities[dog?.owner]
         }),
     })
 
@@ -54,9 +60,23 @@ const DogPage = () => {
     return (
         <>
             {content}
-            <p>Administrative user: {user.username}</p>
+            <p>Name: {dog?.name}</p>
+            <p>Administrative user: <Link to={`/users/${user.id}`}>{user.username}</Link></p>
+            <p>Owner: {owner ? <Link to={`/users/${owner.id}`}>{owner.username}</Link> : 'Not added'}</p>
             <p>Gender: {gender}</p>
             <p>Breed: {dog?.breed}</p>
+            <p>Litter: {dog?.litter ? <Link to={`/litters/${dog.litter}`}>{dog.litter}</Link> : 'Not added'}</p>
+            <p>Mother: {dog?.mother ? <Link to={`/dogs/${dog.mother}`}>{dog.mother}</Link> : 'Not added'}</p>
+            <p>Father: {dog?.father ? <Link to={`/dogs/${dog.father}`}>{dog.father}</Link> : 'Not added'}</p>
+            <p>Heat: {dog?.heat === true ? 'Yes' : 'No'}</p>
+            <p>Sterilized: {dog?.sterilized === true ? 'Yes' : 'No'}</p>
+            <p>Birth: {dog?.birth}</p>
+            {dog?.death?.length ? <p>Death: {dog?.death}</p> : null}
+            <p>Microchipped: {dog?.microchipped === true ? 'Yes' : 'No'}</p>
+            <p>Chipnumber: {dog?.chipnumber ? dog?.chipnumber : 'Not added'}</p>
+            <p>Passport: {dog?.passport === true ? 'Yes' : 'No'}</p>
+            <p>Location: {dog?.location}</p>
+            <p>Info: {dog?.info}</p>
         </>
     )
 }

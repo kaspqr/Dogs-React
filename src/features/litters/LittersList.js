@@ -35,6 +35,7 @@ const LittersList = () => {
         <thead>
           <tr>
             <th>Litter ID</th>
+            <th>Mother's Name</th>
             <th>Mother ID</th>
             <th>Born</th>
           </tr>
