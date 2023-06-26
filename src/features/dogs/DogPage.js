@@ -66,8 +66,6 @@ const DogPage = () => {
             <p>Gender: {gender}</p>
             <p>Breed: {dog?.breed}</p>
             <p>Litter: {dog?.litter ? <Link to={`/litters/${dog.litter}`}>{dog.litter}</Link> : 'Not added'}</p>
-            <p>Mother: {dog?.mother ? <Link to={`/dogs/${dog.mother}`}>{dog.mother}</Link> : 'Not added'}</p>
-            <p>Father: {dog?.father ? <Link to={`/dogs/${dog.father}`}>{dog.father}</Link> : 'Not added'}</p>
             <p>Heat: {dog?.heat === true ? 'Yes' : 'No'}</p>
             <p>Sterilized: {dog?.sterilized === true ? 'Yes' : 'No'}</p>
             <p>Birth: {dog?.birth}</p>

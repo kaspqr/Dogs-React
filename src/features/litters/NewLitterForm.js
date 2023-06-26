@@ -45,10 +45,8 @@ const NewLitterForm = () => {
 
     useEffect(() => {
         if (mother.length) {
-            console.log('mother' + mother)
             setValidMother(true)
         } else {
-            console.log('mother' + mother)
             setValidMother(false)
         }
     }, [mother])

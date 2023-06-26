@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useGetLittersQuery } from "./littersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import { memo } from "react"
 
 const Litter = ({ litterId }) => {
-
-    const navigate = useNavigate()
 
     const { litter } = useGetLittersQuery("littersList", {
         selectFromResult: ({ data }) => ({
@@ -34,11 +32,9 @@ const Litter = ({ litterId }) => {
         const born = new Date(litter.born).toLocaleString('en-US', { day: 'numeric', month: 'long' })
 
         return (
-            <tr 
-                onClick={() => navigate(`/litters/${litterId}`)}
-            >
-                <td>{litter.id}</td>
-                <td>{mother.name}</td>
+            <tr>
+                <td><Link to={`/litters/${litterId}`}>{litter.id}</Link></td>
+                <td><Link to={`/dogs/${mother.id}`}>{mother.name}</Link></td>
                 <td>{mother.id}</td>
                 <td>{born}</td>
             </tr>

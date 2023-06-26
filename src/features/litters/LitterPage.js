@@ -1,13 +1,29 @@
 import { useGetLittersQuery } from "./littersApiSlice"
-import { useGetDogsQuery } from "../dogs/dogsApiSlice"
+import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
+
 import { useNavigate, useParams, Link } from "react-router-dom"
+
 import useAuth from "../../hooks/useAuth"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave } from "@fortawesome/free-solid-svg-icons"
+
 import Dog from '../dogs/Dog'
 
+import { useState } from "react"
+
 const LitterPage = () => {
+
+    const [updateDog, {
+        isUpdateLoading,
+        isUpdateSuccess,
+        isUpdateError,
+        updateError
+    }] = useUpdateDogMutation()
+
+
+    const [selectedDog, setSelectedDog] = useState()
 
     const navigate = useNavigate()
 
@@ -15,11 +31,27 @@ const LitterPage = () => {
 
     const { litterid } = useParams()
 
+
     const { litter } = useGetLittersQuery("littersList", {
         selectFromResult: ({ data }) => ({
             litter: data?.entities[litterid]
         }),
     })
+
+
+    const { mother } = useGetDogsQuery("dogsList", {
+        selectFromResult: ({ data }) => ({
+            mother: data?.entities[litter?.mother?.toString()]
+        }),
+    })
+
+
+    const { father } = useGetDogsQuery("dogsList", {
+        selectFromResult: ({ data }) => ({
+            father: data?.entities[litter?.father?.toString()]
+        }),
+    })
+
 
     const {
         data: dogs,
@@ -34,6 +66,7 @@ const LitterPage = () => {
     })
     
     let dogContent
+    let optionsContent
     
     if (isLoading) dogContent = <p>Loading...</p>
     
@@ -45,11 +78,20 @@ const LitterPage = () => {
         const { ids, entities } = dogs
 
         let filteredDogs
+        let filteredUserDogs
 
         const filteredIds = ids.filter(dogId => entities[dogId].litter === litter.id)
+        const filteredUserIds = ids.filter(dogId => entities[dogId].user === userId 
+            && entities[dogId].id !== mother.id
+            && entities[dogId].id !== father.id
+            && !filteredIds.includes(entities[dogId].id))
 
         if (filteredIds?.length) {
             filteredDogs = filteredIds.map(dogId => entities[dogId])
+        }
+
+        if (filteredUserIds?.length) {
+            filteredUserDogs = filteredUserIds.map(dogId => entities[dogId])
         }
 
         let tableContent
@@ -57,6 +99,12 @@ const LitterPage = () => {
         if (filteredDogs?.length) {
             tableContent = filteredDogs.map(dog => (
                <Dog key={dog.id} dogId={dog.id} />
+            ))
+        }
+
+        if (filteredUserDogs?.length) {
+            optionsContent = filteredUserDogs.map(dog => (
+               <option value={dog.id} key={dog.id}>{dog.name}, {dog.id}</option>
             ))
         }
 
@@ -70,7 +118,8 @@ const LitterPage = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Administrative user</th>
+                        <th>ID</th>
+                        <th>Administrative User</th>
                         <th>Breed</th>
                         <th>Gender</th>
                         <th>Born</th>
@@ -83,11 +132,6 @@ const LitterPage = () => {
         )
     }
 
-    const { mother } = useGetDogsQuery("dogsList", {
-        selectFromResult: ({ data }) => ({
-            mother: data?.entities[litter?.mother?.toString()]
-        }),
-    })
 
     const { user } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
@@ -105,6 +149,11 @@ const LitterPage = () => {
         return null
     }
 
+    if (!father) {
+        console.log('no father')
+        return null
+    }
+
     let content = null
 
     if (user === userId) {
@@ -117,12 +166,32 @@ const LitterPage = () => {
         )
     }
 
+
+    async function addToLitter() {
+        console.log('selected dog was: ' + selectedDog)
+        console.log('selected litter was: ' + litterid)
+        await updateDog({ "id": selectedDog, "litter": litterid })
+    }
+
     return (
         <>
             {content}
-            <Link to={`/dogs/${mother.id}`}><p>Mother: {mother.name}, ID {mother.id}</p></Link>
+            <p>Mother: <Link to={`/dogs/${mother.id}`}>{mother.name}</Link>, ID {mother.id}</p>
+            <p>Father: <Link to={`/dogs/${father.id}`}>{father.name}</Link>, ID {father.id}</p>
             <p>Litter ID: {litter.id}</p>
             <p>Born: {litter?.born}</p>
+            <br />
+            <p>Add dog to litter:</p>
+            <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
+                <option value="">Pick your dog</option>
+                {optionsContent}
+            </select>
+            <button
+                disabled={selectedDog?.length ? false : true}
+                onClick={() => addToLitter()}
+            >
+                Add
+            </button>
             <br />
             <p>Dogs:</p>
             {dogContent}
