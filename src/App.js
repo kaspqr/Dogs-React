@@ -17,6 +17,11 @@ import LittersList from "./features/litters/LittersList"
 import NewLitter from "./features/litters/NewLitter"
 import LitterPage from "./features/litters/LitterPage"
 
+import AdvertisementsList from "./features/advertisements/AdvertisementsList"
+import EditAdvertisement from "./features/advertisements/EditAdvertisement"
+import NewAdvertisement from "./features/advertisements/NewAdvertisement"
+import AdvertisementPage from "./features/advertisements/AdvertisementPage"
+
 import Prefetch from "./features/auth/Prefetch"
 import PersistLogin from "./features/auth/PersistLogin"
 import RequireAuth from "./features/auth/RequireAuth"
@@ -67,6 +72,18 @@ function App() {
 
               <Route element={<RequireAuth />}>
                 <Route path="new" element={<NewLitter />} />
+              </Route>
+            </Route>
+
+
+            <Route path="advertisements">
+
+              <Route index element={<AdvertisementsList />} />
+              <Route path=":advertisementid" element={<AdvertisementPage />} />
+
+              <Route element={<RequireAuth />}>
+                <Route path="edit/:id" element={<EditAdvertisement />} />
+                <Route path="new" element={<NewAdvertisement />} />
               </Route>
             </Route>
 

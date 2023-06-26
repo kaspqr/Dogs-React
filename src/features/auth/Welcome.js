@@ -19,6 +19,8 @@ const Welcome = () => {
       <p><Link to="/users">View Users</Link></p>
       <p><Link to="/litters">View Litters</Link></p>
       <p><Link to="/litters/new">Add New Litter</Link></p>
+      <p><Link to="/advertisements">View Advertisements</Link></p>
+      <p><Link to="/advertisements/new">Add New Advertisement</Link></p>
     </div>
   )
 }

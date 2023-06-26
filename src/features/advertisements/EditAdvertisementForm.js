@@ -1,73 +1,86 @@
 import { useState, useEffect } from "react"
-import { useAddNewAdvertisementMutation } from "./advertisementsApiSlice"
+import { useUpdateAdvertisementMutation, useDeleteAdvertisementMutation } from "./advertisementsApiSlice"
 import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
-import useAuth from "../../hooks/useAuth"
 
-const NewAdvertisementForm = () => {
+const PRICE_REGEX = /^[0-9]{1,10}$/
 
-    const { userId } = useAuth()
 
-    const [addNewAdvertisement, {
-        isAdvertisementLoading,
-        isAdvertisementSuccess,
-        isAdvertisementError,
-        advertisementError
-    }] = useAddNewAdvertisementMutation()
+const EditAdvertisementForm = ({ advertisement }) => {
+
+    const [updateAdvertisement, {
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    }] = useUpdateAdvertisementMutation()
+
+    const [deleteAdvertisement, {
+        isSuccess: isDelSuccess,
+        isError: isDelError,
+        error: delerror
+    }] = useDeleteAdvertisementMutation()
 
 
     const navigate = useNavigate()
 
-    const [title, setTitle] = useState('')
 
-    const [type, setType] = useState('')
+    const [title, setTitle] = useState(advertisement?.title)
 
-    const [price, setPrice] = useState('')
+    const [type, setType] = useState(advertisement?.type)
 
-    const [info, setInfo] = useState('')
+    const [price, setPrice] = useState(advertisement?.price)
+    const [validPrice, setValidPrice] = useState(PRICE_REGEX.test(price))
+
+    const [info, setInfo] = useState(advertisement?.info)
 
     useEffect(() => {
-        if (isAdvertisementSuccess) {
-            setTitle('')
-            setType('')
-            setPrice('')
-            setInfo('')
+        setValidPrice(PRICE_REGEX.test(price))
+    }, [price])
+
+
+    useEffect(() => {
+        if (isSuccess || isDelSuccess) {
+            navigate('/advertisements')
         }
-    }, [isAdvertisementSuccess, navigate])
+    }, [isSuccess, isDelSuccess, navigate])
 
-
-    const canSave = title?.length && type?.length && price?.length && !isAdvertisementLoading
-
-    let errMsg
-
-    const handleSaveAdvertisementClicked = async (e) => {
-        e.preventDefault()
-        if (canSave) {
-            await addNewAdvertisement({ poster: userId, title, price, type, info })
-        }
+    const handleSaveAdvertisementClicked = async () => {
+        await updateAdvertisement({ id: advertisement.id, title, info, type, price })
     }
+
+    const handleDeleteAdvertisementClicked = async () => {
+        await deleteAdvertisement({ id: advertisement.id })
+    }
+
+    let canSave = title?.length && type?.length && validPrice && !isLoading
+
+    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
 
     const content = (
         <>
-            {errMsg}
-            <form onSubmit={handleSaveAdvertisementClicked}>
+            <p>{errContent}</p>
+
+            <form onSubmit={e => e.preventDefault()}>
                 <div>
-                    <h2>Post Advertisement</h2>
+                    <h2>Edit Advertisement</h2>
                     <div>
                         <button
-                            title="Post"
+                            title="Save"
+                            onClick={handleSaveAdvertisementClicked}
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} />
+                            Save
+                        </button>
+                        <button
+                            title="Delete"
+                            onClick={handleDeleteAdvertisementClicked}
+                        >
+                            Delete
                         </button>
                     </div>
                 </div>
-                
-                <label htmlFor="title">
-                    Title:
-                </label>
+                <label htmlFor="name">Title</label>
                 <br />
                 <input 
                     type="text" 
@@ -88,7 +101,6 @@ const NewAdvertisementForm = () => {
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                 >
-                    <option value="">Select Type</option>
                     <option value="Sell">Sell</option>
                     <option value="Buy">Buy</option>
                     <option value="Found">Found</option>
@@ -97,7 +109,7 @@ const NewAdvertisementForm = () => {
                     <option value="BreedingMale">Breeding, Require Male</option>
                 </select>
                 <br />
-                
+
                 <label htmlFor="price">
                     Price:
                 </label>
@@ -110,7 +122,7 @@ const NewAdvertisementForm = () => {
                     onChange={(e) => setPrice(e.target.value)}
                 />
                 <br />
-                
+
                 <label htmlFor="info">
                     Info:
                 </label>
@@ -129,4 +141,5 @@ const NewAdvertisementForm = () => {
   return content
 }
 
-export default NewAdvertisementForm
+export default EditAdvertisementForm
+
