@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import Layout from "./components/Layout"
 import Login from "./features/auth/Login"
-import Welcome from "./features/auth/Welcome"
 
 import DogsList from "./features/dogs/DogsList"
 import EditDog from "./features/dogs/EditDog"
@@ -40,7 +39,12 @@ function App() {
         <Route element={<Prefetch />}>
           <Route path="/" element={<Layout />}>
 
-            <Route index element={<Welcome />} />
+            <Route index element={<AdvertisementsList />} />
+            <Route path="advertisements/:advertisementid" element={<AdvertisementPage />} />
+            <Route element={<RequireAuth />}>
+              <Route path="advertisements/edit/:id" element={<EditAdvertisement />} />
+              <Route path="advertisements/new" element={<NewAdvertisement />} />
+            </Route>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<NewUserForm />} />
 
@@ -75,18 +79,6 @@ function App() {
 
               <Route element={<RequireAuth />}>
                 <Route path="new" element={<NewLitter />} />
-              </Route>
-            </Route>
-
-
-            <Route path="advertisements">
-
-              <Route index element={<AdvertisementsList />} />
-              <Route path=":advertisementid" element={<AdvertisementPage />} />
-
-              <Route element={<RequireAuth />}>
-                <Route path="edit/:id" element={<EditAdvertisement />} />
-                <Route path="new" element={<NewAdvertisement />} />
               </Route>
             </Route>
 

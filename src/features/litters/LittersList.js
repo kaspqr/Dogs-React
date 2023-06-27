@@ -1,7 +1,11 @@
 import { useGetLittersQuery } from "./littersApiSlice"
 import Litter from "./Litter"
+import useAuth from "../../hooks/useAuth"
+import { Link } from "react-router-dom"
 
 const LittersList = () => {
+
+  const { userId } = useAuth()
 
   const {
     data: litters,
@@ -31,19 +35,22 @@ const LittersList = () => {
       : null
 
     content = (
-      <table>
-        <thead>
-          <tr>
-            <th>Litter ID</th>
-            <th>Mother's Name</th>
-            <th>Mother ID</th>
-            <th>Born</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableContent}
-        </tbody>
-      </table>
+      <>
+        {userId?.length ? <Link to={'/litters/new'}>Add a New Litter</Link> : null}
+        <table>
+          <thead>
+            <tr>
+              <th>Litter ID</th>
+              <th>Mother's Name</th>
+              <th>Mother ID</th>
+              <th>Born</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableContent}
+          </tbody>
+        </table>
+      </>
     )
   }
 

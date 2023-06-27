@@ -1,7 +1,5 @@
 import { useEffect } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faRightFromBracket, faDoorOpen, faPenToSquare } from "@fortawesome/free-solid-svg-icons"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
 
@@ -30,13 +28,18 @@ const Header = () => {
 
   if (userId) {
     navRight = (
-      <button
-        title="Logout"
-        className="nav-right"
-        onClick={onLogoutClicked}
-      >
-        <FontAwesomeIcon icon={faRightFromBracket} />
-      </button>
+      <>
+        <button
+          title="Logout"
+          className="nav-right"
+          onClick={onLogoutClicked}
+        >
+          Logout
+        </button>
+        <Link className="nav-right" to={'/conversations'}>
+          Messages
+        </Link>
+      </>
     )
   } else {
     navRight = (
@@ -46,14 +49,14 @@ const Header = () => {
           className="nav-right"
           onClick={() => navigate('/register')}
         >
-          <FontAwesomeIcon icon={faPenToSquare} />
+          Register
         </button>
         <button
           title="Login"
           className="nav-right"
           onClick={() => navigate('/login')}
         >
-          <FontAwesomeIcon icon={faDoorOpen} />
+          Login
         </button>
       </>
     )
@@ -63,11 +66,14 @@ const Header = () => {
     <header>
       <nav>
       <button
-          title="Home"
-          onClick={() => navigate('/')}
-        >
-          Dogs
-        </button>
+        title="Home"
+        onClick={() => navigate('/')}
+      >
+        Home
+      </button>
+      <Link to={'/dogs'}>Dogs</Link>
+      <Link to={'/users'}>Users</Link>
+      <Link to={'/litters'}>Litters</Link>
         {navRight}
       </nav>
     </header>

@@ -23,11 +23,11 @@ const Advertisement = ({ advertisementId }) => {
 
     return (
         <tr>
-            <td><Link to={`/advertisements/${advertisementId}`}>{advertisement.title}</Link></td>
+            <td><Link to={`/advertisements/${advertisementId}`}>{advertisement?.title}</Link></td>
             <td>{advertisementId}</td>
-            <td><Link to={`/users/${user.id}`}>{user.username}</Link></td>
-            <td>{advertisement.type}</td>
-            <td>{advertisement.price}</td>
+            <td><Link to={`/users/${user?.id}`}>{user?.username}</Link></td>
+            <td>{advertisement?.type}</td>
+            <td>{advertisement?.price}</td>
         </tr>
     )
 }

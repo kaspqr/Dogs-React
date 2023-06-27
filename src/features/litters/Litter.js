@@ -18,7 +18,7 @@ const Litter = ({ litterId }) => {
     })
 
     console.log(mother)
-    console.log(litter.mother)
+    console.log(litter?.mother)
 
     if (!litter) {
         return null
@@ -33,9 +33,9 @@ const Litter = ({ litterId }) => {
 
         return (
             <tr>
-                <td><Link to={`/litters/${litterId}`}>{litter.id}</Link></td>
-                <td><Link to={`/dogs/${mother.id}`}>{mother.name}</Link></td>
-                <td>{mother.id}</td>
+                <td><Link to={`/litters/${litterId}`}>{litter?.id}</Link></td>
+                <td><Link to={`/dogs/${mother?.id}`}>{mother?.name}</Link></td>
+                <td>{mother?.id}</td>
                 <td>{born}</td>
             </tr>
         )

@@ -1,7 +1,11 @@
 import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
 import Advertisement from "./Advertisement"
+import useAuth from "../../hooks/useAuth"
+import { Link } from "react-router-dom"
 
 const AdvertisementsList = () => {
+
+  const { userId } = useAuth()
 
   const {
     data: advertisements,
@@ -31,20 +35,23 @@ const AdvertisementsList = () => {
       : null
 
     content = (
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>ID</th>
-            <th>Poster</th>
-            <th>Type</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableContent}
-        </tbody>
-      </table>
+      <>
+        {userId?.length ? <Link to={'/advertisements/new'}>Post an Advertisement</Link> : null}
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>ID</th>
+              <th>Poster</th>
+              <th>Type</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableContent}
+          </tbody>
+        </table>
+      </>
     )
   }
 

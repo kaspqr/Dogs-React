@@ -1,7 +1,11 @@
 import { useGetDogsQuery } from "./dogsApiSlice"
 import Dog from "./Dog"
+import { Link } from "react-router-dom"
+import useAuth from "../../hooks/useAuth"
 
 const DogsList = () => {
+
+  const { userId } = useAuth()
 
   const {
     data: dogs,
@@ -31,21 +35,24 @@ const DogsList = () => {
       : null
 
     content = (
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Dog ID</th>
-            <th>Administrative user</th>
-            <th>Breed</th>
-            <th>Gender</th>
-            <th>Born</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableContent}
-        </tbody>
-      </table>
+      <>
+        {userId?.length ? (<Link to={'/dogs/new'}>Add a New Dog</Link>) : null}
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Dog ID</th>
+              <th>Administrative user</th>
+              <th>Breed</th>
+              <th>Gender</th>
+              <th>Born</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableContent}
+          </tbody>
+        </table>
+      </>
     )
   }
 

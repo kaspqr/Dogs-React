@@ -35,7 +35,7 @@ const Dog = ({ dogId }) => {
         <tr>
             <td><Link to={`/dogs/${dogId}`}>{dog.name}</Link></td>
             <td>{dogId}</td>
-            <td><Link to={`/users/${user.id}`}>{user.username}</Link></td>
+            <td><Link to={`/users/${user?.id}`}>{user?.username}</Link></td>
             <td>{dog.breed}</td>
             <td>{gender}</td>
             <td>{dog.birth}</td>
