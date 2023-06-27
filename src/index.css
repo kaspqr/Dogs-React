@@ -10,7 +10,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding: 25px;
 }
 
 code {
@@ -26,3 +25,81 @@ code {
 .nav-right {
   float: right;
 }
+
+.header-link {
+  text-decoration: none;
+  color: black;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.nav-right.header-link {
+  margin-left: 10px;
+  margin-right: 0px;
+  cursor: pointer;
+}
+
+#layout-header {
+  background-color: rgb(235, 155, 52);
+  height: 70px;
+  padding: 20px;
+  display: grid;
+  align-items: center;
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
+.content {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+}
+
+.content-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td, th {
+  text-align: center;
+  border-bottom: 2px solid black;
+}
+
+td {
+  height: 50px;
+}
+
+th {
+  height: 30px;
+}
+
+.table-4-columns {
+  width: 25%;
+}
+
+.list-add-new-title {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+  color: black;
+  font-weight: bold;
+}
+
+a {
+  color: black;
+}
+
+textarea {
+  padding: 5px;
+}
+
+.advertisement-page-title, .dog-page-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.advertisement-title-p, .dog-page-name {
+  margin-bottom: 20px;
+}
+
+

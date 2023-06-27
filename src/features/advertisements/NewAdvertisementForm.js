@@ -60,7 +60,7 @@ const NewAdvertisementForm = () => {
                             title="Post"
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} />
+                            Save
                         </button>
                     </div>
                 </div>
@@ -115,10 +115,11 @@ const NewAdvertisementForm = () => {
                     Info:
                 </label>
                 <br />
-                <input 
-                    type="textbox" 
+                <textarea 
                     id="info"
                     name="info"
+                    cols="30"
+                    rows="10"
                     value={info}
                     onChange={(e) => setInfo(e.target.value)}
                 />

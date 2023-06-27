@@ -15,10 +15,6 @@ const NewUserForm = () => {
 
     const auth = useAuth()
 
-    if (auth?.username?.length) {
-        return <p>You are currently logged in. Please logout before registering a new user.</p>
-    }
-
     const [addNewUser, {
         isLoading,
         isSuccess,
@@ -94,6 +90,10 @@ const NewUserForm = () => {
     }
 
     const errClass = isError ? "errmsg" : "offscreen"
+
+    if (auth?.username?.length) {
+        return <p>You are currently logged in. Please logout before registering a new user.</p>
+    }
 
     const content = (
         <>

@@ -35,16 +35,6 @@ const DogPage = () => {
         return null
     }
 
-    let gender
-
-    if (typeof dog?.female === 'boolean') {
-        if (dog?.female === true) {
-            gender = 'Female' 
-        } else {
-            gender = 'Male'
-        }
-    }
-
     let content = null
 
     if (userId === dog.user) {
@@ -60,21 +50,22 @@ const DogPage = () => {
     return (
         <>
             {content}
-            <p>Name: {dog?.name}</p>
-            <p>Administrative user: <Link to={`/users/${user.id}`}>{user.username}</Link></p>
-            <p>Owner: {owner ? <Link to={`/users/${owner.id}`}>{owner.username}</Link> : 'Not added'}</p>
-            <p>Gender: {gender}</p>
-            <p>Breed: {dog?.breed}</p>
-            <p>Litter: {dog?.litter ? <Link to={`/litters/${dog.litter}`}>{dog.litter}</Link> : 'Not added'}</p>
-            <p>Heat: {dog?.heat === true ? 'Yes' : 'No'}</p>
-            <p>Sterilized: {dog?.sterilized === true ? 'Yes' : 'No'}</p>
-            <p>Birth: {dog?.birth}</p>
-            {dog?.death?.length ? <p>Death: {dog?.death}</p> : null}
-            <p>Microchipped: {dog?.microchipped === true ? 'Yes' : 'No'}</p>
-            <p>Chipnumber: {dog?.chipnumber ? dog?.chipnumber : 'Not added'}</p>
-            <p>Passport: {dog?.passport === true ? 'Yes' : 'No'}</p>
-            <p>Location: {dog?.location}</p>
-            <p>Info: {dog?.info}</p>
+            <p className="dog-page-name">{dog?.name}</p>
+            <p><b>Administrative user:</b> <Link to={`/users/${user.id}`}>{user.username}</Link></p>
+            <p><b>Owner:</b> {owner ? <Link to={`/users/${owner.id}`}>{owner.username}</Link> : 'Not added'}</p>
+            <p><b>Gender:</b> {dog?.female === true ? 'Female' : 'Male'}</p>
+            <p><b>Breed:</b> {dog?.breed}</p>
+            <p><b>Litter:</b> {dog?.litter ? <Link to={`/litters/${dog.litter}`}>{dog.litter}</Link> : 'Not added'}</p>
+            {dog?.female === true && dog?.sterilized === false ? <p><b>Currently in heat?:</b> {dog?.heat === true ? 'Yes' : 'No'}</p> : null}
+            <p><b>Sterilized:</b> {dog?.sterilized === true ? 'Yes' : 'No'}</p>
+            <p><b>Birth:</b> {dog?.birth}</p>
+            {dog?.death?.length ? <p><b>Death:</b> {dog?.death}</p> : null}
+            <p><b>Microchipped:</b> {dog?.microchipped === true ? 'Yes' : 'No'}</p>
+            <p><b>Chipnumber:</b> {dog?.chipnumber ? dog?.chipnumber : 'Not added'}</p>
+            <p><b>Passport:</b> {dog?.passport === true ? 'Yes' : 'No'}</p>
+            <p><b>Location:</b> {dog?.location}</p>
+            <p><b>Info:</b></p>
+            <p>{dog?.info}</p>
         </>
     )
 }

@@ -44,12 +44,13 @@ const AdvertisementPage = () => {
     return (
         <>
             {content}
-            <p>Title: {advertisement?.title}</p>
-            <p>Poster: <Link to={`/users/${user.id}`}>{user.username}</Link></p>
+            <p className="advertisement-title-p">
+                <span className="advertisement-page-title">{advertisement?.title}</span>
+                <span className="nav-right"><b>Posted by <Link to={`/users/${user.id}`}>{user.username}</Link></b></span>
+            </p>
             <p>Type: {advertisement?.type}</p>
             <p>Price: {advertisement?.price}</p>
             <p>Info:</p>
-            <br />
             <p>{advertisement?.info}</p>
         </>
     )

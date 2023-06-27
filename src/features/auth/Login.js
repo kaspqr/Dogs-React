@@ -67,7 +67,7 @@ const Login = () => {
   }
 
   const content = (
-    <section>
+    <>
       <header>
         <h1>User Login</h1>
       </header>
@@ -113,7 +113,7 @@ const Login = () => {
       <footer>
         <Link to="/">Go Home</Link>
       </footer>
-    </section>
+    </>
   )
 
   return content

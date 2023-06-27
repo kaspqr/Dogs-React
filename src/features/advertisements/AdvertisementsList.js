@@ -36,15 +36,14 @@ const AdvertisementsList = () => {
 
     content = (
       <>
-        {userId?.length ? <Link to={'/advertisements/new'}>Post an Advertisement</Link> : null}
-        <table>
+        {userId?.length ? <Link className="list-add-new-title" to={'/advertisements/new'}>Post an Advertisement</Link> : null}
+        <table id="advertisement-table" className="content-table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>ID</th>
-              <th>Poster</th>
-              <th>Type</th>
-              <th>Price</th>
+              <th className="table-4-columns">Title</th>
+              <th className="table-4-columns">Poster</th>
+              <th className="table-4-columns">Type</th>
+              <th className="table-4-columns">Price</th>
             </tr>
           </thead>
           <tbody>

@@ -2,8 +2,6 @@ import { useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { useGetUsersQuery } from "./usersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
 
 const UserPage = () => {
@@ -100,7 +98,7 @@ const UserPage = () => {
                 ? <button
                     onClick={handleEdit}
                 >
-                    <FontAwesomeIcon icon={faPenToSquare} />
+                    Edit Profile
                 </button> 
                 : null
             }

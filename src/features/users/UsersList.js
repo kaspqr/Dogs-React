@@ -31,16 +31,18 @@ const UsersList = () => {
       : null
 
     content = (
-      <table>
-        <thead>
-          <tr>
-            <th>Username</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableContent}
-        </tbody>
-      </table>
+      <>
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableContent}
+          </tbody>
+        </table>
+      </>
     )
   }
 

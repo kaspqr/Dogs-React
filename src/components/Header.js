@@ -29,51 +29,26 @@ const Header = () => {
   if (userId) {
     navRight = (
       <>
-        <button
-          title="Logout"
-          className="nav-right"
-          onClick={onLogoutClicked}
-        >
-          Logout
-        </button>
-        <Link className="nav-right" to={'/conversations'}>
-          Messages
-        </Link>
+        <span className="nav-right header-link" onClick={onLogoutClicked}>Logout</span>
+        <Link className="nav-right header-link" to={'/conversations'}>Messages</Link>
       </>
     )
   } else {
     navRight = (
       <>
-        <button
-          title="Register"
-          className="nav-right"
-          onClick={() => navigate('/register')}
-        >
-          Register
-        </button>
-        <button
-          title="Login"
-          className="nav-right"
-          onClick={() => navigate('/login')}
-        >
-          Login
-        </button>
+        <Link className="nav-right header-link" to={'/register'}>Register</Link>
+        <Link className="nav-right header-link" to={'/login'}>Login</Link>
       </>
     )
   }
 
   const content = (
-    <header>
+    <header id="layout-header">
       <nav>
-      <button
-        title="Home"
-        onClick={() => navigate('/')}
-      >
-        Home
-      </button>
-      <Link to={'/dogs'}>Dogs</Link>
-      <Link to={'/users'}>Users</Link>
-      <Link to={'/litters'}>Litters</Link>
+      <Link className="header-link" to={'/'}>Home</Link>
+      <Link className="header-link" to={'/dogs'}>Dogs</Link>
+      <Link className="header-link" to={'/users'}>Users</Link>
+      <Link className="header-link" to={'/litters'}>Litters</Link>
         {navRight}
       </nav>
     </header>

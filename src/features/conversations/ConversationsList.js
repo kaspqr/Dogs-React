@@ -45,18 +45,20 @@ const ConversationsList = () => {
     console.log(filteredIds)
 
     content = (
-      <table>
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>User ID</th>
-            <th>Open Convo</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableContent}
-        </tbody>
-      </table>
+      <>
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>User ID</th>
+              <th>Open Convo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableContent}
+          </tbody>
+        </table>
+      </>
     )
   }
 
