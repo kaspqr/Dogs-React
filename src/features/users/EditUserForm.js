@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
 import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
+import useAuth from "../../hooks/useAuth"
 
 const NAME_REGEX = /^[A-z]{2,20}$/
 const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
@@ -11,6 +10,8 @@ const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
 
 const EditUserForm = ({ user }) => {
+
+    const { userId } = useAuth()
 
     const [updateUser, {
         isLoading,
@@ -89,14 +90,6 @@ const EditUserForm = ({ user }) => {
         await deleteUser({ id: user.id })
     }
 
-    let canSave
-
-    if (password) {
-        canSave = [validPassword, validName, validEmail, validLocation].every(Boolean) && !isLoading
-    } else {
-        canSave = [validName, validEmail, validLocation].every(Boolean) && !isLoading
-    }
-
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
 
@@ -106,24 +99,27 @@ const EditUserForm = ({ user }) => {
 
             <form onSubmit={e => e.preventDefault()}>
                 <div>
-                    <h2>Edit Profile</h2>
-                    <div>
+                    <p className="edit-profile-page-title">Edit Profile</p>
+                    <div className="edit-profile-buttons-div">
                         <button
                             title="Save"
                             onClick={handleSaveUserClicked}
-                            disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} />
+                            Save
                         </button>
                         <button
                             title="Delete"
                             onClick={handleDeleteUserClicked}
+                            className="edit-profile-delete-button"
                         >
-                            <FontAwesomeIcon icon={faTrashCan} />
+                            Delete
                         </button>
                     </div>
                 </div>
-                <label htmlFor="password">Password: [8-20 characters, including !@#%]</label>
+                <label htmlFor="password">
+                    <b>Password: [8-20 characters, including !@#%]</b>
+                </label>
+                <br />
                 <input 
                     type="password" 
                     id="password"
@@ -131,10 +127,12 @@ const EditUserForm = ({ user }) => {
                     value={password}
                     onChange={handlePasswordChanged}
                 />
+                <br />
 
                 <label htmlFor="email">
-                    Email:
+                    <b>Email:</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="email"
@@ -142,10 +140,12 @@ const EditUserForm = ({ user }) => {
                     value={email}
                     onChange={handleEmailChanged}
                 />
+                <br />
 
                 <label htmlFor="name">
-                    Name:
+                    <b>Name:</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="name"
@@ -153,10 +153,12 @@ const EditUserForm = ({ user }) => {
                     value={name}
                     onChange={handleNameChanged}
                 />
+                <br />
 
                 <label htmlFor="location">
-                    Location:
+                    <b>Location:</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="location"
@@ -164,11 +166,13 @@ const EditUserForm = ({ user }) => {
                     value={location}
                     onChange={handleLocationChanged}
                 />
+                <br />
 
                 <label htmlFor="user-active">
-                    Active:
+                    <b>Active:</b>
                 </label>
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox"
                     checked={active} 
                     id="user-active"

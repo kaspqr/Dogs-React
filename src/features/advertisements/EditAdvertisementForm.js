@@ -63,10 +63,11 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
             <form onSubmit={e => e.preventDefault()}>
                 <div>
-                    <h2>Edit Advertisement</h2>
-                    <div>
+                    <p className="advertisement-edit-page-title">Edit Advertisement</p>
+                    <div className="advertisement-edit-page-buttons-div">
                         <button
                             title="Save"
+                            className="edit-advertisement-save-button"
                             onClick={handleSaveAdvertisementClicked}
                             disabled={!canSave}
                         >
@@ -74,13 +75,16 @@ const EditAdvertisementForm = ({ advertisement }) => {
                         </button>
                         <button
                             title="Delete"
+                            className="edit-advertisement-delete-button"
                             onClick={handleDeleteAdvertisementClicked}
                         >
                             Delete
                         </button>
                     </div>
                 </div>
-                <label htmlFor="name">Title</label>
+                <label htmlFor="name">
+                    <b>Title:</b>
+                </label>
                 <br />
                 <input 
                     type="text" 
@@ -92,7 +96,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 <br />
 
                 <label htmlFor="type">
-                    Type:
+                    <b>Type:</b>
                 </label>
                 <br />
                 <select 
@@ -111,7 +115,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 <br />
 
                 <label htmlFor="price">
-                    Price:
+                    <b>Price:</b>
                 </label>
                 <br />
                 <input 
@@ -124,13 +128,14 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 <br />
 
                 <label htmlFor="info">
-                    Info:
+                    <b>Info:</b>
                 </label>
                 <br />
-                <input 
-                    type="textbox" 
+                <textarea 
                     id="info"
                     name="info"
+                    cols="30"
+                    rows="10"
                     value={info}
                     onChange={(e) => setInfo(e.target.value)}
                 />

@@ -71,7 +71,7 @@ const UserPage = () => {
         console.log(tableContent)
       
         dogContent = (
-            <table>
+            <table className="content-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -96,18 +96,21 @@ const UserPage = () => {
         <>
             {userId === id 
                 ? <button
+                    className="user-page-edit-button"
                     onClick={handleEdit}
                 >
                     Edit Profile
                 </button> 
                 : null
             }
-            <p>Username: {user.username}</p>
-            <p>Name: {user.name}</p>
-            <p>Location: {user.location}</p>
-            <p>Bio: {user.bio}</p>
+            <p className="user-page-username">{user.username}</p>
+            <p><b>Name:</b> {user.name}</p>
+            <p><b>Location:</b> {user.location}</p>
+            <p><b>Bio:</b></p>
+            <p>{user.bio}</p>
             <br />
-            <p>Dogs administrated:</p>
+            <p><b>Dogs administrated:</b></p>
+            <br />
             {dogContent}
         </>
     )

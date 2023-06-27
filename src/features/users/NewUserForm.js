@@ -101,20 +101,21 @@ const NewUserForm = () => {
 
             <form onSubmit={handleSaveUserClicked}>
                 <div>
-                    <h2>Register</h2>
-                    <div>
+                    <p className="register-page-title">Register New Account</p>
+                    <div className="register-page-button-div">
                         <button
                             title="Save"
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} />
+                            Register
                         </button>
                     </div>
                 </div>
                 
                 <label htmlFor="username">
-                    Username: [6-20 letters]
+                    <b>Username: [6-20 letters]</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="username"
@@ -123,10 +124,12 @@ const NewUserForm = () => {
                     value={username}
                     onChange={handleUsernameChanged}
                 />
+                <br />
 
                 <label htmlFor="password">
-                    Password: [8-20 characters, including !@#%]
+                    <b>Password: [8-20 characters, including !@#%]</b>
                 </label>
+                <br />
                 <input 
                     type="password" 
                     id="password"
@@ -134,10 +137,12 @@ const NewUserForm = () => {
                     value={password}
                     onChange={handlePasswordChanged}
                 />
+                <br />
 
                 <label htmlFor="email">
-                    Email:
+                    <b>Email:</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="email"
@@ -145,10 +150,12 @@ const NewUserForm = () => {
                     value={email}
                     onChange={handleEmailChanged}
                 />
+                <br />
 
                 <label htmlFor="name">
-                    Name:
+                    <b>Name:</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="name"
@@ -156,10 +163,12 @@ const NewUserForm = () => {
                     value={name}
                     onChange={handleNameChanged}
                 />
+                <br />
 
                 <label htmlFor="location">
-                    Location:
+                    <b>Location:</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="location"

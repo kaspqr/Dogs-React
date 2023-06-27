@@ -54,19 +54,19 @@ const NewAdvertisementForm = () => {
             {errMsg}
             <form onSubmit={handleSaveAdvertisementClicked}>
                 <div>
-                    <h2>Post Advertisement</h2>
-                    <div>
+                    <p className="advertisement-post-page-title">Post Advertisement</p>
+                    <div className="advertisement-post-page-buttons-div">
                         <button
                             title="Post"
                             disabled={!canSave}
                         >
-                            Save
+                            Post
                         </button>
                     </div>
                 </div>
                 
                 <label htmlFor="title">
-                    Title:
+                    <b>Title:</b>
                 </label>
                 <br />
                 <input 
@@ -79,7 +79,7 @@ const NewAdvertisementForm = () => {
                 <br />
 
                 <label htmlFor="type">
-                    Type:
+                    <b>Type:</b>
                 </label>
                 <br />
                 <select 
@@ -99,7 +99,7 @@ const NewAdvertisementForm = () => {
                 <br />
                 
                 <label htmlFor="price">
-                    Price:
+                    <b>Price:</b>
                 </label>
                 <br />
                 <input 
@@ -112,7 +112,7 @@ const NewAdvertisementForm = () => {
                 <br />
                 
                 <label htmlFor="info">
-                    Info:
+                    <b>Info:</b>
                 </label>
                 <br />
                 <textarea 

@@ -60,7 +60,8 @@ code {
   border-collapse: collapse;
 }
 
-td, th {
+td, 
+th {
   text-align: center;
   border-bottom: 2px solid black;
 }
@@ -71,13 +72,15 @@ td {
 
 th {
   height: 30px;
+  color: white;
 }
 
 .table-4-columns {
   width: 25%;
 }
 
-.list-add-new-title {
+.list-add-new-title, 
+.edit-advertisement-link {
   display: flex;
   justify-content: center;
   margin-bottom: 50px;
@@ -85,21 +88,65 @@ th {
   font-weight: bold;
 }
 
+.edit-advertisement-link {
+  display: block;
+  margin-bottom: 20px;
+}
+
 a {
   color: black;
 }
 
-textarea {
+textarea, 
+input {
   padding: 5px;
 }
 
-.advertisement-page-title, .dog-page-name {
+.advertisement-page-title, 
+.dog-page-name, 
+.advertisement-edit-page-title, 
+.advertisement-post-page-title,
+.user-page-username,
+.edit-profile-page-title,
+.login-page-title,
+.register-page-title {
   font-size: 20px;
   font-weight: bold;
 }
 
-.advertisement-title-p, .dog-page-name {
+.advertisement-edit-page-title, 
+.advertisement-post-page-title,
+.user-page-username,
+.user-page-edit-button,
+.advertisement-title-p, 
+.dog-page-name, 
+.advertisement-edit-page-buttons-div, 
+.advertisement-post-page-buttons-div,
+.edit-profile-buttons-div,
+.edit-profile-page-title,
+.login-page-title,
+.register-page-title,
+.register-page-button-div {
   margin-bottom: 20px;
 }
 
+button {
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 30px;
+  border: none;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 
+.edit-advertisement-delete-button,
+.edit-profile-delete-button,
+.checkbox-to-the-right {
+  margin-left: 10px;
+}
+
+thead {
+  background-color: black;
+}

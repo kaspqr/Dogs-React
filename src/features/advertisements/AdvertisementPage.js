@@ -43,14 +43,14 @@ const AdvertisementPage = () => {
 
     return (
         <>
-            {content}
+            {userId === advertisement?.poster ? <Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement.id}`}>Edit</Link> : null}
             <p className="advertisement-title-p">
                 <span className="advertisement-page-title">{advertisement?.title}</span>
                 <span className="nav-right"><b>Posted by <Link to={`/users/${user.id}`}>{user.username}</Link></b></span>
             </p>
-            <p>Type: {advertisement?.type}</p>
-            <p>Price: {advertisement?.price}</p>
-            <p>Info:</p>
+            <p><b>Type:</b> {advertisement?.type}</p>
+            {advertisement?.type !== "Found" && advertisement?.type !== "Lost" ? <p><b>Price:</b> {advertisement?.price}</p> : null}
+            <p><b>Info:</b></p>
             <p>{advertisement?.info}</p>
         </>
     )

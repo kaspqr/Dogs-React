@@ -69,14 +69,17 @@ const Login = () => {
   const content = (
     <>
       <header>
-        <h1>User Login</h1>
+        <p className="login-page-title">User Login</p>
       </header>
 
       <main>
         <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p>
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="username">
+            <b>Username:</b>
+          </label>
+          <br />
           <input 
             type="text" 
             id="username"
@@ -86,8 +89,12 @@ const Login = () => {
             autoComplete="off"
             required
           />
+          <br />
 
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">
+            <b>Password:</b>
+          </label>
+          <br />
           <input 
             type="password" 
             id="password"
@@ -95,24 +102,26 @@ const Login = () => {
             value={password}
             required
           />
-
-          <button>Sign In</button>
+          <br />
+          <br />
 
           <label htmlFor="persist">
+            <b>Trust This Device:</b>
             <input 
+              className="checkbox-to-the-right"
               type="checkbox" 
               id="persist"
               onChange={handleToggle}
               checked={persist}
             />
-            Trust This Device
           </label>
+          <br />
+          <br />
+
+          <button>Sign In</button>
+
         </form>
       </main>
-
-      <footer>
-        <Link to="/">Go Home</Link>
-      </footer>
     </>
   )
 
