@@ -22,6 +22,9 @@ import EditAdvertisement from "./features/advertisements/EditAdvertisement"
 import NewAdvertisement from "./features/advertisements/NewAdvertisement"
 import AdvertisementPage from "./features/advertisements/AdvertisementPage"
 
+import ConversationsList from "./features/conversations/ConversationsList"
+import ConversationPage from "./features/conversations/ConversationPage"
+
 import Prefetch from "./features/auth/Prefetch"
 import PersistLogin from "./features/auth/PersistLogin"
 import RequireAuth from "./features/auth/RequireAuth"
@@ -84,6 +87,15 @@ function App() {
               <Route element={<RequireAuth />}>
                 <Route path="edit/:id" element={<EditAdvertisement />} />
                 <Route path="new" element={<NewAdvertisement />} />
+              </Route>
+            </Route>
+
+
+            <Route element={<RequireAuth />}>
+
+              <Route path="conversations">
+                <Route index element={<ConversationsList />} />
+                <Route path=":conversationid" element={<ConversationPage />} />
               </Route>
             </Route>
 

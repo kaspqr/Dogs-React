@@ -1,7 +1,10 @@
 import { useGetConversationsQuery } from "./conversationsApiSlice"
 import Conversation from "./Conversation"
+import useAuth from "../../hooks/useAuth"
 
 const ConversationsList = () => {
+
+  const { userId } = useAuth()
 
   const {
     data: conversations,
@@ -24,11 +27,22 @@ const ConversationsList = () => {
   }
 
   if (isSuccess) {
-    const { ids } = conversations
+    const { ids, entities } = conversations
 
-    const tableContent = ids?.length
-      ? ids.map(conversationId => <Conversation key={conversationId} conversationId={conversationId} />)
-      : null
+    const filteredIds = ids.filter(conversationId => entities[conversationId].sender === userId || entities[conversationId].receiver === userId)
+
+    let tableContent
+
+    if (filteredIds?.length) {
+      console.log('filtered conversations has a length')
+      tableContent = filteredIds.map(conversationId => <Conversation key={conversationId} conversationId={conversationId} />)
+      console.log(tableContent)
+    } else {
+      console.log('filtered convos has no length')
+    }
+
+    console.log(ids)
+    console.log(filteredIds)
 
     content = (
       <table>
@@ -36,6 +50,7 @@ const ConversationsList = () => {
           <tr>
             <th>Username</th>
             <th>User ID</th>
+            <th>Open Convo</th>
           </tr>
         </thead>
         <tbody>

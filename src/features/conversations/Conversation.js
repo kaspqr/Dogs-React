@@ -2,8 +2,11 @@ import { Link } from "react-router-dom"
 import { useGetConversationsQuery } from "./conversationsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { memo } from "react"
+import useAuth from "../../hooks/useAuth"
 
 const Conversation = ({ conversationId }) => {
+
+    const { userId } = useAuth()
 
     const { conversation } = useGetConversationsQuery("conversationsList", {
         selectFromResult: ({ data }) => ({
@@ -24,32 +27,42 @@ const Conversation = ({ conversationId }) => {
     })
 
     if (!conversation) {
+        console.log('no convo')
         return null
     }
 
-    if (!receiver && !sender) {
+    if (!receiver) {
+        console.log('no receiver')
         return null
     }
 
-    if (receiver?.length && sender?.length) {
+    if (!sender) {
+        console.log('no sender')
         return null
     }
 
     let otherUser
 
-    if (receiver?.length && !sender.length) {
+    if (receiver?.id === userId) {
+        console.log('other user is sender')
+        otherUser = sender
+    }
+
+    if (sender?.id === userId) {
+        console.log('other user is receiver')
         otherUser = receiver
     }
 
-    if (sender?.length && !receiver.length) {
-        otherUser = sender
-    }
+    console.log(sender)
+    console.log(receiver)
+    console.log(otherUser)
 
 
     return (
         <tr>
             <td><Link to={`/users/${otherUser.id}`}>{otherUser.username}</Link></td>
             <td>{otherUser.id}</td>
+            <td><Link to={`/conversations/${conversation.id}`}>Open</Link></td>
         </tr>
     )
 }

@@ -1,15 +1,32 @@
 import { useGetConversationsQuery } from "./conversationsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { useGetMessagesQuery } from "../messages/messagesApiSlice"
+import { useGetMessagesQuery, useAddNewMessageMutation } from "../messages/messagesApiSlice"
 import Message from "../messages/Message"
 import { useParams } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
+import { useState, useEffect } from "react"
 
 const ConversationPage = () => {
 
     const { userId } = useAuth()
 
     const { conversationid } = useParams()
+
+    const [newMessage, setNewMessage] = useState()
+
+    const [addNewMessage, {
+        isMessageLoading,
+        isMessageSuccess,
+        isMessageError,
+        messageError
+    }] = useAddNewMessageMutation()
+
+    async function handleSendMessage() {
+        if (newMessage?.length) {
+            await addNewMessage({ sender: userId, conversation: conversationid, text: newMessage })
+            setNewMessage('')
+        }
+    }
 
     const { conversation } = useGetConversationsQuery("conversationsList", {
         selectFromResult: ({ data }) => ({
@@ -40,9 +57,14 @@ const ConversationPage = () => {
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
+
+    useEffect(() => {
+        if (isMessageSuccess) {
+            setNewMessage('')
+        }
+    }, [isMessageSuccess])
     
     let messageContent
-    let optionsContent
     
     if (isLoading) messageContent = <p>Loading...</p>
     
@@ -74,18 +96,38 @@ const ConversationPage = () => {
         console.log(tableContent)
       
         messageContent = (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Sender</th>
-                        <th>Text</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tableContent}
-                </tbody>
-            </table>
+            <>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sender</th>
+                            <th>Text</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tableContent}
+                    </tbody>
+                </table>
+                <label htmlFor="new-message">New Message:</label>
+                <br />
+                <textarea 
+                    value={newMessage} 
+                    onChange={(e) => setNewMessage(e.target.value)} 
+                    name="new-message" 
+                    id="new-message" 
+                    cols="30" 
+                    rows="10"
+
+                />
+                <br />
+                <button
+                    onClick={() => handleSendMessage()}
+                    disabled={!newMessage?.length}
+                >
+                    Send Message
+                </button>
+            </>
         )
     }
 
@@ -93,7 +135,7 @@ const ConversationPage = () => {
         return null
     }
 
-    if (userId !== conversation?.sender || userId !== conversation?.receiver) {
+    if (userId !== conversation?.sender && userId !== conversation?.receiver) {
         return null
     }
 

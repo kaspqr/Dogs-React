@@ -36,7 +36,7 @@ const Message = ({ messageId }) => {
 
     return (
         <tr>
-            <td>{message.sender}</td>
+            <td>{sender.username}</td>
             <td>{message.text}</td>
             <td>{message.time}</td>
         </tr>
