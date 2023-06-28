@@ -2,8 +2,6 @@ import { useGetDogsQuery } from "./dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
 
 const DogPage = () => {
 

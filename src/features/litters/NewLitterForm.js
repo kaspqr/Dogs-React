@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAddNewLitterMutation } from "./littersApiSlice"
 import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import useAuth from "../../hooks/useAuth"
 
@@ -11,10 +9,10 @@ const NewLitterForm = () => {
     const { userId } = useAuth()
 
     const [addNewLitter, {
-        isLitterLoading,
-        isLitterSuccess,
-        isLitterError,
-        litterError
+        isLoading: isLitterLoading,
+        isSuccess: isLitterSuccess,
+        isError: isLitterError,
+        error: litterError
     }] = useAddNewLitterMutation()
 
 
@@ -23,8 +21,6 @@ const NewLitterForm = () => {
     const [mother, setMother] = useState('')
 
     const [born, setBorn] = useState('')
-
-    const [validBorn, setValidBorn] = useState(false)
 
     const [validMother, setValidMother] = useState(false)
 
@@ -36,14 +32,6 @@ const NewLitterForm = () => {
     }, [isLitterSuccess, navigate])
 
     useEffect(() => {
-        if (born.length) {
-            setValidBorn(true)
-        } else {
-            setValidBorn(false)
-        }
-    }, [born])
-
-    useEffect(() => {
         if (mother.length) {
             setValidMother(true)
         } else {
@@ -51,15 +39,20 @@ const NewLitterForm = () => {
         }
     }, [mother])
 
-    const canSave = validMother && validBorn && !isLitterLoading
-
     const handleBornChanged = e => setBorn(e.target.value)
     const handleMotherChanged = e => setMother(e.target.value)
 
     const handleSaveLitterClicked = async (e) => {
         e.preventDefault()
+        console.log(canSave)
+        console.log(mother)
+        console.log(born)
         if (canSave) {
             await addNewLitter({ mother, born })
+        }
+
+        if (isLitterError) {
+            console.log(litterError)
         }
     }
 
@@ -109,6 +102,8 @@ const NewLitterForm = () => {
             ))
         }
     }
+
+    const canSave = validMother && !isLoading
 
     if (!dogs) return null
 
