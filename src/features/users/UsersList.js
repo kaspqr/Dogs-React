@@ -32,7 +32,7 @@ const UsersList = () => {
 
     content = (
       <>
-        <table>
+        <table className="content-table">
           <thead>
             <tr>
               <th>Username</th>

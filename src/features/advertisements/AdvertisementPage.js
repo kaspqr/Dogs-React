@@ -29,21 +29,9 @@ const AdvertisementPage = () => {
         return null
     }
 
-    let content = null
-
-    if (userId === advertisement.poster) {
-        content = (
-            <button
-                onClick={() => navigate(`/advertisements/edit/${advertisement.id}`)}
-            >
-                <FontAwesomeIcon icon={faSave} />
-            </button>
-        )
-    }
-
     return (
         <>
-            {userId === advertisement?.poster ? <Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement.id}`}>Edit</Link> : null}
+            {userId === advertisement?.poster ? <Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement.id}`}><button>Edit</button></Link> : null}
             <p className="advertisement-title-p">
                 <span className="advertisement-page-title">{advertisement?.title}</span>
                 <span className="nav-right"><b>Posted by <Link to={`/users/${user.id}`}>{user.username}</Link></b></span>

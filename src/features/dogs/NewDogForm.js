@@ -99,7 +99,7 @@ const NewDogForm = () => {
     const handleInfoChanged = e => setInfo(e.target.value)
     const handleFemaleChanged = e => setFemale(e.target.value === "female" ? true : false)
 
-    const canSave = typeof validName === 'boolean' && !isLoading && breed.length
+    const canSave = typeof validName === 'boolean' && validName === true && !isLoading && breed.length
 
     const handleSaveDogClicked = async (e) => {
         e.preventDefault()
@@ -110,15 +110,19 @@ const NewDogForm = () => {
 
     const errClass = isError ? "errmsg" : "offscreen"
 
+    const saveColor = !canSave ? {backgroundColor: "grey"} : null
+
     const content = (
         <>
             <p className={errClass}>{error?.data?.message}</p>
 
             <form onSubmit={handleSaveDogClicked}>
                 <div>
-                    <h2>Register Dog</h2>
+                    <p className="register-dog-title">Register Dog</p>
+                    <br />
                     <div>
                         <button
+                            style={saveColor}
                             title="Save"
                             disabled={!canSave}
                         >
@@ -126,9 +130,10 @@ const NewDogForm = () => {
                         </button>
                     </div>
                 </div>
+                <br />
                 
                 <label htmlFor="dogname">
-                    Dog's name: [2-20 letters]
+                    <b>Dog's name: [2-20 letters]</b>
                 </label>
                 <br />
                 <input 
@@ -140,9 +145,10 @@ const NewDogForm = () => {
                     onChange={handleNameChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="owner">
-                    Owner:
+                    <b>Owner:</b>
                 </label>
                 <br />
                 <input 
@@ -153,9 +159,10 @@ const NewDogForm = () => {
                     onChange={handleOwnerChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="breed">
-                    Breed:
+                    <b>Breed:</b>
                 </label>
                 <br />
                 <select 
@@ -169,9 +176,10 @@ const NewDogForm = () => {
                     {breedOptions}
                 </select>
                 <br />
+                <br />
 
                 <label htmlFor="isFemale">
-                    Gender:
+                    <b>Gender:</b>
                 </label>
                 <br />
                 <select 
@@ -181,9 +189,10 @@ const NewDogForm = () => {
                   <option value="male">Male</option>
                 </select>
                 <br />
+                <br />
 
                 <label htmlFor="location">
-                    Location:
+                    <b>Location:</b>
                 </label>
                 <br />
                 <input 
@@ -194,12 +203,27 @@ const NewDogForm = () => {
                     onChange={handleLocationChanged}
                 />
                 <br />
+                <br />
+
+                <label htmlFor="passport">
+                    <b>Passport:</b>
+                </label>
+                <input 
+                    className="checkbox-to-the-right"
+                    type="checkbox" 
+                    id="passport"
+                    name="passport"
+                    checked={passport}
+                    onChange={handlePassportChanged}
+                />
+                <br />
+                <br />
 
                 <label htmlFor="heat">
-                    Heat:
+                    <b>Heat:</b>
                 </label>
-                <br />
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox" 
                     id="heat"
                     name="heat"
@@ -207,12 +231,13 @@ const NewDogForm = () => {
                     onChange={handleHeatChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="sterilized">
-                    Sterilized:
+                    <b>Sterilized:</b>
                 </label>
-                <br />
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox" 
                     id="sterilized"
                     name="sterilized"
@@ -220,12 +245,13 @@ const NewDogForm = () => {
                     onChange={handleSterilizedChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="microchipped">
-                    Microchipped:
+                    <b>Microchipped:</b>
                 </label>
-                <br />
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox" 
                     id="microchipped"
                     name="microchipped"
@@ -233,9 +259,10 @@ const NewDogForm = () => {
                     onChange={handleMicrochippedChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="chipnumber">
-                    Chipnumber:
+                    <b>Chipnumber:</b>
                 </label>
                 <br />
                 <input 
@@ -246,22 +273,10 @@ const NewDogForm = () => {
                     onChange={handleChipnumberChanged}
                 />
                 <br />
-
-                <label htmlFor="passport">
-                    Passport:
-                </label>
-                <br />
-                <input 
-                    type="checkbox" 
-                    id="passport"
-                    name="passport"
-                    checked={passport}
-                    onChange={handlePassportChanged}
-                />
                 <br />
 
                 <label htmlFor="birth">
-                    Birth:
+                    <b>Birth:</b>
                 </label>
                 <br />
                 <input 
@@ -272,9 +287,10 @@ const NewDogForm = () => {
                     onChange={handleBirthChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="death">
-                    Death:
+                    <b>Death:</b>
                 </label>
                 <br />
                 <input 
@@ -285,9 +301,10 @@ const NewDogForm = () => {
                     onChange={handleDeathChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="info">
-                    Info:
+                    <b>Info:</b>
                 </label>
                 <br />
                 <input 

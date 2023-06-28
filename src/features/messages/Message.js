@@ -33,13 +33,17 @@ const Message = ({ messageId }) => {
         isSender = false
     }
 
+    const messageStyle = message.sender === userId ? {backgroundColor: "rgb(235, 155, 52)", float: "right"} : {backgroundColor: "lightgrey", float: "left"}
+    const timeStyle = message.sender === userId ? {float: "right"} : {float: "left"}
 
     return (
-        <tr>
-            <td>{sender.username}</td>
-            <td>{message.text}</td>
-            <td>{message.time}</td>
-        </tr>
+        <>
+            <p style={timeStyle} className="message-time">{message.time}</p>
+            <br />
+            <p style={messageStyle} className="message-text">{message.text}</p>
+            <br />
+            <br />
+        </>
     )
 }
 

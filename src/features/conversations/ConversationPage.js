@@ -97,19 +97,8 @@ const ConversationPage = () => {
       
         messageContent = (
             <>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Sender</th>
-                            <th>Text</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableContent}
-                    </tbody>
-                </table>
-                <label htmlFor="new-message">New Message:</label>
+                {tableContent}
+                <label htmlFor="new-message"><b>New Message:</b></label>
                 <br />
                 <textarea 
                     value={newMessage} 
@@ -141,8 +130,8 @@ const ConversationPage = () => {
 
     return (
         <>
-            <p>Sender: {conversation?.sender}</p>
-            <p>Receiver: {conversation?.receiver}</p>
+            {sender.id === userId ? <p className="conversation-page-username-title">{receiver.username}</p> : <p className="conversation-page-username-title">{sender.username}</p>}
+            <br />
             {messageContent}
         </>
     )

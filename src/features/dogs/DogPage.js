@@ -39,11 +39,15 @@ const DogPage = () => {
 
     if (userId === dog.user) {
         content = (
-            <button
-                onClick={() => navigate(`/dogs/edit/${dog.id}`)}
-            >
-                <FontAwesomeIcon icon={faSave} />
-            </button>
+            <>
+                <button
+                    onClick={() => navigate(`/dogs/edit/${dog.id}`)}
+                >
+                    Edit
+                </button>
+                <br />
+                <br />
+            </>
         )
     }
 

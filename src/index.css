@@ -80,7 +80,8 @@ th {
 }
 
 .list-add-new-title, 
-.edit-advertisement-link {
+.edit-advertisement-link,
+.litters-page-add-title {
   display: flex;
   justify-content: center;
   margin-bottom: 50px;
@@ -109,7 +110,11 @@ input {
 .user-page-username,
 .edit-profile-page-title,
 .login-page-title,
-.register-page-title {
+.register-page-title,
+.register-dog-title,
+.edit-dog-page-title,
+.register-litter-page-title,
+.conversation-page-username-title {
   font-size: 20px;
   font-weight: bold;
 }
@@ -143,10 +148,20 @@ button {
 
 .edit-advertisement-delete-button,
 .edit-profile-delete-button,
+.edit-dog-delete-button,
 .checkbox-to-the-right {
   margin-left: 10px;
 }
 
 thead {
   background-color: black;
+}
+
+.message-time {
+  font-size: 8px;
+}
+
+.message-text {
+  padding: 5px;
+  border-radius: 5px;
 }

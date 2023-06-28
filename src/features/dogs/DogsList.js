@@ -36,7 +36,7 @@ const DogsList = () => {
 
     content = (
       <>
-        {userId?.length ? (<Link className="list-add-new-title" to={'/dogs/new'}>Add a New Dog</Link>) : null}
+        {userId?.length ? (<Link className="list-add-new-title" to={'/dogs/new'}><button>Add a New Dog</button></Link>) : null}
         <table className="content-table">
           <thead>
             <tr>

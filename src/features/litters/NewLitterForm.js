@@ -112,26 +112,32 @@ const NewLitterForm = () => {
 
     if (!dogs) return null
 
+    const saveColor = !canSave ? {backgroundColor: "grey"} : null
+
     const content = (
         <>
             <p>{dogsContent}</p>
 
             <form onSubmit={handleSaveLitterClicked}>
                 <div>
-                    <h2>Register Litter</h2>
+                    <p className="register-litter-page-title">Register Litter</p>
+                    <br />
                     <div>
                         <button
+                            style={saveColor}
                             title="Save"
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} />
+                            Save
                         </button>
                     </div>
                 </div>
+                <br />
                 
                 <label htmlFor="litter">
-                    Litter's mother:
+                    <b>Litter's mother:</b>
                 </label>
+                <br />
                 <select 
                     type="text" 
                     id="mother"
@@ -149,10 +155,13 @@ const NewLitterForm = () => {
                     </option>
                     {ownedDogs}
                 </select>
+                <br />
+                <br />
 
                 <label htmlFor="born">
-                    Born:
+                    <b>Born:</b>
                 </label>
+                <br />
                 <input 
                     type="text" 
                     id="born"

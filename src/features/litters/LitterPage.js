@@ -114,7 +114,7 @@ const LitterPage = () => {
         console.log(tableContent)
       
         dogContent = (
-            <table>
+            <table className="content-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -176,16 +176,17 @@ const LitterPage = () => {
     return (
         <>
             {content}
-            <p>Mother: <Link to={`/dogs/${mother.id}`}>{mother.name}</Link>, ID {mother.id}</p>
-            <p>Father: <Link to={`/dogs/${father.id}`}>{father.name}</Link>, ID {father.id}</p>
-            <p>Litter ID: {litter.id}</p>
-            <p>Born: {litter?.born}</p>
+            <p><b>Mother:</b> <Link to={`/dogs/${mother.id}`}>{mother.name}</Link></p>
+            <p><b>Father:</b> <Link to={`/dogs/${father.id}`}>{father.name}</Link></p>
+            <p><b>Born:</b> {litter?.born}</p>
             <br />
-            <p>Add dog to litter:</p>
+            <p><b>Add dog to litter:</b></p>
             <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
                 <option value="">Pick your dog</option>
                 {optionsContent}
             </select>
+            <br />
+            <br />
             <button
                 disabled={selectedDog?.length ? false : true}
                 onClick={() => addToLitter()}
@@ -193,7 +194,9 @@ const LitterPage = () => {
                 Add
             </button>
             <br />
-            <p>Dogs:</p>
+            <br />
+            <p><b>Dogs:</b></p>
+            <br />
             {dogContent}
         </>
     )

@@ -96,7 +96,8 @@ const EditDogForm = ({ dog }) => {
 
             <form onSubmit={e => e.preventDefault()}>
                 <div>
-                    <h2>Edit Dog</h2>
+                    <p className="edit-dog-page-title">Edit Dog</p>
+                    <br />
                     <div>
                         <button
                             title="Save"
@@ -106,6 +107,7 @@ const EditDogForm = ({ dog }) => {
                             Save
                         </button>
                         <button
+                            className="edit-dog-delete-button"
                             title="Delete"
                             onClick={handleDeleteDogClicked}
                         >
@@ -113,7 +115,10 @@ const EditDogForm = ({ dog }) => {
                         </button>
                     </div>
                 </div>
-                <label htmlFor="name">Name: [2-20 letters]</label>
+                <br />
+                <label htmlFor="name">
+                    <b>Name: [2-20 letters]</b>
+                </label>
                 <br />
                 <input 
                     type="text" 
@@ -123,22 +128,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleNameChanged}
                 />
                 <br />
-
-                <label htmlFor="owner">
-                    Owner:
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="owner"
-                    name="owner"
-                    value={owner}
-                    onChange={handleOwnerChanged}
-                />
                 <br />
 
                 <label htmlFor="location">
-                    Location:
+                    <b>Location:</b>
                 </label>
                 <br />
                 <input 
@@ -149,9 +142,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleLocationChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="birth">
-                    Date of Birth:
+                    <b>Date of Birth:</b>
                 </label>
                 <br />
                 <input 
@@ -162,9 +156,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleBirthChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="death">
-                    Date of Death:
+                    <b>Date of Death:</b>
                 </label>
                 <br />
                 <input 
@@ -175,9 +170,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleDeathChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="passport">
-                    Passport:
+                    <b>Passport:</b>
                 </label>
                 <input 
                     type="checkbox" 
@@ -187,9 +183,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handlePassportChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="heat">
-                    Heat:
+                    <b>Heat:</b>
                 </label>
                 <input 
                     type="checkbox" 
@@ -199,9 +196,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleHeatChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="sterilized">
-                    Sterilized:
+                    <b>Sterilized:</b>
                 </label>
                 <input 
                     type="checkbox" 
@@ -211,9 +209,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleSterilizedChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="microchipped">
-                    Microchipped:
+                    <b>Microchipped:</b>
                 </label>
                 <input 
                     type="checkbox" 
@@ -223,9 +222,10 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleMicrochippedChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="chipnumber">
-                    Chipnumber:
+                    <b>Chipnumber:</b>
                 </label>
                 <br />
                 <input 
@@ -236,13 +236,15 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleChipnumberChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="info">
-                    Info:
+                    <b>Info:</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
+                <textarea 
+                    rows="10"
+                    cols="30"
                     id="info"
                     name="info"
                     value={info}
