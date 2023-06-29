@@ -24,12 +24,6 @@ const DogPage = () => {
         }),
     })
 
-    const { owner } = useGetUsersQuery("usersList", {
-        selectFromResult: ({ data }) => ({
-            owner: data?.entities[dog?.owner]
-        }),
-    })
-
     const { parentLitter } = useGetLittersQuery("littersList", {
         selectFromResult: ({ data }) => ({
             parentLitter: data?.entities[dog?.litter]
@@ -99,7 +93,7 @@ const DogPage = () => {
         const { ids, entities } = dogs
 
         const filteredIds = ids.filter(dogId => childrenLitterIds?.includes(entities[dogId].litter))
-        const filteredSiblingIds = ids.filter(dogId => entities[dogId].litter === dog?.litter && dogId !== dog?.id)
+        const filteredSiblingIds = ids.filter(dogId => dog?.litter?.length && entities[dogId].litter === dog?.litter && dogId !== dog?.id)
 
         if (filteredSiblingIds?.length) {
             siblings = filteredSiblingIds.map(dogId => entities[dogId])
@@ -110,12 +104,31 @@ const DogPage = () => {
         }
     }
 
+    let filteredParents
+    let parentDogs
+    console.log(filteredLitters)
+
     if (isSuccess) {
-        littersContent = filteredLitters.map(litter => 
+        const { ids, entities } = dogs
+        console.log(ids)
+        filteredParents = filteredLitters.map(litter => {
+            if (dog?.female === true) {
+                return litter?.father
+            } else {
+                return litter?.mother
+            }
+        })
+        parentDogs = filteredParents?.map(dogId => entities[dogId])
+        console.log(filteredParents)
+        console.log(parentDogs)
+
+        littersContent = filteredLitters?.map(litter => 
             <>
                 <p>
-                    <b>Litter </b><Link to={`/litters/${litter?.id}`}>{litter?.id}</Link>
-                    {allChildren.map(child => child?.litter === litter?.id 
+                    <b>Litter </b><Link to={`/litters/${litter?.id}`}>{litter?.id}</Link> with 
+                    {dog?.female === true ? parentDogs?.map(parent => parent?.id === litter?.father ? <> {parent.name}</> : null) : null}
+                    {dog?.female === false ? parentDogs?.map(parent => parent?.id === litter?.mother ? <> {parent.name}</> : null) : null}
+                    {allChildren?.map(child => child?.litter === litter?.id 
                         ? <><br />{child?.female === true ? <b>Daughter: </b> : <b>Son: </b>}<Link to={`/dogs/${child?.id}`}>{child?.name}</Link></>
                         : null
                     )}
@@ -130,9 +143,6 @@ const DogPage = () => {
             mother: data?.entities[parentLitter?.mother]
         }),
     })
-
-    console.log(mother)
-    console.log(parentLitter?.mother)
 
     const { father } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
@@ -170,40 +180,49 @@ const DogPage = () => {
             {fatherContent}
             <p><b>Litter: </b><Link to={`/litters/${parentLitter?.id}`}>{parentLitter?.id}</Link></p>
         </>
-        : null
+        : <p>{dog?.name} is not added to any litter and therefore has no parents in the database</p>
 
 
     let siblingsContent = null
 
     if (siblings?.length) {
         siblingsContent = siblings.map(sibling => <p><b>{sibling?.female === true ? <>Sister: </> : <>Brother: </>}</b><Link to={`/dogs/${sibling?.id}`}>{sibling?.name}</Link></p>)
+    } else {
+        if (parentLitter) {
+            siblingsContent = <p>{dog?.name} is not connected to any siblings through it's litter in the database</p>
+        } else {
+            siblingsContent = <p>{dog?.name} is not added to any litter and therefore has no siblings in the database</p>
+        }
     }
 
     return (
         <>
             {content}
             <p className="dog-page-name">{dog?.name}</p>
-            <p><b>Administrative user:</b> <Link to={`/users/${user?.id}`}>{user?.username}</Link></p>
-            <p><b>Owner:</b> {owner ? <Link to={`/users/${owner?.id}`}>{owner?.username}</Link> : 'Not added'}</p>
+            <p><b>Administered by:</b> <Link to={`/users/${user?.id}`}>{user?.username}</Link></p>
             <p><b>Gender:</b> {dog?.female === true ? 'Female' : 'Male'}</p>
             <p><b>Breed:</b> {dog?.breed}</p>
             {dog?.female === true && dog?.sterilized === false ? <p><b>Currently in heat?:</b> {dog?.heat === true ? 'Yes' : 'No'}</p> : null}
-            <p><b>Sterilized:</b> {dog?.sterilized === true ? 'Yes' : 'No'}</p>
+            <p><b>{dog?.female === true ? 'Sterilized: ' : 'Castrated: '}</b> {dog?.sterilized === true ? 'Yes' : 'No'}</p>
             <p><b>Birth:</b> {dog?.birth}</p>
             {dog?.death?.length ? <p><b>Death:</b> {dog?.death}</p> : null}
             <p><b>Microchipped:</b> {dog?.microchipped === true ? 'Yes' : 'No'}</p>
-            <p><b>Chipnumber:</b> {dog?.chipnumber ? dog?.chipnumber : 'Not added'}</p>
+            {dog?.microchipped === true ? <p><b>Chipnumber: </b>{dog?.chipnumber}</p> : null}
             <p><b>Passport:</b> {dog?.passport === true ? 'Yes' : 'No'}</p>
             <p><b>Location:</b> {dog?.location}</p>
-            <p><b>Info:</b></p>
+            <p><b>Additional Info:</b></p>
             <p>{dog?.info}</p>
             <br />
+            <p className="family-tree-title"><b>Instant Family Tree</b></p>
+            <p><b>Parents and litter:</b></p>
             {parentsContent}
             <br />
+            <p><b>{dog?.name} and it's siblings:</b></p>
             <p><b>{dog?.name}</b></p>
             {siblingsContent}
             <br />
-            {littersContent}
+            <p><b>{dog?.name}'s litters and each litter's puppies</b></p>
+            {filteredLitters?.length ? littersContent : <>{dog?.name} has no litters and therefore has no children in the database</>}
         </>
     )
 }

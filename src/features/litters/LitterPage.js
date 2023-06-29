@@ -5,7 +5,7 @@ import { useNavigate, useParams, Link } from "react-router-dom"
 
 import useAuth from "../../hooks/useAuth"
 
-import Dog from '../dogs/Dog'
+import LitterDog from '../dogs/LitterDog'
 
 import { useState, useEffect } from "react"
 
@@ -83,6 +83,8 @@ const LitterPage = () => {
     let dogContent
     let optionsContent
     let fatherOptionsContent
+    let filteredDogs
+    let filteredUserDogs
     
     if (isLoading || isUpdateLoading) dogContent = <p>Loading...</p>
     
@@ -93,15 +95,19 @@ const LitterPage = () => {
     if (isSuccess) {
         const { ids, entities } = dogs
 
-        let filteredDogs
         let filteredFathers
-        let filteredUserDogs
 
         const filteredIds = ids.filter(dogId => entities[dogId].litter === litter?.id)
         
         const filteredUserIds = ids.filter(dogId => entities[dogId].user === userId 
             && entities[dogId].id !== mother?.id
             && entities[dogId].id !== father?.id
+            && ((mother?.breed === father?.breed 
+                    && mother?.breed === entities[dogId].breed) 
+                || (entities[dogId].breed === 'Mixed breed' 
+                    && (mother?.breed !== father?.breed 
+                        || (father?.breed === entities[dogId].breed 
+                            && mother?.breed === entities[dogId].breed))))
             && !filteredIds.includes(entities[dogId].id))
 
         const filteredFatherIds = ids.filter(dogId => entities[dogId].user === userId 
@@ -126,7 +132,7 @@ const LitterPage = () => {
 
         if (filteredDogs?.length) {
             tableContent = filteredDogs.map(dog => (
-               <Dog key={dog.id} dogId={dog.id} />
+               <LitterDog key={dog.id} dogId={dog.id} />
             ))
         }
 
@@ -150,11 +156,8 @@ const LitterPage = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>ID</th>
-                        <th>Administrative User</th>
-                        <th>Breed</th>
                         <th>Gender</th>
-                        <th>Born</th>
+                        <th>Administrated By</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,20 +236,8 @@ const LitterPage = () => {
                 <br />
             </>
 
-    return (
-        <>
-            {content}
-            <p><b>Mother:</b> <Link to={`/dogs/${mother.id}`}>{mother.name}</Link></p>
-            <p>
-                <b>Father: </b> 
-                {father?.id?.length 
-                    ? <Link to={`/dogs/${father?.id}`}>{father?.name}</Link> 
-                    : 'Not added'}
-            </p>
-            <p><b>Born:</b> {litter?.born}</p>
-            <br />
-            {fatherContent}
-            <p><b>Add dog to litter:</b></p>
+    const addPuppyContent = filteredUserDogs?.length && (litter?.children > filteredDogs?.length || !filteredDogs?.length)
+        ? <><p><b>Add dog to litter:</b></p>
             <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
                 <option value="">Pick your dog</option>
                 {optionsContent}
@@ -261,6 +252,24 @@ const LitterPage = () => {
             </button>
             <br />
             <br />
+            </>
+        : null
+
+    return (
+        <>
+            {content}
+            <p><b>Mother:</b> <Link to={`/dogs/${mother.id}`}>{mother?.name}</Link>, {mother?.breed}</p>
+            <p>
+                <b>Father: </b> 
+                {father?.id?.length 
+                    ? <><Link to={`/dogs/${father?.id}`}>{father?.name}</Link>, {father?.breed}</>
+                    : 'Not added'}
+            </p>
+            <p><b>Born:</b> {litter?.born}</p>
+            <p><b>Number of puppies: </b>{litter?.children}</p>
+            <br />
+            {fatherContent}
+            {addPuppyContent}
             <p><b>Dogs:</b></p>
             <br />
             {dogContent}
