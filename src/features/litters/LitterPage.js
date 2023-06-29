@@ -1,4 +1,4 @@
-import { useGetLittersQuery, useDeleteLitterMutation } from "./littersApiSlice"
+import { useGetLittersQuery, useUpdateLitterMutation, useDeleteLitterMutation } from "./littersApiSlice"
 import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
 
 import { useNavigate, useParams, Link } from "react-router-dom"
@@ -24,8 +24,15 @@ const LitterPage = () => {
         error: delerror
     }] = useDeleteLitterMutation()
 
+    const [updateLitter, {
+        isLoading: isLitterLoading,
+        isSuccess: isLitterSuccess,
+        isError: isLitterError,
+        error: litterError
+    }] = useUpdateLitterMutation()
+
     const [selectedDog, setSelectedDog] = useState()
-    const [selectedFather, setSelectedFather] = useState()
+    const [selectedFather, setSelectedFather] = useState('')
 
     const navigate = useNavigate()
 
@@ -194,6 +201,17 @@ const LitterPage = () => {
         await updateDog({ "id": selectedDog, "litter": litterid })
     }
 
+
+    async function addFatherToLitter() {
+        return updateLitter({ "id": litterid, "father": selectedFather })
+    }
+
+    const canSaveFather = selectedFather?.length && !isLoading
+    const fatherButtonStyle = !canSaveFather ? {backgroundColor: "grey"} : null
+
+    console.log(selectedFather)
+    console.log(selectedFather?.length)
+
     const fatherContent = father?.id?.length 
         ? null
         : <><p><b>Add father to litter:</b></p>
@@ -203,7 +221,15 @@ const LitterPage = () => {
                 </select>
                 <br />
                 <br />
-                <button>Add Father</button>
+                <button
+                    style={fatherButtonStyle}
+                    disabled={!canSaveFather}
+                    onClick={() => addFatherToLitter()}
+                >
+                    Add Father
+                </button>
+                <br />
+                <br />
                 <br />
             </>
 
@@ -220,7 +246,6 @@ const LitterPage = () => {
             <p><b>Born:</b> {litter?.born}</p>
             <br />
             {fatherContent}
-            <br />
             <p><b>Add dog to litter:</b></p>
             <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
                 <option value="">Pick your dog</option>

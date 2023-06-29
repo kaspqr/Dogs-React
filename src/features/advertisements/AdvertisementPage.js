@@ -1,13 +1,9 @@
 import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { useNavigate, useParams, Link } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
 
 const AdvertisementPage = () => {
-
-    const navigate = useNavigate()
 
     const { userId } = useAuth()
 

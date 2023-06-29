@@ -42,6 +42,18 @@ export const littersApiSlice = apiSlice.injectEndpoints({
                 { type: 'Litter', id: "LIST" }
             ]
         }),
+        updateLitter: builder.mutation({
+            query: initialLitter => ({
+                url: '/litters',
+                method: 'PATCH',
+                body: {
+                    ...initialLitter,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'Litter', id: arg.id }
+            ]
+        }),
         deleteLitter: builder.mutation({
             query: ({ id }) => ({
                 url: '/litters',
@@ -58,6 +70,7 @@ export const littersApiSlice = apiSlice.injectEndpoints({
 export const {
     useGetLittersQuery,
     useAddNewLitterMutation,
+    useUpdateLitterMutation,
     useDeleteLitterMutation,
 } = littersApiSlice
 
