@@ -111,7 +111,7 @@ const DogPage = () => {
     if (isSuccess) {
         const { ids, entities } = dogs
         console.log(ids)
-        filteredParents = filteredLitters.map(litter => {
+        filteredParents = filteredLitters?.map(litter => {
             if (dog?.female === true) {
                 return litter?.father
             } else {
@@ -125,9 +125,10 @@ const DogPage = () => {
         littersContent = filteredLitters?.map(litter => 
             <>
                 <p>
-                    <b>Litter </b><Link to={`/litters/${litter?.id}`}>{litter?.id}</Link> with 
-                    {dog?.female === true ? parentDogs?.map(parent => parent?.id === litter?.father ? <> {parent.name}</> : null) : null}
-                    {dog?.female === false ? parentDogs?.map(parent => parent?.id === litter?.mother ? <> {parent.name}</> : null) : null}
+                    <Link to={`/litters/${litter?.id}`}><b>Litter</b></Link>   
+                    {dog?.female === true ? <> with <Link to={`/dogs/${litter?.father}`}>{parentDogs?.find(parent => parent?.id === litter?.father)?.name}</Link></> : null}
+                    {dog?.female === false ? <> with <Link to={`/dogs/${litter?.mother}`}>{parentDogs?.find(parent => parent?.id === litter?.mother)?.name}</Link></> : null}
+                    {litter?.born?.length ? <>, time of birth: {litter?.born?.split(' ').slice(1, 4).join(' ')}</> : null}
                     {allChildren?.map(child => child?.litter === litter?.id 
                         ? <><br />{child?.female === true ? <b>Daughter: </b> : <b>Son: </b>}<Link to={`/dogs/${child?.id}`}>{child?.name}</Link></>
                         : null
@@ -178,7 +179,6 @@ const DogPage = () => {
         ? <>
             <p><b>Mother: </b><Link to={`/dogs/${mother?.id}`}>{mother?.name}</Link></p>
             {fatherContent}
-            <p><b>Litter: </b><Link to={`/litters/${parentLitter?.id}`}>{parentLitter?.id}</Link></p>
         </>
         : <p>{dog?.name} is not added to any litter and therefore has no parents in the database</p>
 
@@ -204,7 +204,7 @@ const DogPage = () => {
             <p><b>Breed:</b> {dog?.breed}</p>
             {dog?.female === true && dog?.sterilized === false ? <p><b>Currently in heat?:</b> {dog?.heat === true ? 'Yes' : 'No'}</p> : null}
             <p><b>{dog?.female === true ? 'Sterilized: ' : 'Castrated: '}</b> {dog?.sterilized === true ? 'Yes' : 'No'}</p>
-            <p><b>Birth:</b> {dog?.birth}</p>
+            <p><b>Birth:</b> {dog?.birth?.split(' ').slice(1, 4).join(' ')}</p>
             {dog?.death?.length ? <p><b>Death:</b> {dog?.death}</p> : null}
             <p><b>Microchipped:</b> {dog?.microchipped === true ? 'Yes' : 'No'}</p>
             {dog?.microchipped === true ? <p><b>Chipnumber: </b>{dog?.chipnumber}</p> : null}
@@ -214,11 +214,10 @@ const DogPage = () => {
             <p>{dog?.info}</p>
             <br />
             <p className="family-tree-title"><b>Instant Family Tree</b></p>
-            <p><b>Parents and litter:</b></p>
+            <p><b>Parents of {dog?.name}'s {dog?.litter ? <Link to={`/litters/${dog?.litter}`}>litter</Link> : 'litter'}:</b></p>
             {parentsContent}
             <br />
-            <p><b>{dog?.name} and it's siblings:</b></p>
-            <p><b>{dog?.name}</b></p>
+            <p><b>Siblings:</b></p>
             {siblingsContent}
             <br />
             <p><b>{dog?.name}'s litters and each litter's puppies</b></p>

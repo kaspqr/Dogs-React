@@ -149,7 +149,8 @@ button {
 .edit-advertisement-delete-button,
 .edit-profile-delete-button,
 .edit-dog-delete-button,
-.checkbox-to-the-right {
+.checkbox-to-the-right,
+.send-message-button {
   margin-left: 10px;
 }
 
@@ -168,4 +169,14 @@ thead {
 
 .family-tree-title {
   font-size: 18px;
+}
+
+.conversation-page-message-input-div {
+  position: absolute;
+  bottom: 20px;
+}
+
+.conversation-page-messages-div {
+  overflow-y: auto;
+  height: calc(100vh - 200px);
 }

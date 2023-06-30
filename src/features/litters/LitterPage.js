@@ -157,7 +157,7 @@ const LitterPage = () => {
                     <tr>
                         <th>Name</th>
                         <th>Gender</th>
-                        <th>Administrated By</th>
+                        <th>Administered By</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -265,7 +265,7 @@ const LitterPage = () => {
                     ? <><Link to={`/dogs/${father?.id}`}>{father?.name}</Link>, {father?.breed}</>
                     : 'Not added'}
             </p>
-            <p><b>Born:</b> {litter?.born}</p>
+            <p><b>Born:</b> {litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
             <p><b>Number of puppies: </b>{litter?.children}</p>
             <br />
             {fatherContent}

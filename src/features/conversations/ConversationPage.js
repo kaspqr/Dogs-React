@@ -4,7 +4,7 @@ import { useGetMessagesQuery, useAddNewMessageMutation } from "../messages/messa
 import Message from "../messages/Message"
 import { useParams } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const ConversationPage = () => {
 
@@ -21,7 +21,8 @@ const ConversationPage = () => {
         messageError
     }] = useAddNewMessageMutation()
 
-    async function handleSendMessage() {
+    async function handleSendMessage(e) {
+        e.preventDefault()
         if (newMessage?.length) {
             await addNewMessage({ sender: userId, conversation: conversationid, text: newMessage })
             setNewMessage('')
@@ -56,6 +57,13 @@ const ConversationPage = () => {
         pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
+    })
+
+    const conversationDivRef = useRef(null);
+
+    useEffect(() => {
+        // Scroll the conversation div to the bottom after component renders
+        conversationDivRef.current.scrollTop = conversationDivRef.current.scrollHeight;
     })
 
     useEffect(() => {
@@ -97,25 +105,25 @@ const ConversationPage = () => {
       
         messageContent = (
             <>
-                {tableContent}
-                <label htmlFor="new-message"><b>New Message:</b></label>
-                <br />
-                <textarea 
-                    value={newMessage} 
-                    onChange={(e) => setNewMessage(e.target.value)} 
-                    name="new-message" 
-                    id="new-message" 
-                    cols="30" 
-                    rows="10"
-
-                />
-                <br />
-                <button
-                    onClick={() => handleSendMessage()}
-                    disabled={!newMessage?.length}
-                >
-                    Send Message
-                </button>
+                <div ref={conversationDivRef} className="conversation-page-messages-div">{tableContent}</div>
+                <div className="conversation-page-message-input-div">
+                    <form onSubmit={(e) => handleSendMessage(e)}>
+                        <label htmlFor="new-message"><b>New Message:</b></label>
+                        <br />
+                        <input 
+                            value={newMessage} 
+                            onChange={(e) => setNewMessage(e.target.value)} 
+                            name="new-message" 
+                            id="new-message" 
+                        />
+                        <button
+                            className="send-message-button"
+                            disabled={!newMessage?.length}
+                        >
+                            Send Message
+                        </button>
+                    </form>
+                </div>
             </>
         )
     }
@@ -132,7 +140,7 @@ const ConversationPage = () => {
         <>
             {sender.id === userId ? <p className="conversation-page-username-title">{receiver.username}</p> : <p className="conversation-page-username-title">{sender.username}</p>}
             <br />
-            {messageContent}
+            {isSuccess && messageContent}
         </>
     )
 }
