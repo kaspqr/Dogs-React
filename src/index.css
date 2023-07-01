@@ -124,7 +124,6 @@ input {
 .user-page-username,
 .user-page-edit-button,
 .advertisement-title-p, 
-.dog-page-name, 
 .advertisement-edit-page-buttons-div, 
 .advertisement-post-page-buttons-div,
 .edit-profile-buttons-div,
@@ -179,4 +178,23 @@ thead {
 .conversation-page-messages-div {
   overflow-y: auto;
   height: calc(100vh - 200px);
+}
+
+.instagram-icon {
+  fill: rgb(223, 119, 203);
+}
+
+.facebook-icon {
+  fill: rgb(32, 88, 255);
+}
+
+.youtube-icon {
+  fill: rgb(255, 0, 0);
+}
+
+.instagram-icon,
+.facebook-icon,
+.youtube-icon,
+.tiktok-icon {
+  margin-right: 5px;
 }

@@ -49,6 +49,11 @@ const EditDogForm = ({ dog }) => {
 
     const [location, setLocation] = useState(dog?.location?.length ? dog.location : '')
 
+    const [instagram, setInstagram] = useState(dog?.instagram?.length ? dog.instagram : '')
+    const [facebook, setFacebook] = useState(dog?.facebook?.length ? dog.facebook : '')
+    const [youtube, setYoutube] = useState(dog?.youtube?.length ? dog.youtube : '')
+    const [tiktok, setTiktok] = useState(dog?.tiktok?.length ? dog.tiktok : '')
+
     useEffect(() => {
         setValidName(NAME_REGEX.test(name))
     }, [name])
@@ -66,11 +71,14 @@ const EditDogForm = ({ dog }) => {
 
     const handleNameChanged = e => setName(e.target.value)
     const handleLocationChanged = e => setLocation(e.target.value)
-    const handleOwnerChanged = e => setOwner(e.target.value)
     const handleBirthChanged = e => setBirth(e.target.value)
     const handleDeathChanged = e => setDeath(e.target.value)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
     const handleInfoChanged = e => setInfo(e.target.value)
+    const handleInstagramChanged = e => setInstagram(e.target.value)
+    const handleFacebookChanged = e => setFacebook(e.target.value)
+    const handleYoutubeChanged = e => setYoutube(e.target.value)
+    const handleTiktokChanged = e => setTiktok(e.target.value)
 
     const handleHeatChanged = () => setHeat(prev => !prev)
     const handleSterilizedChanged = () => setSterilized(prev => !prev)
@@ -78,7 +86,7 @@ const EditDogForm = ({ dog }) => {
     const handlePassportChanged = () => setPassport(prev => !prev)
 
     const handleSaveDogClicked = async () => {
-        await updateDog({ id: dog.id, name, location, owner, birth, death, sterilized, passport, microchipped, chipnumber, info, heat })
+        await updateDog({ id: dog.id, name, location, owner, birth, death, sterilized, passport, microchipped, chipnumber, info, heat, instagram, facebook, youtube, tiktok })
     }
 
     const handleDeleteDogClicked = async () => {
@@ -234,6 +242,62 @@ const EditDogForm = ({ dog }) => {
                     name="chipnumber"
                     value={chipnumber}
                     onChange={handleChipnumberChanged}
+                />
+                <br />
+                <br />
+                
+                <label htmlFor="instagram">
+                    <b>Instagram Username:</b>
+                </label>
+                <br />
+                <input 
+                    type="text"
+                    id="instagram"
+                    name="instagram"
+                    value={instagram}
+                    onChange={handleInstagramChanged}
+                />
+                <br />
+                <br />
+                
+                <label htmlFor="facebook">
+                    <b>Facebook Username:</b>
+                </label>
+                <br />
+                <input 
+                    type="text"
+                    id="facebook"
+                    name="facebook"
+                    value={facebook}
+                    onChange={handleFacebookChanged}
+                />
+                <br />
+                <br />
+                
+                <label htmlFor="youtube">
+                    <b>YouTube Username:</b>
+                </label>
+                <br />
+                <input 
+                    type="text"
+                    id="youtube"
+                    name="youtube"
+                    value={youtube}
+                    onChange={handleYoutubeChanged}
+                />
+                <br />
+                <br />
+                
+                <label htmlFor="tiktok">
+                    <b>TikTok Username:</b>
+                </label>
+                <br />
+                <input 
+                    type="text"
+                    id="tiktok"
+                    name="tiktok"
+                    value={tiktok}
+                    onChange={handleTiktokChanged}
                 />
                 <br />
                 <br />
