@@ -187,6 +187,7 @@ const LitterPage = () => {
         content = (
             <>
                 <button
+                    className="black-button"
                     onClick={() => handleDeleteLitter()}
                 >
                     Delete
@@ -225,6 +226,7 @@ const LitterPage = () => {
                 <br />
                 <br />
                 <button
+                    className="black-button"
                     style={fatherButtonStyle}
                     disabled={!canSaveFather}
                     onClick={() => addFatherToLitter()}
@@ -245,6 +247,7 @@ const LitterPage = () => {
             <br />
             <br />
             <button
+                className="black-button"
                 disabled={selectedDog?.length ? false : true}
                 onClick={() => addToLitter()}
             >

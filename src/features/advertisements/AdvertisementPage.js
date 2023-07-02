@@ -27,7 +27,7 @@ const AdvertisementPage = () => {
 
     return (
         <>
-            {userId === advertisement?.poster ? <Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement.id}`}><button>Edit</button></Link> : null}
+            {userId === advertisement?.poster ? <Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement.id}`}><button className="black-button">Edit</button></Link> : null}
             <p className="advertisement-title-p">
                 <span className="advertisement-page-title">{advertisement?.title}</span>
                 <span className="nav-right"><b>Posted by <Link to={`/users/${user.id}`}>{user.username}</Link></b></span>

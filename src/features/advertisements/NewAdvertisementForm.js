@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAddNewAdvertisementMutation } from "./advertisementsApiSlice"
 import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
 import useAuth from "../../hooks/useAuth"
 
 const NewAdvertisementForm = () => {
@@ -10,10 +8,10 @@ const NewAdvertisementForm = () => {
     const { userId } = useAuth()
 
     const [addNewAdvertisement, {
-        isAdvertisementLoading,
-        isAdvertisementSuccess,
-        isAdvertisementError,
-        advertisementError
+        isLoading: isAdvertisementLoading,
+        isSuccess: isAdvertisementSuccess,
+        isError: isAdvertisementError,
+        error: advertisementError
     }] = useAddNewAdvertisementMutation()
 
 
@@ -33,6 +31,7 @@ const NewAdvertisementForm = () => {
             setType('')
             setPrice('')
             setInfo('')
+            navigate('/')
         }
     }, [isAdvertisementSuccess, navigate])
 
@@ -55,14 +54,6 @@ const NewAdvertisementForm = () => {
             <form onSubmit={handleSaveAdvertisementClicked}>
                 <div>
                     <p className="advertisement-post-page-title">Post Advertisement</p>
-                    <div className="advertisement-post-page-buttons-div">
-                        <button
-                            title="Post"
-                            disabled={!canSave}
-                        >
-                            Post
-                        </button>
-                    </div>
                 </div>
                 
                 <label htmlFor="title">
@@ -123,6 +114,18 @@ const NewAdvertisementForm = () => {
                     value={info}
                     onChange={(e) => setInfo(e.target.value)}
                 />
+                <br />
+                <br />
+
+                <div className="advertisement-post-page-buttons-div">
+                    <button
+                        className="black-button"
+                        title="Post"
+                        disabled={!canSave}
+                    >
+                        Post
+                    </button>
+                </div>
             </form>
         </>
     )

@@ -102,6 +102,7 @@ const EditUserForm = ({ user }) => {
                     <p className="edit-profile-page-title">Edit Profile</p>
                     <div className="edit-profile-buttons-div">
                         <button
+                            className="black-button"
                             title="Save"
                             onClick={handleSaveUserClicked}
                         >
@@ -110,7 +111,7 @@ const EditUserForm = ({ user }) => {
                         <button
                             title="Delete"
                             onClick={handleDeleteUserClicked}
-                            className="edit-profile-delete-button"
+                            className="edit-profile-delete-button black-button"
                         >
                             Delete
                         </button>

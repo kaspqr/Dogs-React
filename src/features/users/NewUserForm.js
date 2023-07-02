@@ -104,6 +104,7 @@ const NewUserForm = () => {
                     <p className="register-page-title">Register New Account</p>
                     <div className="register-page-button-div">
                         <button
+                            className="black-button"
                             title="Save"
                             disabled={!canSave}
                         >

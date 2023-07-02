@@ -119,6 +119,7 @@ const NewLitterForm = () => {
                     <br />
                     <div>
                         <button
+                            className="black-button"
                             style={saveColor}
                             title="Save"
                             disabled={!canSave}

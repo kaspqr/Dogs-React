@@ -96,7 +96,7 @@ const UserPage = () => {
         <>
             {userId === id 
                 ? <button
-                    className="user-page-edit-button"
+                    className="user-page-edit-button black-button"
                     onClick={handleEdit}
                 >
                     Edit Profile

@@ -3,9 +3,10 @@ import { useAddNewDogMutation } from "./dogsApiSlice"
 import { useNavigate } from "react-router-dom"
 import { Breeds } from "../../config/breeds"
 import useAuth from "../../hooks/useAuth"
+import Calendar from "react-calendar"
+import 'react-calendar/dist/Calendar.css'
 
 const NAME_REGEX = /^[A-z]{2,20}$/
-const INFO_REGEX = /^[A-z0-9,.!?]{3,200}$/
 
 const NewDogForm = () => {
 
@@ -46,7 +47,6 @@ const NewDogForm = () => {
     const [passport, setPassport] = useState(false)
 
     const [info, setInfo] = useState('')
-    const [validInfo, setValidInfo] = useState(false)
 
     const [location, setLocation] = useState('')
 
@@ -60,10 +60,6 @@ const NewDogForm = () => {
     useEffect(() => {
         setValidName(NAME_REGEX.test(name))
     }, [name])
-
-    useEffect(() => {
-        setValidInfo(INFO_REGEX.test(info))
-    }, [info])
 
     useEffect(() => {
         if (isSuccess) {
@@ -86,25 +82,29 @@ const NewDogForm = () => {
 
 
     const handleNameChanged = e => setName(e.target.value)
-    const handleOwnerChanged = e => setOwner(e.target.value)
     const handleBreedChanged = e => setBreed(e.target.value)
     const handleSterilizedChanged = e => setSterilized(e.target.value)
     const handlePassportChanged = e => setPassport(e.target.value)
     const handleMicrochippedChanged = e => setMicrochipped(e.target.value)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
     const handleLocationChanged = e => setLocation(e.target.value)
+    const handleBirthChanged = date => setBirth(date)
+    const handleDeathChanged = date => setDeath(date)
     const handleHeatChanged = e => setHeat(e.target.value)
-    const handleBirthChanged = e => setBirth(e.target.value)
-    const handleDeathChanged = e => setDeath(e.target.value)
     const handleInfoChanged = e => setInfo(e.target.value)
     const handleFemaleChanged = e => setFemale(e.target.value === "female" ? true : false)
 
-    const canSave = typeof validName === 'boolean' && validName === true && !isLoading && breed.length
+    const canSave = typeof validName === 'boolean' && validName === true 
+        && !isLoading && breed.length && typeof birth === 'object' && birth !== '' 
+        && ((typeof death === 'object' && death.getTime() >= birth.getTime()) || death === '')
 
     const handleSaveDogClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
-            await addNewDog({ name, location, owner, breed, heat, sterilized, passport, microchipped, chipnumber, birth, death, info, female, "user": userId })
+            let finalBirth = birth !== '' ? new Date(birth.getTime()).toDateString() : ''
+            let finalDeath = death !== '' ? new Date(death.getTime()).toDateString() : ''
+            await addNewDog({ name, location, owner, breed, heat, sterilized, passport, 
+                microchipped, chipnumber, birth: finalBirth, death: finalDeath, info, female, "user": userId })
         }
     }
 
@@ -119,21 +119,11 @@ const NewDogForm = () => {
             <form onSubmit={handleSaveDogClicked}>
                 <div>
                     <p className="register-dog-title">Register Dog</p>
-                    <br />
-                    <div>
-                        <button
-                            style={saveColor}
-                            title="Save"
-                            disabled={!canSave}
-                        >
-                            Save
-                        </button>
-                    </div>
                 </div>
                 <br />
                 
                 <label htmlFor="dogname">
-                    <b>Dog's name: [2-20 letters]</b>
+                    <b>Dog's name*: [2-20 letters]</b>
                 </label>
                 <br />
                 <input 
@@ -147,22 +137,8 @@ const NewDogForm = () => {
                 <br />
                 <br />
 
-                <label htmlFor="owner">
-                    <b>Owner:</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="owner"
-                    name="owner"
-                    value={owner}
-                    onChange={handleOwnerChanged}
-                />
-                <br />
-                <br />
-
                 <label htmlFor="breed">
-                    <b>Breed:</b>
+                    <b>Breed*:</b>
                 </label>
                 <br />
                 <select 
@@ -179,7 +155,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="isFemale">
-                    <b>Gender:</b>
+                    <b>Gender*:</b>
                 </label>
                 <br />
                 <select 
@@ -276,30 +252,18 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="birth">
-                    <b>Birth:</b>
+                    <b>Date of Birth*:</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
-                    id="birth"
-                    name="birth"
-                    value={birth}
-                    onChange={handleBirthChanged}
-                />
+                <Calendar maxDate={death || new Date()} onChange={handleBirthChanged} value={birth} />
                 <br />
                 <br />
 
                 <label htmlFor="death">
-                    <b>Death:</b>
+                    <b>Date of Death, if not alive:</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
-                    id="death"
-                    name="death"
-                    value={death}
-                    onChange={handleDeathChanged}
-                />
+                <Calendar minDate={birth || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
                 <br />
                 <br />
 
@@ -307,13 +271,28 @@ const NewDogForm = () => {
                     <b>Info:</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
+                <textarea 
+                    cols="30"
+                    rows="10"
+                    maxLength="255"
                     id="info"
                     name="info"
                     value={info}
                     onChange={handleInfoChanged}
                 />
+                <br />
+                <br />
+
+                <div>
+                    <button
+                        className="black-button"
+                        style={saveColor}
+                        title="Save"
+                        disabled={!canSave}
+                    >
+                        Save
+                    </button>
+                </div>
             </form>
         </>
     )

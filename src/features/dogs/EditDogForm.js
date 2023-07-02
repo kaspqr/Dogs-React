@@ -2,10 +2,6 @@ import { useState, useEffect } from "react"
 import { useUpdateDogMutation, useDeleteDogMutation } from "./dogsApiSlice"
 import { useNavigate } from "react-router-dom"
 
-const NAME_REGEX = /^[A-z]{2,20}$/
-const INFO_REGEX = /^[A-z0-9,.!?]{3,200}$/
-
-
 const EditDogForm = ({ dog }) => {
 
     const [updateDog, {
@@ -25,16 +21,9 @@ const EditDogForm = ({ dog }) => {
     const navigate = useNavigate()
 
 
-    const [name, setName] = useState(dog?.name?.length ? dog.name : '')
-    const [validName, setValidName] = useState(false)
-
-    const [owner, setOwner] = useState(dog?.owner?.length ? dog.owner : '')
-
     const [heat, setHeat] = useState(typeof dog?.heat === 'boolean' ? dog.heat : false)
 
     const [sterilized, setSterilized] = useState(dog?.sterilized)
-
-    const [birth, setBirth] = useState(dog?.birth?.length ? dog.birth : '')
 
     const [death, setDeath] = useState(dog?.death?.length ? dog.death : '')
 
@@ -45,22 +34,13 @@ const EditDogForm = ({ dog }) => {
     const [passport, setPassport] = useState(typeof dog?.passport === 'boolean' ? dog.passport : false)
 
     const [info, setInfo] = useState(dog?.info?.length ? dog.info : '')
-    const [validInfo, setValidInfo] = useState(false)
 
     const [location, setLocation] = useState(dog?.location?.length ? dog.location : '')
 
-    const [instagram, setInstagram] = useState(dog?.instagram?.length ? dog.instagram : '')
-    const [facebook, setFacebook] = useState(dog?.facebook?.length ? dog.facebook : '')
-    const [youtube, setYoutube] = useState(dog?.youtube?.length ? dog.youtube : '')
-    const [tiktok, setTiktok] = useState(dog?.tiktok?.length ? dog.tiktok : '')
-
-    useEffect(() => {
-        setValidName(NAME_REGEX.test(name))
-    }, [name])
-
-    useEffect(() => {
-        setValidInfo(INFO_REGEX.test(info))
-    }, [info])
+    const [instagram, setInstagram] = useState(dog?.instagram?.length && dog?.instagram !== 'none ' ? dog.instagram : '')
+    const [facebook, setFacebook] = useState(dog?.facebook?.length && dog?.facebook !== 'none ' ? dog.facebook : '')
+    const [youtube, setYoutube] = useState(dog?.youtube?.length && dog?.youtube !== 'none ' ? dog.youtube : '')
+    const [tiktok, setTiktok] = useState(dog?.tiktok?.length && dog?.tiktok !== 'none ' ? dog.tiktok : '')
 
 
     useEffect(() => {
@@ -69,9 +49,7 @@ const EditDogForm = ({ dog }) => {
         }
     }, [isSuccess, isDelSuccess, navigate])
 
-    const handleNameChanged = e => setName(e.target.value)
     const handleLocationChanged = e => setLocation(e.target.value)
-    const handleBirthChanged = e => setBirth(e.target.value)
     const handleDeathChanged = e => setDeath(e.target.value)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
     const handleInfoChanged = e => setInfo(e.target.value)
@@ -86,14 +64,38 @@ const EditDogForm = ({ dog }) => {
     const handlePassportChanged = () => setPassport(prev => !prev)
 
     const handleSaveDogClicked = async () => {
-        await updateDog({ id: dog.id, name, location, owner, birth, death, sterilized, passport, microchipped, chipnumber, info, heat, instagram, facebook, youtube, tiktok })
+        let updatedInstagram = instagram
+        let updatedFacebook = facebook
+        let updatedYoutube = youtube
+        let updatedTiktok = tiktok
+
+        if (!instagram?.length) {
+            updatedInstagram = 'none '
+        }
+
+        if (!facebook?.length) {
+            updatedFacebook = 'none '
+        }
+
+        if (!youtube?.length) {
+            updatedYoutube = 'none '
+        }
+
+        if (!tiktok?.length) {
+            updatedTiktok = 'none '
+        }
+
+        await updateDog({ id: dog.id, 
+            location, death, sterilized, passport, microchipped, chipnumber, info, heat, 
+            instagram: updatedInstagram, facebook: updatedFacebook, 
+            youtube: updatedYoutube, tiktok: updatedTiktok })
     }
 
     const handleDeleteDogClicked = async () => {
         await deleteDog({ id: dog.id })
     }
 
-    let canSave = [validName].every(Boolean) && !isLoading
+    let canSave = !isLoading
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
@@ -105,37 +107,7 @@ const EditDogForm = ({ dog }) => {
             <form onSubmit={e => e.preventDefault()}>
                 <div>
                     <p className="edit-dog-page-title">Edit Dog</p>
-                    <br />
-                    <div>
-                        <button
-                            title="Save"
-                            onClick={handleSaveDogClicked}
-                            disabled={!canSave}
-                        >
-                            Save
-                        </button>
-                        <button
-                            className="edit-dog-delete-button"
-                            title="Delete"
-                            onClick={handleDeleteDogClicked}
-                        >
-                            Delete
-                        </button>
-                    </div>
                 </div>
-                <br />
-                <label htmlFor="name">
-                    <b>Name: [2-20 letters]</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="name"
-                    name="name"
-                    value={name}
-                    onChange={handleNameChanged}
-                />
-                <br />
                 <br />
 
                 <label htmlFor="location">
@@ -148,20 +120,6 @@ const EditDogForm = ({ dog }) => {
                     name="location"
                     value={location}
                     onChange={handleLocationChanged}
-                />
-                <br />
-                <br />
-
-                <label htmlFor="birth">
-                    <b>Date of Birth:</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="birth"
-                    name="birth"
-                    value={birth}
-                    onChange={handleBirthChanged}
                 />
                 <br />
                 <br />
@@ -184,6 +142,7 @@ const EditDogForm = ({ dog }) => {
                     <b>Passport:</b>
                 </label>
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox" 
                     id="passport"
                     name="passport"
@@ -197,6 +156,7 @@ const EditDogForm = ({ dog }) => {
                     <b>Heat:</b>
                 </label>
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox" 
                     id="heat"
                     name="heat"
@@ -210,6 +170,7 @@ const EditDogForm = ({ dog }) => {
                     <b>Sterilized:</b>
                 </label>
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox" 
                     id="sterilized"
                     name="sterilized"
@@ -223,6 +184,7 @@ const EditDogForm = ({ dog }) => {
                     <b>Microchipped:</b>
                 </label>
                 <input 
+                    className="checkbox-to-the-right"
                     type="checkbox" 
                     id="microchipped"
                     name="microchipped"
@@ -314,6 +276,26 @@ const EditDogForm = ({ dog }) => {
                     value={info}
                     onChange={handleInfoChanged}
                 />
+
+                <br />
+                <br />
+                <div>
+                    <button
+                        className="black-button"
+                        title="Save"
+                        onClick={handleSaveDogClicked}
+                        disabled={!canSave}
+                    >
+                        Save
+                    </button>
+                    <button
+                        className="edit-dog-delete-button black-button"
+                        title="Delete"
+                        onClick={handleDeleteDogClicked}
+                    >
+                        Delete
+                    </button>
+                </div>
             </form>
         </>
     )

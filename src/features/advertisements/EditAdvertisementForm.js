@@ -40,7 +40,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
-            navigate('/advertisements')
+            navigate('/')
         }
     }, [isSuccess, isDelSuccess, navigate])
 
@@ -64,23 +64,6 @@ const EditAdvertisementForm = ({ advertisement }) => {
             <form onSubmit={e => e.preventDefault()}>
                 <div>
                     <p className="advertisement-edit-page-title">Edit Advertisement</p>
-                    <div className="advertisement-edit-page-buttons-div">
-                        <button
-                            title="Save"
-                            className="edit-advertisement-save-button"
-                            onClick={handleSaveAdvertisementClicked}
-                            disabled={!canSave}
-                        >
-                            Save
-                        </button>
-                        <button
-                            title="Delete"
-                            className="edit-advertisement-delete-button"
-                            onClick={handleDeleteAdvertisementClicked}
-                        >
-                            Delete
-                        </button>
-                    </div>
                 </div>
                 <label htmlFor="name">
                     <b>Title:</b>
@@ -139,6 +122,25 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     value={info}
                     onChange={(e) => setInfo(e.target.value)}
                 />
+                <br />
+                <br />
+                <div className="advertisement-edit-page-buttons-div">
+                        <button
+                            title="Save"
+                            className="edit-advertisement-save-button black-button"
+                            onClick={handleSaveAdvertisementClicked}
+                            disabled={!canSave}
+                        >
+                            Save
+                        </button>
+                        <button
+                            title="Delete"
+                            className="edit-advertisement-delete-button black-button"
+                            onClick={handleDeleteAdvertisementClicked}
+                        >
+                            Delete
+                        </button>
+                    </div>
             </form>
         </>
     )

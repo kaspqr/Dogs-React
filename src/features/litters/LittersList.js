@@ -37,7 +37,7 @@ const LittersList = () => {
     content = (
       <>
         <div className="litters-page-add-title">
-          {userId?.length ? <Link to={'/litters/new'}><button>Add a New Litter</button></Link> : null}
+          {userId?.length ? <Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link> : null}
         </div>
         <table className="content-table">
           <thead>
