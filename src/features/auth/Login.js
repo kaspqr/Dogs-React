@@ -77,7 +77,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="username">
-            <b>Username:</b>
+            <b>Username</b>
           </label>
           <br />
           <input 
@@ -90,9 +90,10 @@ const Login = () => {
             required
           />
           <br />
+          <br />
 
           <label htmlFor="password">
-            <b>Password:</b>
+            <b>Password</b>
           </label>
           <br />
           <input 

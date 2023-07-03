@@ -102,19 +102,10 @@ const NewUserForm = () => {
             <form onSubmit={handleSaveUserClicked}>
                 <div>
                     <p className="register-page-title">Register New Account</p>
-                    <div className="register-page-button-div">
-                        <button
-                            className="black-button"
-                            title="Save"
-                            disabled={!canSave}
-                        >
-                            Register
-                        </button>
-                    </div>
                 </div>
                 
                 <label htmlFor="username">
-                    <b>Username: [6-20 letters]</b>
+                    <b>Username [6-20 letters]</b>
                 </label>
                 <br />
                 <input 
@@ -126,9 +117,10 @@ const NewUserForm = () => {
                     onChange={handleUsernameChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="password">
-                    <b>Password: [8-20 characters, including !@#%]</b>
+                    <b>Password [8-20 characters, including !@#%]</b>
                 </label>
                 <br />
                 <input 
@@ -139,9 +131,10 @@ const NewUserForm = () => {
                     onChange={handlePasswordChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="email">
-                    <b>Email:</b>
+                    <b>Email</b>
                 </label>
                 <br />
                 <input 
@@ -152,9 +145,10 @@ const NewUserForm = () => {
                     onChange={handleEmailChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="name">
-                    <b>Name:</b>
+                    <b>Name</b>
                 </label>
                 <br />
                 <input 
@@ -165,9 +159,10 @@ const NewUserForm = () => {
                     onChange={handleNameChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="location">
-                    <b>Location:</b>
+                    <b>Location</b>
                 </label>
                 <br />
                 <input 
@@ -177,6 +172,18 @@ const NewUserForm = () => {
                     value={location}
                     onChange={handleLocationChanged}
                 />
+                <br />
+                <br />
+
+                <div className="register-page-button-div">
+                    <button
+                        className="black-button"
+                        title="Save"
+                        disabled={!canSave}
+                    >
+                        Register
+                    </button>
+                </div>
             </form>
         </>
     )

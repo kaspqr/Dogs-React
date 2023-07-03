@@ -50,7 +50,6 @@ const ConversationsList = () => {
           <thead>
             <tr>
               <th>Username</th>
-              <th>User ID</th>
               <th>Open Convo</th>
             </tr>
           </thead>

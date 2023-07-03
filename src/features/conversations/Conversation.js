@@ -60,9 +60,8 @@ const Conversation = ({ conversationId }) => {
 
     return (
         <tr>
-            <td><Link to={`/users/${otherUser.id}`}>{otherUser.username}</Link></td>
-            <td>{otherUser.id}</td>
-            <td><Link to={`/conversations/${conversation.id}`}>Open</Link></td>
+            <td><Link className="orange-link" to={`/users/${otherUser.id}`}><b>{otherUser.username}</b></Link></td>
+            <td><Link className="orange-link" to={`/conversations/${conversation.id}`}><b>Open</b></Link></td>
         </tr>
     )
 }

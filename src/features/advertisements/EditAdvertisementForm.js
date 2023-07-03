@@ -31,6 +31,8 @@ const EditAdvertisementForm = ({ advertisement }) => {
     const [price, setPrice] = useState(advertisement?.price)
     const [validPrice, setValidPrice] = useState(PRICE_REGEX.test(price))
 
+    const [currency, setCurrency] = useState(advertisement?.currency)
+
     const [info, setInfo] = useState(advertisement?.info)
 
     useEffect(() => {
@@ -45,7 +47,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
     }, [isSuccess, isDelSuccess, navigate])
 
     const handleSaveAdvertisementClicked = async () => {
-        await updateAdvertisement({ id: advertisement.id, title, info, type, price })
+        await updateAdvertisement({ id: advertisement.id, title, info, type, price, currency })
     }
 
     const handleDeleteAdvertisementClicked = async () => {
@@ -110,6 +112,34 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                 />
+                <br />
+                <br />
+
+                <label htmlFor="currency">
+                    <b>Currency</b>
+                </label>
+                <br />
+                <select 
+                    id="currency"
+                    name="currency"
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                >
+                    <option value="$">USD $</option>
+                    <option value="€">EUR €</option>
+                    <option value="£">GBP £</option>
+                    <option value="zł">PLN zł</option>
+                    <option value="CAD">CAD</option>
+                    <option value="AUD">AUD</option>
+                    <option value="NZD">NZD</option>
+                    <option value="SEK">SEK</option>
+                    <option value="NOK">NOK</option>
+                    <option value="DKK">DKK</option>
+                    <option value="CHF">CHF</option>
+                    <option value="JPY">JPY</option>
+                    <option value="CNY">CNY</option>
+                    <option value="KRW">KRW</option>
+                </select>
                 <br />
                 <br />
 

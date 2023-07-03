@@ -59,11 +59,13 @@ const ConversationPage = () => {
         refetchOnMountOrArgChange: true
     })
 
-    const conversationDivRef = useRef(null);
+    const conversationDivRef = useRef(null)
 
     useEffect(() => {
         // Scroll the conversation div to the bottom after component renders
-        conversationDivRef.current.scrollTop = conversationDivRef.current.scrollHeight;
+        if (conversationDivRef.current) {
+            conversationDivRef.current.scrollTop = conversationDivRef.current.scrollHeight
+        }
     })
 
     useEffect(() => {
