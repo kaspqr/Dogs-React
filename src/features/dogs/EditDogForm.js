@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { useUpdateDogMutation, useDeleteDogMutation } from "./dogsApiSlice"
 import { useNavigate } from "react-router-dom"
+import Calendar from "react-calendar"
+import 'react-calendar/dist/Calendar.css'
 
 const EditDogForm = ({ dog }) => {
 
@@ -50,7 +52,7 @@ const EditDogForm = ({ dog }) => {
     }, [isSuccess, isDelSuccess, navigate])
 
     const handleLocationChanged = e => setLocation(e.target.value)
-    const handleDeathChanged = e => setDeath(e.target.value)
+    const handleDeathChanged = date => setDeath(date)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
     const handleInfoChanged = e => setInfo(e.target.value)
     const handleInstagramChanged = e => setInstagram(e.target.value)
@@ -128,13 +130,18 @@ const EditDogForm = ({ dog }) => {
                     <b>Date of Death:</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
-                    id="death"
-                    name="death"
-                    value={death}
-                    onChange={handleDeathChanged}
-                />
+                <br />
+                <button 
+                    className="black-button"
+                    style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+                    disabled={death === ''}
+                    onClick={() => setDeath('')}
+                >
+                    Clear date
+                </button>
+                <br />
+                <br />
+                <Calendar minDate={new Date(dog?.birth) || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
                 <br />
                 <br />
 

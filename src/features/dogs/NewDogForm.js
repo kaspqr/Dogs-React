@@ -6,7 +6,7 @@ import useAuth from "../../hooks/useAuth"
 import Calendar from "react-calendar"
 import 'react-calendar/dist/Calendar.css'
 
-const NAME_REGEX = /^[A-z]{2,20}$/
+const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
 
 const NewDogForm = () => {
 
@@ -110,7 +110,7 @@ const NewDogForm = () => {
 
     const errClass = isError ? "errmsg" : "offscreen"
 
-    const saveColor = !canSave ? {backgroundColor: "grey"} : null
+    const saveColor = !canSave ? {backgroundColor: "grey", cursor: "default"} : null
 
     const content = (
         <>
@@ -120,6 +120,8 @@ const NewDogForm = () => {
                 <div>
                     <p className="register-dog-title">Register Dog</p>
                 </div>
+                <br />
+                <p>Fields marked with <b>*</b> are required</p>
                 <br />
                 
                 <label htmlFor="dogname">
@@ -262,6 +264,17 @@ const NewDogForm = () => {
                 <label htmlFor="death">
                     <b>Date of Death, if not alive:</b>
                 </label>
+                <br />
+                <br />
+                <button 
+                    className="black-button"
+                    style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+                    disabled={death === ''}
+                    onClick={() => setDeath('')}
+                >
+                    Clear date
+                </button>
+                <br />
                 <br />
                 <Calendar minDate={birth || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
                 <br />
