@@ -3,6 +3,8 @@ import { useAddNewLitterMutation } from "./littersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import useAuth from "../../hooks/useAuth"
+import Calendar from "react-calendar"
+import 'react-calendar/dist/Calendar.css'
 
 const NewLitterForm = () => {
 
@@ -39,7 +41,7 @@ const NewLitterForm = () => {
         }
     }, [mother])
 
-    const handleBornChanged = e => setBorn(e.target.value)
+    const handleBornChanged = date => setBorn(date)
     const handleMotherChanged = e => setMother(e.target.value)
 
     const handleSaveLitterClicked = async (e) => {
@@ -48,7 +50,8 @@ const NewLitterForm = () => {
         console.log(mother)
         console.log(born)
         if (canSave) {
-            await addNewLitter({ mother, born })
+            let finalBorn = born !== '' ? new Date(born.getTime()).toDateString() : ''
+            await addNewLitter({ mother, born: finalBorn })
         }
 
         if (isLitterError) {
@@ -97,13 +100,13 @@ const NewLitterForm = () => {
                     key={dog}
                     value={dog.id}
                 >
-                    {dog.name} {dog.id}
+                    {dog.name}
                 </option>
             ))
         }
     }
 
-    const canSave = validMother && !isLoading
+    const canSave = validMother && born !== '' && !isLoading
 
     if (!dogs) return null
 
@@ -155,16 +158,10 @@ const NewLitterForm = () => {
                 <br />
 
                 <label htmlFor="born">
-                    <b>Born:</b>
+                    <b>Born</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
-                    id="born"
-                    name="born"
-                    value={born}
-                    onChange={handleBornChanged}
-                />
+                <Calendar maxDate={new Date()} onChange={handleBornChanged} value={born} />
 
                 
             </form>

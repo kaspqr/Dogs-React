@@ -30,11 +30,12 @@ const AdvertisementPage = () => {
             {userId === advertisement?.poster ? <Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement.id}`}><button className="black-button">Edit</button></Link> : null}
             <p className="advertisement-title-p">
                 <span className="advertisement-page-title">{advertisement?.title}</span>
-                <span className="nav-right"><b>Posted by <Link to={`/users/${user.id}`}>{user.username}</Link></b></span>
+                <span className="nav-right"><b>Posted by <Link className="orange-link" to={`/users/${user.id}`}>{user.username}</Link></b></span>
             </p>
-            <p><b>Type:</b> {advertisement?.type}</p>
-            {advertisement?.type !== "Found" && advertisement?.type !== "Lost" ? <p><b>Price:</b> {advertisement?.price}</p> : null}
-            <p><b>Info:</b></p>
+            <p><b>{advertisement?.type}</b></p>
+            {advertisement?.type !== "Found" ? <p><b>{advertisement?.price}</b></p> : null}
+            <br />
+            <p><b>Info</b></p>
             <p>{advertisement?.info}</p>
         </>
     )

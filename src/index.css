@@ -176,6 +176,10 @@ thead {
   font-size: 18px;
 }
 
+select {
+  padding: 5px;
+}
+
 .conversation-page-message-input-div {
   position: absolute;
   bottom: 20px;

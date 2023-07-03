@@ -66,7 +66,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     <p className="advertisement-edit-page-title">Edit Advertisement</p>
                 </div>
                 <label htmlFor="name">
-                    <b>Title:</b>
+                    <b>Title</b>
                 </label>
                 <br />
                 <input 
@@ -77,9 +77,10 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="type">
-                    <b>Type:</b>
+                    <b>Type</b>
                 </label>
                 <br />
                 <select 
@@ -96,9 +97,10 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     <option value="BreedingMale">Breeding, Require Male</option>
                 </select>
                 <br />
+                <br />
 
                 <label htmlFor="price">
-                    <b>Price:</b>
+                    <b>Price</b>
                 </label>
                 <br />
                 <input 
@@ -109,9 +111,10 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     onChange={(e) => setPrice(e.target.value)}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="info">
-                    <b>Info:</b>
+                    <b>Info</b>
                 </label>
                 <br />
                 <textarea 

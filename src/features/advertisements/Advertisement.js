@@ -23,10 +23,10 @@ const Advertisement = ({ advertisementId }) => {
 
     return (
         <tr>
-            <td><Link to={`/advertisements/${advertisementId}`}>{advertisement?.title}</Link></td>
-            <td><Link to={`/users/${user?.id}`}>{user?.username}</Link></td>
+            <td><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></td>
+            <td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
             <td>{advertisement?.type}</td>
-            <td>{advertisement?.price}</td>
+            <td>{advertisement?.type !== 'Found' ? advertisement?.price : null}</td>
         </tr>
     )
 }

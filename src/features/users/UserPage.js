@@ -39,11 +39,11 @@ const UserPage = () => {
     if (isError) {
         dogContent = <p className="errmsg">{error?.data?.message}</p>
     }
+
+    let filteredDogs
     
     if (isSuccess) {
         const { ids, entities } = dogs
-
-        let filteredDogs
 
         const filteredIds = ids.filter(dogId => entities[dogId].user === user.id)
 
@@ -56,11 +56,10 @@ const UserPage = () => {
         if (filteredDogs?.length) {
             tableContent = filteredDogs.map(dog => (
                 <tr key={dog.id}>
-                    <td><Link to={`/dogs/${dog.id}`}>{dog.name}</Link></td>
-                    <td>{dog.id}</td>
+                    <td><Link className="orange-link" to={`/dogs/${dog.id}`}><b>{dog.name}</b></Link></td>
                     <td>{dog.breed}</td>
                     <td>{dog.female === true ? 'Female' : 'Male'}</td>
-                    <td>{dog.birth}</td>
+                    <td>{dog.birth.split(' ').slice(1, 4).join(' ')}</td>
                 </tr>
             ))
         }
@@ -75,9 +74,8 @@ const UserPage = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>ID</th>
                         <th>Breed</th>
-                        <th>Gender</th>
+                        <th>Good</th>
                         <th>Born</th>
                     </tr>
                 </thead>
@@ -104,14 +102,11 @@ const UserPage = () => {
                 : null
             }
             <p className="user-page-username">{user.username}</p>
-            <p><b>Name:</b> {user.name}</p>
-            <p><b>Location:</b> {user.location}</p>
-            <p><b>Bio:</b></p>
-            <p>{user.bio}</p>
+            <p><b>{user.name}</b></p>
             <br />
-            <p><b>Dogs administrated:</b></p>
-            <br />
-            {dogContent}
+            <p><b>From </b>{user.location}</p>
+            {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p></> : null}
+            {filteredDogs?.length ? <><br /><p><b>Dogs administered</b></p><br />{dogContent}</> : null}
         </>
     )
 

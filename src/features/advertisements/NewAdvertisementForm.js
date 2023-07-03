@@ -68,6 +68,7 @@ const NewAdvertisementForm = () => {
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="type">
                     <b>Type:</b>
@@ -79,14 +80,15 @@ const NewAdvertisementForm = () => {
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                 >
-                    <option value="">Select Type</option>
-                    <option value="Sell">Sell</option>
-                    <option value="Buy">Buy</option>
-                    <option value="Found">Found</option>
-                    <option value="Lost">Lost</option>
-                    <option value="BreedingFemale">Breeding, Require Female</option>
-                    <option value="BreedingMale">Breeding, Require Male</option>
+                    <option value=""><span className="select-option-span">Select Type</span></option>
+                    <option value="Sell"><span className="select-option-span">Sell</span></option>
+                    <option value="Buy"><span className="select-option-span">Buy</span></option>
+                    <option value="Found"><span className="select-option-span">Found</span></option>
+                    <option value="Lost"><span className="select-option-span">Lost</span></option>
+                    <option value="BreedingFemale"><span className="select-option-span">Breeding, Require Female</span></option>
+                    <option value="BreedingMale"><span className="select-option-span">Breeding, Require Male</span></option>
                 </select>
+                <br />
                 <br />
                 
                 <label htmlFor="price">
@@ -101,6 +103,8 @@ const NewAdvertisementForm = () => {
                     onChange={(e) => setPrice(e.target.value)}
                 />
                 <br />
+                <br />
+
                 
                 <label htmlFor="info">
                     <b>Info:</b>
@@ -119,6 +123,7 @@ const NewAdvertisementForm = () => {
 
                 <div className="advertisement-post-page-buttons-div">
                     <button
+                        style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                         className="black-button"
                         title="Post"
                         disabled={!canSave}

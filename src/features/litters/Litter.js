@@ -29,13 +29,11 @@ const Litter = ({ litterId }) => {
     }
 
     if (litter && mother) {
-        const born = new Date(litter.born).toLocaleString('en-US', { day: 'numeric', month: 'long' })
-
         return (
             <tr>
                 <td><Link className="orange-link" to={`/litters/${litterId}`}><b>Go to litter</b></Link></td>
                 <td><Link className="orange-link" to={`/dogs/${mother?.id}`}><b>{mother?.name}</b></Link></td>
-                <td>{born}</td>
+                <td>{litter?.born?.split(' ').slice(1, 4).join(' ')}</td>
             </tr>
         )
     } else return null
