@@ -42,9 +42,8 @@ const LittersList = () => {
         <table className="content-table">
           <thead>
             <tr>
-              <th>Litter ID</th>
+              <th>Link</th>
               <th>Mother's Name</th>
-              <th>Mother ID</th>
               <th>Born</th>
             </tr>
           </thead>

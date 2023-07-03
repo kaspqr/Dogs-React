@@ -21,24 +21,13 @@ const Dog = ({ dogId }) => {
         return null
     }
 
-    let gender
-
-    if (typeof dog?.female === 'boolean') {
-        if (dog?.female === true) {
-            gender = 'Female' 
-        } else {
-            gender = 'Male'
-        }
-    }
-
     return (
         <tr>
-            <td><Link to={`/dogs/${dogId}`}>{dog.name}</Link></td>
-            <td>{dogId}</td>
-            <td><Link to={`/users/${user?.id}`}>{user?.username}</Link></td>
+            <td><Link className="orange-link" to={`/dogs/${dogId}`}><b>{dog.name}</b></Link></td>
             <td>{dog.breed}</td>
-            <td>{gender}</td>
-            <td>{dog.birth}</td>
+            <td>{dog.female === true ? 'Girl' : 'Boy'}</td>
+            <td>{dog.birth?.split(' ').slice(1, 4).join(' ')}</td>
+            <td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
         </tr>
     )
 }

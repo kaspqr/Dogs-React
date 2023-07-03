@@ -41,11 +41,10 @@ const DogsList = () => {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Dog ID</th>
-              <th>Administrative user</th>
               <th>Breed</th>
-              <th>Gender</th>
+              <th>Good</th>
               <th>Born</th>
+              <th>Administered by</th>
             </tr>
           </thead>
           <tbody>

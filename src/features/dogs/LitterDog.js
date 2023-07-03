@@ -23,9 +23,9 @@ const LitterDog = ({ dogId }) => {
 
     return (
         <tr>
-            <td><Link to={`/dogs/${dogId}`}>{dog.name}</Link></td>
-            <td>{dog.female === true ? 'Female' : 'Male'}</td>
-            <td><Link to={`/users/${user?.id}`}>{user?.username}</Link></td>
+            <td><Link className="orange-link" to={`/dogs/${dogId}`}><b>{dog.name}</b></Link></td>
+            <td>{dog.female === true ? 'Girl' : 'Boy'}</td>
+            <td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
         </tr>
     )
 }

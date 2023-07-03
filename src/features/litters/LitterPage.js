@@ -138,13 +138,13 @@ const LitterPage = () => {
 
         if (filteredUserDogs?.length) {
             optionsContent = filteredUserDogs.map(dog => (
-               <option value={dog.id} key={dog.id}>{dog.name}, {dog.id}</option>
+               <option value={dog.id} key={dog.id}>{dog.name}</option>
             ))
         }
 
         if (filteredFathers?.length) {
             fatherOptionsContent = filteredFathers.map(dog => (
-               <option value={dog.id} key={dog.id}>{dog.name}, {dog.id}</option>
+               <option value={dog.id} key={dog.id}>{dog.name}</option>
             ))
         }
 
@@ -156,8 +156,8 @@ const LitterPage = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Gender</th>
-                        <th>Administered By</th>
+                        <th>Good</th>
+                        <th>Administered by</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -218,7 +218,7 @@ const LitterPage = () => {
 
     const fatherContent = father?.id?.length 
         ? null
-        : <><p><b>Add father to litter:</b></p>
+        : <><p><b>Add father to litter</b></p>
                 <select value={selectedFather} onChange={(e) => setSelectedFather(e.target.value)}>
                     <option value="">Pick your dog</option>
                     {fatherOptionsContent}
@@ -239,7 +239,7 @@ const LitterPage = () => {
             </>
 
     const addPuppyContent = filteredUserDogs?.length && (litter?.children > filteredDogs?.length || !filteredDogs?.length)
-        ? <><p><b>Add dog to litter:</b></p>
+        ? <><p><b>Add dog to litter</b></p>
             <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
                 <option value="">Pick your dog</option>
                 {optionsContent}
@@ -261,19 +261,19 @@ const LitterPage = () => {
     return (
         <>
             {content}
-            <p><b>Mother:</b> <Link to={`/dogs/${mother.id}`}>{mother?.name}</Link>, {mother?.breed}</p>
+            <p><b>Mother </b><Link className="orange-link" to={`/dogs/${mother.id}`}><b>{mother?.name} </b></Link>({mother?.breed})</p>
             <p>
-                <b>Father: </b> 
+                <b>Father </b> 
                 {father?.id?.length 
-                    ? <><Link to={`/dogs/${father?.id}`}>{father?.name}</Link>, {father?.breed}</>
-                    : 'Not added'}
+                    ? <><Link className="orange-link" to={`/dogs/${father?.id}`}><b>{father?.name} </b></Link>({father?.breed})</>
+                    : 'Not Added'}
             </p>
-            <p><b>Born:</b> {litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
-            <p><b>Number of puppies: </b>{litter?.children}</p>
+            <p><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
+            <p><b>{litter?.children} Puppies</b></p>
             <br />
             {fatherContent}
             {addPuppyContent}
-            <p><b>Dogs:</b></p>
+            <p><b>Puppies</b></p>
             <br />
             {dogContent}
         </>

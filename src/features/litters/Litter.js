@@ -33,9 +33,8 @@ const Litter = ({ litterId }) => {
 
         return (
             <tr>
-                <td><Link to={`/litters/${litterId}`}>{litter?.id}</Link></td>
-                <td><Link to={`/dogs/${mother?.id}`}>{mother?.name}</Link></td>
-                <td>{mother?.id}</td>
+                <td><Link className="orange-link" to={`/litters/${litterId}`}><b>Go to litter</b></Link></td>
+                <td><Link className="orange-link" to={`/dogs/${mother?.id}`}><b>{mother?.name}</b></Link></td>
                 <td>{born}</td>
             </tr>
         )

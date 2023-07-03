@@ -127,12 +127,12 @@ const DogPage = () => {
         littersContent = filteredLitters?.map(litter => 
             <>
                 <p>
-                    <Link to={`/litters/${litter?.id}`}><b>Litter</b></Link>   
-                    {dog?.female === true ? <> with <Link to={`/dogs/${litter?.father}`}>{parentDogs?.find(parent => parent?.id === litter?.father)?.name}</Link></> : null}
-                    {dog?.female === false ? <> with <Link to={`/dogs/${litter?.mother}`}>{parentDogs?.find(parent => parent?.id === litter?.mother)?.name}</Link></> : null}
-                    {litter?.born?.length ? <>, time of birth: {litter?.born?.split(' ').slice(1, 4).join(' ')}</> : null}
+                    <Link className="orange-link" to={`/litters/${litter?.id}`}><b>Litter</b></Link>   
+                    {dog?.female === true ? <> with <Link className="orange-link" to={`/dogs/${litter?.father}`}><b>{parentDogs?.find(parent => parent?.id === litter?.father)?.name}</b></Link></> : null}
+                    {dog?.female === false ? <> with <Link className="orange-link" to={`/dogs/${litter?.mother}`}><b>{parentDogs?.find(parent => parent?.id === litter?.mother)?.name}</b></Link></> : null}
+                    {litter?.born?.length ? <><br /><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</> : null}
                     {allChildren?.map(child => child?.litter === litter?.id 
-                        ? <><br />{child?.female === true ? <b>Daughter: </b> : <b>Son: </b>}<Link to={`/dogs/${child?.id}`}>{child?.name}</Link></>
+                        ? <><br />{child?.female === true ? <b>Daughter </b> : <b>Son </b>}<Link className="orange-link" to={`/dogs/${child?.id}`}><b>{child?.name}</b></Link></>
                         : null
                     )}
                 </p>
@@ -175,12 +175,12 @@ const DogPage = () => {
     }
 
     const fatherContent = father
-        ? <p><b>Father: </b><Link to={`/dogs/${father?.id}`}>{father?.name}</Link></p>
+        ? <p><b>Father <Link className="orange-link" to={`/dogs/${father?.id}`}>{father?.name}</Link></b></p>
         : null
 
     const parentsContent = parentLitter 
         ? <>
-            <p><b>Mother: </b><Link to={`/dogs/${mother?.id}`}>{mother?.name}</Link></p>
+            <p><b>Mother <Link className="orange-link" to={`/dogs/${mother?.id}`}>{mother?.name}</Link></b></p>
             {fatherContent}
         </>
         : <p>{dog?.name} is not added to any litter and therefore has no parents in the database</p>
@@ -189,12 +189,10 @@ const DogPage = () => {
     let siblingsContent = null
 
     if (siblings?.length) {
-        siblingsContent = siblings.map(sibling => <p><b>{sibling?.female === true ? <>Sister: </> : <>Brother: </>}</b><Link to={`/dogs/${sibling?.id}`}>{sibling?.name}</Link></p>)
+        siblingsContent = <>{siblings.map(sibling => <p><b>{sibling?.female === true ? <>Sister </> : <>Brother </>}</b><Link className="orange-link" to={`/dogs/${sibling?.id}`}><b>{sibling?.name}</b></Link></p>)}<br /></>
     } else {
         if (parentLitter) {
-            siblingsContent = <p>{dog?.name} is not connected to any siblings through it's litter in the database</p>
-        } else {
-            siblingsContent = <p>{dog?.name} is not added to any litter and therefore has no siblings in the database</p>
+            siblingsContent = <><p>{dog?.name} is not connected to any siblings through it's litter in the database</p><br /></>
         }
     }
 
@@ -206,7 +204,7 @@ const DogPage = () => {
     return (
         <>
             {content}
-            <p className="dog-page-name">{dog?.name}</p>
+            <p><span className="dog-page-name">{dog?.name}</span><span className="nav-right"><b>Administered by</b> <Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></span></p>
             <p>
                 {dog?.instagram?.length && dog?.instagram !== 'none ' ? <a href={instagramUrl} rel="noreferrer" target="_blank"><svg className="instagram-icon" xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></a> : null}
                 {dog?.facebook?.length && dog?.facebook !== 'none ' ? <a href={facebookUrl} rel="noreferrer" target="_blank"><svg className="facebook-icon" xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 448 512"><path d="M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48z"/></svg></a> : null}
@@ -214,28 +212,33 @@ const DogPage = () => {
                 {dog?.tiktok?.length && dog?.tiktok !== 'none ' ? <a href={tiktokUrl} rel="noreferrer" target="_blank"><svg className="tiktok-icon" xmlns="http://www.w3.org/2000/svg" height="1.2em" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/></svg></a> : null}
             </p>
             <br />
-            <p><b>Administered by:</b> <Link to={`/users/${user?.id}`}>{user?.username}</Link></p>
-            <p><b>Gender:</b> {dog?.female === true ? 'Female' : 'Male'}</p>
-            <p><b>Breed:</b> {dog?.breed}</p>
-            {dog?.female === true && dog?.sterilized === false ? <p><b>Currently in heat?:</b> {dog?.heat === true ? 'Yes' : 'No'}</p> : null}
-            <p><b>{dog?.female === true ? 'Sterilized: ' : 'Castrated: '}</b> {dog?.sterilized === true ? 'Yes' : 'No'}</p>
-            <p><b>Birth:</b> {dog?.birth?.split(' ').slice(1, 4).join(' ')}</p>
-            {dog?.death?.length ? <p><b>Death:</b> {dog?.death}</p> : null}
-            <p><b>Microchipped:</b> {dog?.microchipped === true ? 'Yes' : 'No'}</p>
-            {dog?.microchipped === true ? <p><b>Chipnumber: </b>{dog?.chipnumber}</p> : null}
-            <p><b>Passport:</b> {dog?.passport === true ? 'Yes' : 'No'}</p>
-            <p><b>Location:</b> {dog?.location}</p>
-            <p><b>Additional Info:</b></p>
+            <p className="main-dog-info-title"><b>Main Info</b></p>
+            <br />
+            <p><b>Good {dog?.female === true ? 'Girl' : 'Boy'}</b></p>
+            <p><b>{dog?.breed}</b></p>
+            <p><b>Born </b> {dog?.birth?.split(' ').slice(1, 4).join(' ')}</p>
+            {dog?.death?.length ? <p><b>Died on </b>{dog?.death?.split(' ').slice(1, 4).join(' ')}</p> : null}
+            {dog?.location?.length ? <p><b>From </b>{dog?.location}</p> : null}
+            <br />
+            {dog?.female === true && dog?.sterilized === false ? <p><b>{dog?.heat === true ? 'Currently in Heat' : 'Currently not in heat'}</b></p> : null}
+            <p><b>{dog?.sterilized === true ? null : 'Not '}{dog?.female === true ? 'Sterilized' : 'Castrated'}</b></p>
+            <p><b>{dog?.microchipped === true ? 'Microchipped' : 'Not Microchipped'}</b></p>
+            {dog?.microchipped === true && dog?.chipnumber?.length ? <p><b>Chipnumber </b>{dog?.chipnumber}</p> : null}
+            <p><b>{dog?.passport === true ? 'Has a Passport' : 'Does Not Have a Passport'}</b></p>
+            <br />
+            <p><b>Additional Info</b></p>
             <p>{dog?.info}</p>
             <br />
             <p className="family-tree-title"><b>Instant Family Tree</b></p>
-            <p><b>Parents of {dog?.name}'s {dog?.litter ? <Link to={`/litters/${dog?.litter}`}>litter</Link> : 'litter'}:</b></p>
-            {parentsContent}
             <br />
-            <p><b>Siblings:</b></p>
+            {parentLitter 
+                ? <><p><b>Parents of {dog?.name}'s {dog?.litter ? <Link className="orange-link" to={`/litters/${dog?.litter}`}><b>litter</b></Link> : 'litter'}</b></p>
+                    {parentsContent}</> 
+                : <p>{dog?.name} is not added to any litter and therefore has no parents or siblings in the database</p>
+            }
+            <br />
             {siblingsContent}
-            <br />
-            <p><b>{dog?.name}'s litters and each litter's puppies</b></p>
+            {filteredLitters?.length ? <><p><b>{dog?.name}'s litters and each litter's puppies</b></p><br /></> : null}
             {filteredLitters?.length ? littersContent : <>{dog?.name} has no litters and therefore has no children in the database</>}
         </>
     )

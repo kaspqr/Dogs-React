@@ -14,7 +14,7 @@ const User = ({ userId }) => {
 
         return (
             <tr>
-                <td><Link to={`/users/${userId}`}>{user.username}</Link></td>
+                <td><Link className="orange-link" to={`/users/${userId}`}><b>{user.username}</b></Link></td>
             </tr>
         )
     } else return null

@@ -98,6 +98,11 @@ a {
   color: black;
 }
 
+.orange-link {
+  text-decoration: none;
+  color: rgb(235, 155, 52);
+}
+
 textarea, 
 input {
   padding: 5px;
@@ -166,7 +171,8 @@ thead {
   border-radius: 5px;
 }
 
-.family-tree-title {
+.family-tree-title,
+.main-dog-info-title {
   font-size: 18px;
 }
 
