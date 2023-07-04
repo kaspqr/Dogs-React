@@ -113,7 +113,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="location">
-                    <b>Location:</b>
+                    <b>Location</b>
                 </label>
                 <br />
                 <input 
@@ -127,7 +127,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="death">
-                    <b>Date of Death:</b>
+                    <b>Date of Death</b>
                 </label>
                 <br />
                 <br />
@@ -145,8 +145,8 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 <br />
 
-                <label htmlFor="passport">
-                    <b>Passport:</b>
+                <label htmlFor="passport" className="switch">
+                    <b>Passport</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -160,7 +160,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="heat">
-                    <b>Heat:</b>
+                    <b>Heat</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -174,7 +174,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="sterilized">
-                    <b>Sterilized:</b>
+                    <b>Sterilized</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -188,7 +188,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="microchipped">
-                    <b>Microchipped:</b>
+                    <b>Microchipped</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -202,7 +202,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="chipnumber">
-                    <b>Chipnumber:</b>
+                    <b>Chipnumber</b>
                 </label>
                 <br />
                 <input 
@@ -216,7 +216,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 
                 <label htmlFor="instagram">
-                    <b>Instagram Username:</b>
+                    <b>Instagram Username</b>
                 </label>
                 <br />
                 <input 
@@ -230,7 +230,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 
                 <label htmlFor="facebook">
-                    <b>Facebook Username:</b>
+                    <b>Facebook Username</b>
                 </label>
                 <br />
                 <input 
@@ -244,7 +244,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 
                 <label htmlFor="youtube">
-                    <b>YouTube Username:</b>
+                    <b>YouTube Username</b>
                 </label>
                 <br />
                 <input 
@@ -258,7 +258,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 
                 <label htmlFor="tiktok">
-                    <b>TikTok Username:</b>
+                    <b>TikTok Username</b>
                 </label>
                 <br />
                 <input 
@@ -272,7 +272,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="info">
-                    <b>Info:</b>
+                    <b>Info</b>
                 </label>
                 <br />
                 <textarea 

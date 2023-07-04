@@ -201,7 +201,7 @@ select {
 
 .conversation-page-messages-div {
   overflow-y: auto;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 210px);
 }
 
 .instagram-icon {

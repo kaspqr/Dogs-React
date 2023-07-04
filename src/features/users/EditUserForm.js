@@ -100,25 +100,9 @@ const EditUserForm = ({ user }) => {
             <form onSubmit={e => e.preventDefault()}>
                 <div>
                     <p className="edit-profile-page-title">Edit Profile</p>
-                    <div className="edit-profile-buttons-div">
-                        <button
-                            className="black-button"
-                            title="Save"
-                            onClick={handleSaveUserClicked}
-                        >
-                            Save
-                        </button>
-                        <button
-                            title="Delete"
-                            onClick={handleDeleteUserClicked}
-                            className="edit-profile-delete-button black-button"
-                        >
-                            Delete
-                        </button>
-                    </div>
                 </div>
                 <label htmlFor="password">
-                    <b>Password: [8-20 characters, including !@#%]</b>
+                    <b>Password [8-20 characters, including !@#%]</b>
                 </label>
                 <br />
                 <input 
@@ -129,9 +113,10 @@ const EditUserForm = ({ user }) => {
                     onChange={handlePasswordChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="email">
-                    <b>Email:</b>
+                    <b>Email</b>
                 </label>
                 <br />
                 <input 
@@ -142,9 +127,10 @@ const EditUserForm = ({ user }) => {
                     onChange={handleEmailChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="name">
-                    <b>Name:</b>
+                    <b>Name</b>
                 </label>
                 <br />
                 <input 
@@ -155,9 +141,10 @@ const EditUserForm = ({ user }) => {
                     onChange={handleNameChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="location">
-                    <b>Location:</b>
+                    <b>Location</b>
                 </label>
                 <br />
                 <input 
@@ -168,9 +155,10 @@ const EditUserForm = ({ user }) => {
                     onChange={handleLocationChanged}
                 />
                 <br />
+                <br />
 
                 <label htmlFor="user-active">
-                    <b>Active:</b>
+                    <b>Active</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -180,6 +168,25 @@ const EditUserForm = ({ user }) => {
                     name="user-active"
                     onChange={handleActiveChanged}
                 />
+                <br />
+                <br />
+                
+                <div className="edit-profile-buttons-div">
+                    <button
+                        className="black-button"
+                        title="Save"
+                        onClick={handleSaveUserClicked}
+                    >
+                        Save
+                    </button>
+                    <button
+                        title="Delete"
+                        onClick={handleDeleteUserClicked}
+                        className="edit-profile-delete-button black-button"
+                    >
+                        Delete
+                    </button>
+                </div>
             </form>
         </>
     )

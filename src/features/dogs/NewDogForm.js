@@ -125,7 +125,7 @@ const NewDogForm = () => {
                 <br />
                 
                 <label htmlFor="dogname">
-                    <b>Dog's name*: [2-20 letters]</b>
+                    <b>Dog's name (2-20 letters)*</b>
                 </label>
                 <br />
                 <input 
@@ -140,7 +140,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="breed">
-                    <b>Breed*:</b>
+                    <b>Breed*</b>
                 </label>
                 <br />
                 <select 
@@ -157,7 +157,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="isFemale">
-                    <b>Gender*:</b>
+                    <b>Gender*</b>
                 </label>
                 <br />
                 <select 
@@ -170,7 +170,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="location">
-                    <b>Location:</b>
+                    <b>Location</b>
                 </label>
                 <br />
                 <input 
@@ -184,7 +184,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="passport">
-                    <b>Passport:</b>
+                    <b>Passport</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -198,7 +198,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="heat">
-                    <b>Heat:</b>
+                    <b>Heat</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -212,7 +212,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="sterilized">
-                    <b>Sterilized:</b>
+                    <b>Sterilized</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -226,7 +226,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="microchipped">
-                    <b>Microchipped:</b>
+                    <b>Microchipped</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -240,7 +240,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="chipnumber">
-                    <b>Chipnumber:</b>
+                    <b>Chipnumber</b>
                 </label>
                 <br />
                 <input 
@@ -254,7 +254,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="birth">
-                    <b>Date of Birth*:</b>
+                    <b>Date of Birth*</b>
                 </label>
                 <br />
                 <Calendar maxDate={death || new Date()} onChange={handleBirthChanged} value={birth} />
@@ -262,7 +262,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="death">
-                    <b>Date of Death, if not alive:</b>
+                    <b>Date of Death (if not alive)</b>
                 </label>
                 <br />
                 <br />
@@ -281,7 +281,7 @@ const NewDogForm = () => {
                 <br />
 
                 <label htmlFor="info">
-                    <b>Info:</b>
+                    <b>Info</b>
                 </label>
                 <br />
                 <textarea 

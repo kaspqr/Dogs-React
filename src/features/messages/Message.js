@@ -38,7 +38,7 @@ const Message = ({ messageId }) => {
 
     return (
         <>
-            <p style={timeStyle} className="message-time">{message.time}</p>
+            <p style={timeStyle} className="message-time">{message.time.split('T').join(' ').split('Z').join(' ').split(':').slice(0, 2).join(':')}</p>
             <br />
             <p style={messageStyle} className="message-text">{message.text}</p>
             <br />
