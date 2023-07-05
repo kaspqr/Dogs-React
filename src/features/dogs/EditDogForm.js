@@ -3,6 +3,9 @@ import { useUpdateDogMutation, useDeleteDogMutation } from "./dogsApiSlice"
 import { useNavigate } from "react-router-dom"
 import Calendar from "react-calendar"
 import 'react-calendar/dist/Calendar.css'
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
 
 const EditDogForm = ({ dog }) => {
 
@@ -37,7 +40,9 @@ const EditDogForm = ({ dog }) => {
 
     const [info, setInfo] = useState(dog?.info?.length ? dog.info : '')
 
-    const [location, setLocation] = useState(dog?.location?.length ? dog.location : '')
+    const [country, setCountry] = useState(dog?.country?.length ? dog.country : 'Argentina')
+
+    const [region, setRegion] = useState(dog?.region?.length ? dog.region : 'none ')
 
     const [instagram, setInstagram] = useState(dog?.instagram?.length && dog?.instagram !== 'none ' ? dog.instagram : '')
     const [facebook, setFacebook] = useState(dog?.facebook?.length && dog?.facebook !== 'none ' ? dog.facebook : '')
@@ -47,11 +52,16 @@ const EditDogForm = ({ dog }) => {
 
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
-            navigate('/dogs')
+            navigate(`/dogs/${dog?.id}`)
         }
     }, [isSuccess, isDelSuccess, navigate])
 
-    const handleLocationChanged = e => setLocation(e.target.value)
+    const handleCountryChanged = (e) => {
+        setCountry(e.target.value)
+        setRegion('')
+    }
+    const handleRegionChanged = e => setRegion(e.target.value)
+
     const handleDeathChanged = date => setDeath(date)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
     const handleInfoChanged = e => setInfo(e.target.value)
@@ -70,6 +80,7 @@ const EditDogForm = ({ dog }) => {
         let updatedFacebook = facebook
         let updatedYoutube = youtube
         let updatedTiktok = tiktok
+        let updatedRegion = region
 
         if (!instagram?.length) {
             updatedInstagram = 'none '
@@ -87,8 +98,12 @@ const EditDogForm = ({ dog }) => {
             updatedTiktok = 'none '
         }
 
+        if (!region?.length) {
+            updatedRegion = 'none '
+        }
+
         await updateDog({ id: dog.id, 
-            location, death, sterilized, passport, microchipped, chipnumber, info, heat, 
+            country, region: updatedRegion, death, sterilized, passport, microchipped, chipnumber, info, heat, 
             instagram: updatedInstagram, facebook: updatedFacebook, 
             youtube: updatedYoutube, tiktok: updatedTiktok })
     }
@@ -112,19 +127,40 @@ const EditDogForm = ({ dog }) => {
                 </div>
                 <br />
 
-                <label htmlFor="location">
-                    <b>Location</b>
+                <label htmlFor="country">
+                    <b>Country*</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
-                    id="location"
-                    name="location"
-                    value={location}
-                    onChange={handleLocationChanged}
-                />
+                <select 
+                    name="country" 
+                    id="country"
+                    value={country}
+                    onChange={handleCountryChanged}
+                >
+                    {Countries}
+                </select>
                 <br />
                 <br />
+
+                {bigCountries?.includes(country) 
+                    ? <><label htmlFor="region">
+                                <b>Region</b>
+                            </label>
+                            <br />
+                            <select 
+                                name="region" 
+                                id="region"
+                                value={region}
+                                onChange={(e) => setRegion(e.target.value)}
+                            >
+                                <option value="NONE ">Region (optional)</option>
+                                {bigCountries?.includes(country) ? Regions[country] : null}
+                            </select>
+                            <br />
+                            <br />
+                        </>
+                    : null
+                }
 
                 <label htmlFor="death">
                     <b>Date of Death</b>
@@ -201,19 +237,22 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 <br />
 
-                <label htmlFor="chipnumber">
-                    <b>Chipnumber</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="chipnumber"
-                    name="chipnumber"
-                    value={chipnumber}
-                    onChange={handleChipnumberChanged}
-                />
-                <br />
-                <br />
+                {microchipped === true 
+                    ? <><label htmlFor="chipnumber">
+                            <b>Chipnumber</b>
+                        </label>
+                        <br />
+                        <input 
+                            type="text" 
+                            id="chipnumber"
+                            name="chipnumber"
+                            value={chipnumber}
+                            onChange={handleChipnumberChanged}
+                        />
+                        <br />
+                        <br /></> 
+                    : null
+                }
                 
                 <label htmlFor="instagram">
                     <b>Instagram Username</b>

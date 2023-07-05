@@ -5,6 +5,9 @@ import { Breeds } from "../../config/breeds"
 import useAuth from "../../hooks/useAuth"
 import Calendar from "react-calendar"
 import 'react-calendar/dist/Calendar.css'
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
 
 const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
 
@@ -48,7 +51,9 @@ const NewDogForm = () => {
 
     const [info, setInfo] = useState('')
 
-    const [location, setLocation] = useState('')
+    const [country, setCountry] = useState('Argentina')
+
+    const [region, setRegion] = useState('NONE ')
 
 
     const breeds = [ ...Object.values(Breeds) ]
@@ -74,7 +79,8 @@ const NewDogForm = () => {
             setDeath('')
             setBreed('')
             setInfo('')
-            setLocation('')
+            setCountry('')
+            setRegion('NONE ')
             setFemale(true)
             navigate('/dogs')
         }
@@ -83,16 +89,22 @@ const NewDogForm = () => {
 
     const handleNameChanged = e => setName(e.target.value)
     const handleBreedChanged = e => setBreed(e.target.value)
-    const handleSterilizedChanged = e => setSterilized(e.target.value)
-    const handlePassportChanged = e => setPassport(e.target.value)
-    const handleMicrochippedChanged = e => setMicrochipped(e.target.value)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
-    const handleLocationChanged = e => setLocation(e.target.value)
     const handleBirthChanged = date => setBirth(date)
     const handleDeathChanged = date => setDeath(date)
-    const handleHeatChanged = e => setHeat(e.target.value)
+
+    const handleHeatChanged = () => setHeat(prev => !prev)
+    const handleSterilizedChanged = () => setSterilized(prev => !prev)
+    const handlePassportChanged = () => setPassport(prev => !prev)
+    const handleMicrochippedChanged = () => setMicrochipped(prev => !prev)
+
     const handleInfoChanged = e => setInfo(e.target.value)
     const handleFemaleChanged = e => setFemale(e.target.value === "female" ? true : false)
+
+    const handleCountryChanged = (e) => {
+        setRegion('')
+        setCountry(e.target.value)
+    }
 
     const canSave = typeof validName === 'boolean' && validName === true 
         && !isLoading && breed.length && typeof birth === 'object' && birth !== '' 
@@ -103,7 +115,7 @@ const NewDogForm = () => {
         if (canSave) {
             let finalBirth = birth !== '' ? new Date(birth.getTime()).toDateString() : ''
             let finalDeath = death !== '' ? new Date(death.getTime()).toDateString() : ''
-            await addNewDog({ name, location, owner, breed, heat, sterilized, passport, 
+            await addNewDog({ name, country, region, owner, breed, heat, sterilized, passport, 
                 microchipped, chipnumber, birth: finalBirth, death: finalDeath, info, female, "user": userId })
         }
     }
@@ -169,19 +181,40 @@ const NewDogForm = () => {
                 <br />
                 <br />
 
-                <label htmlFor="location">
-                    <b>Location</b>
+                <label htmlFor="country">
+                    <b>Country*</b>
                 </label>
                 <br />
-                <input 
-                    type="text" 
-                    id="location"
-                    name="location"
-                    value={location}
-                    onChange={handleLocationChanged}
-                />
+                <select 
+                    name="country" 
+                    id="country"
+                    value={country}
+                    onChange={handleCountryChanged}
+                >
+                    {Countries}
+                </select>
                 <br />
                 <br />
+
+                {bigCountries?.includes(country) 
+                    ? <><label htmlFor="region">
+                                <b>Region</b>
+                            </label>
+                            <br />
+                            <select 
+                                name="region" 
+                                id="region"
+                                value={region}
+                                onChange={(e) => setRegion(e.target.value)}
+                            >
+                                <option value="none ">Region (optional)</option>
+                                {bigCountries?.includes(country) ? Regions[country] : null}
+                            </select>
+                            <br />
+                            <br />
+                        </>
+                    : null
+                }
 
                 <label htmlFor="passport">
                     <b>Passport</b>
@@ -197,22 +230,25 @@ const NewDogForm = () => {
                 <br />
                 <br />
 
-                <label htmlFor="heat">
-                    <b>Heat</b>
-                </label>
-                <input 
-                    className="checkbox-to-the-right"
-                    type="checkbox" 
-                    id="heat"
-                    name="heat"
-                    checked={heat}
-                    onChange={handleHeatChanged}
-                />
-                <br />
-                <br />
+                {female === true 
+                    ? <><label htmlFor="heat">
+                        <b>Heat</b>
+                        </label>
+                        <input 
+                            className="checkbox-to-the-right"
+                            type="checkbox" 
+                            id="heat"
+                            name="heat"
+                            checked={heat}
+                            onChange={handleHeatChanged}
+                        />
+                        <br />
+                        <br /></> 
+                    : null
+                }
 
                 <label htmlFor="sterilized">
-                    <b>Sterilized</b>
+                    <b>Fixed</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -239,19 +275,22 @@ const NewDogForm = () => {
                 <br />
                 <br />
 
-                <label htmlFor="chipnumber">
-                    <b>Chipnumber</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="chipnumber"
-                    name="chipnumber"
-                    value={chipnumber}
-                    onChange={handleChipnumberChanged}
-                />
-                <br />
-                <br />
+                {microchipped === true 
+                    ? <><label htmlFor="chipnumber">
+                        <b>Chipnumber</b>
+                        </label>
+                        <br />
+                        <input 
+                            type="text" 
+                            id="chipnumber"
+                            name="chipnumber"
+                            value={chipnumber}
+                            onChange={handleChipnumberChanged}
+                        />
+                        <br />
+                        <br /></> 
+                    : null
+                }
 
                 <label htmlFor="birth">
                     <b>Date of Birth*</b>

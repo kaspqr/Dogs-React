@@ -57,9 +57,7 @@ const NewAdvertisementForm = () => {
     }
 
     const handleCountryChanged = (e) => {
-        if (!bigCountries.includes(e.target.value)) {
-            setRegion('')
-        }
+        setRegion('')
         setCountry(e.target.value)
     }
 
@@ -141,9 +139,6 @@ const NewAdvertisementForm = () => {
                     <option value="NOK">NOK</option>
                     <option value="DKK">DKK</option>
                     <option value="CHF">CHF</option>
-                    <option value="JPY">JPY</option>
-                    <option value="CNY">CNY</option>
-                    <option value="KRW">KRW</option>
                 </select>
                 <br />
                 <br />

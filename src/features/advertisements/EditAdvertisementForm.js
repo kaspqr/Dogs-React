@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react"
 import { useUpdateAdvertisementMutation, useDeleteAdvertisementMutation } from "./advertisementsApiSlice"
 import { useNavigate } from "react-router-dom"
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
 
 const PRICE_REGEX = /^[0-9]{1,10}$/
 
@@ -35,23 +38,34 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
     const [info, setInfo] = useState(advertisement?.info)
 
+    const [country, setCountry] = useState(advertisement?.country)
+
+    const [region, setRegion] = useState(advertisement?.region)
+
     useEffect(() => {
         setValidPrice(PRICE_REGEX.test(price))
     }, [price])
 
 
     useEffect(() => {
-        if (isSuccess || isDelSuccess) {
+        if (isDelSuccess) {
             navigate('/')
+        } else if (isSuccess) {
+            navigate(`/advertisements/${advertisement?.id}`)
         }
     }, [isSuccess, isDelSuccess, navigate])
 
     const handleSaveAdvertisementClicked = async () => {
-        await updateAdvertisement({ id: advertisement.id, title, info, type, price, currency })
+        await updateAdvertisement({ id: advertisement.id, title, info, type, price, currency, country, region })
     }
 
     const handleDeleteAdvertisementClicked = async () => {
         await deleteAdvertisement({ id: advertisement.id })
+    }
+
+    const handleCountryChanged = (e) => {
+        setRegion('')
+        setCountry(e.target.value)
     }
 
     let canSave = title?.length && type?.length && validPrice && !isLoading
@@ -136,12 +150,44 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     <option value="NOK">NOK</option>
                     <option value="DKK">DKK</option>
                     <option value="CHF">CHF</option>
-                    <option value="JPY">JPY</option>
-                    <option value="CNY">CNY</option>
-                    <option value="KRW">KRW</option>
                 </select>
                 <br />
                 <br />
+
+                <label htmlFor="country">
+                    <b>Country</b>
+                </label>
+                <br />
+                <select 
+                    name="country" 
+                    id="country"
+                    value={country}
+                    onChange={handleCountryChanged}
+                >
+                    {Countries}
+                </select>
+                <br />
+                <br />
+
+                {bigCountries?.includes(country) 
+                    ? <><label htmlFor="region">
+                                <b>Region</b>
+                            </label>
+                            <br />
+                            <select 
+                                name="region" 
+                                id="region"
+                                value={region}
+                                onChange={(e) => setRegion(e.target.value)}
+                            >
+                                <option value="">Region (optional)</option>
+                                {bigCountries?.includes(country) ? Regions[country] : null}
+                            </select>
+                            <br />
+                            <br />
+                        </>
+                    : null
+                }
 
                 <label htmlFor="info">
                     <b>Info</b>
