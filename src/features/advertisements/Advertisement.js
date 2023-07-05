@@ -26,7 +26,7 @@ const Advertisement = ({ advertisementId }) => {
             <td><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></td>
             <td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
             <td>{advertisement?.type}</td>
-            <td>{advertisement?.type !== 'Found' ? <>{advertisement?.price} {advertisement?.currency}</> : null}</td>
+            <td>{advertisement?.type !== 'Found' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</td>
         </tr>
     )
 }

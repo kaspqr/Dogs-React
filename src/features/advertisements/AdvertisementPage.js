@@ -33,8 +33,10 @@ const AdvertisementPage = () => {
                 <span className="nav-right"><b>Posted by <Link className="orange-link" to={`/users/${user.id}`}>{user.username}</Link></b></span>
             </p>
             <p><b>{advertisement?.type}</b></p>
-            {advertisement?.type !== "Found" ? <p><b>{advertisement?.price} {advertisement?.currency}</b></p> : null}
+            {advertisement?.type !== "Found" ? <p><b>{advertisement?.currency}{advertisement?.price}</b></p> : null}
             <br />
+            <p><b>Location</b></p>
+            <p>{advertisement?.region ? advertisement?.region + ', ' : null}{advertisement?.country}</p>
             <p><b>Info</b></p>
             <p>{advertisement?.info}</p>
         </>

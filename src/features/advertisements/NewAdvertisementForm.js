@@ -1,13 +1,10 @@
-import { cloneElement, useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useAddNewAdvertisementMutation } from "./advertisementsApiSlice"
 import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
-import { ArgentinaRegions, AustraliaRegions, BrazilRegions, CanadaRegions,
-    ChileRegions, FinlandRegions, FranceRegions, GermanyRegions, ItalyRegions, 
-    MexicoRegions, NorwayRegions, NZRegions, PolandRegions, PortugalRegions, 
-    RomaniaRegions, SARegions, SpainRegions, SwedenRegions, UKRegions, USARegions } from "../../config/regions"
+import { Regions } from "../../config/regions"
 
 const NewAdvertisementForm = () => {
 
@@ -55,39 +52,16 @@ const NewAdvertisementForm = () => {
     const handleSaveAdvertisementClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
-            await addNewAdvertisement({ poster: userId, title, price, type, info, currency })
+            await addNewAdvertisement({ poster: userId, title, price, type, info, currency, country, region })
         }
     }
 
-
-    let regions = null
-
     const handleCountryChanged = (e) => {
+        if (!bigCountries.includes(e.target.value)) {
+            setRegion('')
+        }
         setCountry(e.target.value)
-        if (e.target.value === 'Argentina') regions = ArgentinaRegions
-        else if (e.target.value === 'Australia') regions = AustraliaRegions
-        else if (e.target.value === 'Brazil') regions = BrazilRegions
-        else if (e.target.value === 'Canada') regions = CanadaRegions
-        else if (e.target.value === 'Chile') regions = ChileRegions
-        else if (e.target.value === 'Finland') regions = FinlandRegions
-        else if (e.target.value === 'France') regions = FranceRegions
-        else if (e.target.value === 'Germany') regions = GermanyRegions
-        else if (e.target.value === 'Italy') regions = ItalyRegions
-        else if (e.target.value === 'Mexico') regions = MexicoRegions
-        else if (e.target.value === 'Norway') regions = NorwayRegions
-        else if (e.target.value === 'New Zealand') regions = NZRegions
-        else if (e.target.value === 'Poland') regions = PolandRegions
-        else if (e.target.value === 'Portugal') regions = PortugalRegions
-        else if (e.target.value === 'Romania') regions = RomaniaRegions
-        else if (e.target.value === 'South Africa') regions = SARegions
-        else if (e.target.value === 'Spain') regions = SpainRegions
-        else if (e.target.value === 'Sweden') regions = SwedenRegions
-        else if (e.target.value === 'United Kingdom') regions = UKRegions
-        else if (e.target.value === 'United States') regions = USARegions
-        const mapped = regions?.map(option => option)
-        console.log(mapped)
     }
-
 
     const content = (
         <>
@@ -189,21 +163,25 @@ const NewAdvertisementForm = () => {
                 <br />
                 <br />
 
-                <label htmlFor="region">
-                    <b>Region</b>
-                </label>
-                <br />
-                <select 
-                    name="region" 
-                    id="region"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                >
-                    <option value="">Region (optional)</option>
-                    {regions?.map((option, index) => cloneElement(option, { key: index }))}
-                </select>
-                <br />
-                <br />
+                {bigCountries?.includes(country) 
+                    ? <><label htmlFor="region">
+                                <b>Region</b>
+                            </label>
+                            <br />
+                            <select 
+                                name="region" 
+                                id="region"
+                                value={region}
+                                onChange={(e) => setRegion(e.target.value)}
+                            >
+                                <option value="">Region (optional)</option>
+                                {bigCountries?.includes(country) ? Regions[country] : null}
+                            </select>
+                            <br />
+                            <br />
+                        </>
+                    : null
+                }
 
                 <label htmlFor="info">
                     <b>Info</b>
