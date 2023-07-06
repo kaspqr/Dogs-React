@@ -34,17 +34,12 @@ const ConversationsList = () => {
     let tableContent
 
     if (filteredIds?.length) {
-      console.log('filtered conversations has a length')
       tableContent = filteredIds.map(conversationId => <Conversation key={conversationId} conversationId={conversationId} />)
-      console.log(tableContent)
     } else {
       console.log('filtered convos has no length')
     }
 
-    console.log(ids)
-    console.log(filteredIds)
-
-    content = (
+    content = !filteredIds?.length ? <p>You have no messages</p> : (
       <>
         <table className="content-table">
           <thead>

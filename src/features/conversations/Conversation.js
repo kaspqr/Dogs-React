@@ -27,35 +27,26 @@ const Conversation = ({ conversationId }) => {
     })
 
     if (!conversation) {
-        console.log('no convo')
         return null
     }
 
     if (!receiver) {
-        console.log('no receiver')
         return null
     }
 
     if (!sender) {
-        console.log('no sender')
         return null
     }
 
     let otherUser
 
     if (receiver?.id === userId) {
-        console.log('other user is sender')
         otherUser = sender
     }
 
     if (sender?.id === userId) {
-        console.log('other user is receiver')
         otherUser = receiver
     }
-
-    console.log(sender)
-    console.log(receiver)
-    console.log(otherUser)
 
 
     return (

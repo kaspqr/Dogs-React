@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAddNewUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
 import useAuth from "../../hooks/useAuth"
 
 const USERNAME_REGEX = /^[A-z]{6,20}$/
@@ -87,6 +85,7 @@ const NewUserForm = () => {
         if (canSave) {
             await addNewUser({ username, password, name, email, location })
         }
+        console.log(`${username} ${password} ${name} ${email} ${location}`)
     }
 
     const errClass = isError ? "errmsg" : "offscreen"
@@ -180,6 +179,7 @@ const NewUserForm = () => {
                         className="black-button"
                         title="Save"
                         disabled={!canSave}
+                        style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                     >
                         Register
                     </button>

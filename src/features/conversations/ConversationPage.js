@@ -87,7 +87,7 @@ const ConversationPage = () => {
 
         let filteredMessages
 
-        const filteredIds = ids.filter(messageId => entities[messageId].conversation === conversation.id)
+        const filteredIds = ids.filter(messageId => entities[messageId].conversation === conversation?.id)
 
         if (filteredIds?.length) {
             filteredMessages = filteredIds.map(messageId => entities[messageId])
@@ -100,10 +100,6 @@ const ConversationPage = () => {
                <Message key={message.id} messageId={message.id} />
             ))
         }
-
-        console.log(ids)
-        console.log(filteredIds)
-        console.log(tableContent)
       
         messageContent = (
             <>
