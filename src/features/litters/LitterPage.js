@@ -1,16 +1,13 @@
 import { useGetLittersQuery, useUpdateLitterMutation, useDeleteLitterMutation } from "./littersApiSlice"
 import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
-
 import { useNavigate, useParams, Link } from "react-router-dom"
-
 import useAuth from "../../hooks/useAuth"
-
 import LitterDog from '../dogs/LitterDog'
-
 import { useState, useEffect } from "react"
 
 const LitterPage = () => {
 
+    // PATCH function to update a dog when added to THE litter
     const [updateDog, {
         isUpdateLoading,
         isUpdateSuccess,
@@ -18,12 +15,14 @@ const LitterPage = () => {
         updateError
     }] = useUpdateDogMutation()
 
+    // DELETE function for THE litter
     const [deleteLitter, {
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
     }] = useDeleteLitterMutation()
 
+    // PATCH function to add a father to the litter
     const [updateLitter, {
         isLoading: isLitterLoading,
         isSuccess: isLitterSuccess,
@@ -40,28 +39,28 @@ const LitterPage = () => {
 
     const { litterid } = useParams()
 
-
+    // GET the litter with all of it's .values
     const { litter } = useGetLittersQuery("littersList", {
         selectFromResult: ({ data }) => ({
             litter: data?.entities[litterid]
         }),
     })
 
-
+    // GET the dog that's the mother of THE litter
     const { mother } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             mother: data?.entities[litter?.mother?.toString()]
         }),
     })
 
-
+    // GET the dog that's the father of THE litter
     const { father } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             father: data?.entities[litter?.father?.toString()]
         }),
     })
 
-
+    // GET all the dogs
     const {
         data: dogs,
         isLoading,
@@ -74,6 +73,7 @@ const LitterPage = () => {
         refetchOnMountOrArgChange: true
     })
 
+    // Go to litters page if THE litter has been deleted successfully
     useEffect(() => {
         if (isDelSuccess) {
             navigate('/litters')
@@ -88,17 +88,24 @@ const LitterPage = () => {
     
     if (isLoading || isUpdateLoading) dogContent = <p>Loading...</p>
     
-    if (isError || isUpdateError) {
+    if (isError) {
         dogContent = <p className="errmsg">{error?.data?.message}</p>
     }
     
     if (isSuccess) {
+
         const { ids, entities } = dogs
 
         let filteredFathers
 
+        // Filter all the IDs of dogs whose litter is THE litter
         const filteredIds = ids.filter(dogId => entities[dogId].litter === litter?.id)
         
+        // Filter all the IDs of dogs whose administrative user is the logged in user
+        // AND is neither the mother or the father of THE litter
+        // AND either matches the breed or is 'Mixed breed' if the parents of THE litter are different breeds
+        // AND is not already added to this litter
+        // These dogs are the ones the logged in user is able to add to the litter
         const filteredUserIds = ids.filter(dogId => entities[dogId].user === userId 
             && entities[dogId].id !== mother?.id
             && entities[dogId].id !== father?.id
@@ -110,12 +117,19 @@ const LitterPage = () => {
                             && mother?.breed === entities[dogId].breed))))
             && !filteredIds.includes(entities[dogId].id))
 
+
+        // Filter the dogs whose administrative user is the logged in user
+        // AND is neither the father or the mother of the litter
+        // AND is not already added to the litter
+        // AND is a male dog
+        // These are the dogs that the user is able to add as the father of the litter
         const filteredFatherIds = ids.filter(dogId => entities[dogId].user === userId 
             && entities[dogId].id !== mother?.id
             && entities[dogId].id !== father?.id
             && entities[dogId].female === false
             && !filteredIds.includes(entities[dogId].id))
 
+        // Convert IDs to objects with .values
         if (filteredIds?.length) {
             filteredDogs = filteredIds.map(dogId => entities[dogId])
         }
@@ -128,6 +142,7 @@ const LitterPage = () => {
             filteredUserDogs = filteredUserIds.map(dogId => entities[dogId])
         }
 
+        // Variable to store the LitterDog component for each dog belonging to the litter
         let tableContent
 
         if (filteredDogs?.length) {
@@ -136,20 +151,20 @@ const LitterPage = () => {
             ))
         }
 
+        // List of <option>s for each dog the user is able to add to the litter
         if (filteredUserDogs?.length) {
             optionsContent = filteredUserDogs.map(dog => (
                <option value={dog.id} key={dog.id}>{dog.name}</option>
             ))
         }
 
+        // List of <option>s for each dog the user is able to add as the father of the litter
         if (filteredFathers?.length) {
             fatherOptionsContent = filteredFathers.map(dog => (
                <option value={dog.id} key={dog.id}>{dog.name}</option>
             ))
         }
 
-        console.log(filteredFathers)
-        console.log(filteredFatherIds)
       
         dogContent = (
             <table className="content-table">
@@ -168,21 +183,21 @@ const LitterPage = () => {
     }
 
     if (!litter) {
-        console.log(litter)
         return null
     }
 
     if (!mother) {
-        console.log(litter.mother)
         return null
     }
 
     let content = null
 
+    // DELETE THE litter
     async function handleDeleteLitter() {
         await deleteLitter({ id: litterid })
     }
 
+    // Option to DELETE the litter only for the user that is the administrative user of the litter's mother dog
     if (mother?.user === userId) {
         content = (
             <>
@@ -199,22 +214,20 @@ const LitterPage = () => {
     }
 
 
+    // Add litter to the user's dog
     async function addToLitter() {
-        console.log('selected dog was: ' + selectedDog)
-        console.log('selected litter was: ' + litterid)
         await updateDog({ "id": selectedDog, "litter": litterid })
     }
 
-
+    // Add father dog to the litter
     async function addFatherToLitter() {
         return updateLitter({ "id": litterid, "father": selectedFather })
     }
 
+    // Boolean to control the style and 'disabled' value of the ADD FATHER button
     const canSaveFather = selectedFather?.length && !isLoading
     const fatherButtonStyle = !canSaveFather ? {backgroundColor: "grey"} : null
-
-    console.log(selectedFather)
-    console.log(selectedFather?.length)
+    
 
     const fatherContent = father?.id?.length 
         ? null

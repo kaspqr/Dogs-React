@@ -7,6 +7,7 @@ const AdvertisementsList = () => {
 
   const { userId } = useAuth()
 
+  // GET all the advertisements
   const {
     data: advertisements,
     isLoading,
@@ -19,6 +20,7 @@ const AdvertisementsList = () => {
     refetchOnMountOrArgChange: true
   })
 
+  // Variable for displaying either an error or the content if the fetch was sucessful
   let content
 
   if (isLoading) content = <p>Loading...</p>
@@ -30,6 +32,7 @@ const AdvertisementsList = () => {
   if (isSuccess) {
     const { ids } = advertisements
 
+    // Advertisement component for each advertisement
     const tableContent = ids?.length
       ? ids.map(advertisementId => <Advertisement key={advertisementId} advertisementId={advertisementId} />)
       : null

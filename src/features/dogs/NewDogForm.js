@@ -15,6 +15,7 @@ const NewDogForm = () => {
 
     const { userId } = useAuth()
 
+    // POST function to add a new dog
     const [addNewDog, {
         isLoading,
         isSuccess,
@@ -53,7 +54,7 @@ const NewDogForm = () => {
 
     const [country, setCountry] = useState('Argentina')
 
-    const [region, setRegion] = useState('NONE ')
+    const [region, setRegion] = useState('none ')
 
 
     const breeds = [ ...Object.values(Breeds) ]
@@ -66,6 +67,7 @@ const NewDogForm = () => {
         setValidName(NAME_REGEX.test(name))
     }, [name])
 
+    // Reset all inputs once a dog has been POSTed
     useEffect(() => {
         if (isSuccess) {
             setName('')
@@ -80,7 +82,7 @@ const NewDogForm = () => {
             setBreed('')
             setInfo('')
             setCountry('')
-            setRegion('NONE ')
+            setRegion('none ')
             setFemale(true)
             navigate('/dogs')
         }
@@ -101,11 +103,13 @@ const NewDogForm = () => {
     const handleInfoChanged = e => setInfo(e.target.value)
     const handleFemaleChanged = e => setFemale(e.target.value === "female" ? true : false)
 
+    // Clear the region each time the country is changed in order to avoid having a region from the wrong country
     const handleCountryChanged = (e) => {
         setRegion('')
         setCountry(e.target.value)
     }
 
+    // Boolean to control the style and 'disabled' value of the SAVE button
     const canSave = typeof validName === 'boolean' && validName === true 
         && !isLoading && breed.length && typeof birth === 'object' && birth !== '' 
         && ((typeof death === 'object' && death.getTime() >= birth.getTime()) || death === '')
@@ -113,20 +117,20 @@ const NewDogForm = () => {
     const handleSaveDogClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
+            // Format the date
             let finalBirth = birth !== '' ? new Date(birth.getTime()).toDateString() : ''
             let finalDeath = death !== '' ? new Date(death.getTime()).toDateString() : ''
+            // POST the dog
             await addNewDog({ name, country, region, owner, breed, heat, sterilized, passport, 
                 microchipped, chipnumber, birth: finalBirth, death: finalDeath, info, female, "user": userId })
         }
     }
 
-    const errClass = isError ? "errmsg" : "offscreen"
-
     const saveColor = !canSave ? {backgroundColor: "grey", cursor: "default"} : null
 
     const content = (
         <>
-            <p className={errClass}>{error?.data?.message}</p>
+            <p>{error?.data?.message}</p>
 
             <form onSubmit={handleSaveDogClicked}>
                 <div>

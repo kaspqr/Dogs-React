@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 
 const User = ({ userId }) => {
 
+    // GET the user with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             user: data?.entities[userId]

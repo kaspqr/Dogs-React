@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
-
-const PRICE_REGEX = /^[0-9]{1,10}$/
-
+import { Currencies } from "../../config/currencies"
+import { AdvertisementTypes } from "../../config/advertisementTypes"
 
 const EditAdvertisementForm = ({ advertisement }) => {
 
+    // PATCH method to update the advertisement
     const [updateAdvertisement, {
         isLoading,
         isSuccess,
@@ -17,15 +17,16 @@ const EditAdvertisementForm = ({ advertisement }) => {
         error
     }] = useUpdateAdvertisementMutation()
 
+    // DELETE method to delete the advertisement
     const [deleteAdvertisement, {
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
     }] = useDeleteAdvertisementMutation()
 
+    const PRICE_REGEX = /^[0-9]{1,10}$/
 
     const navigate = useNavigate()
-
 
     const [title, setTitle] = useState(advertisement?.title)
 
@@ -49,29 +50,34 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
     useEffect(() => {
         if (isDelSuccess) {
+            // If the advertisement is DELETEd, go back to homepage
             navigate('/')
         } else if (isSuccess) {
+            // If the advertisement is PATCHed, go to the page of said advertisement
             navigate(`/advertisements/${advertisement?.id}`)
         }
     }, [isSuccess, isDelSuccess, navigate])
 
+    // PATCH function
     const handleSaveAdvertisementClicked = async () => {
         await updateAdvertisement({ id: advertisement.id, title, info, type, price, currency, country, region })
     }
 
+    // DELETE function
     const handleDeleteAdvertisementClicked = async () => {
         await deleteAdvertisement({ id: advertisement.id })
     }
 
+    // Clear the region each time a country is changed to avoid having a region from a different country
     const handleCountryChanged = (e) => {
         setRegion('')
         setCountry(e.target.value)
     }
 
+    // Boolean to control the style and 'disabled' of the SAVE button
     let canSave = title?.length && type?.length && validPrice && !isLoading
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
-
 
     const content = (
         <>
@@ -105,12 +111,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                 >
-                    <option value="Sell">Sell</option>
-                    <option value="Buy">Buy</option>
-                    <option value="Found">Found</option>
-                    <option value="Lost">Lost</option>
-                    <option value="BreedingFemale">Breeding, Require Female</option>
-                    <option value="BreedingMale">Breeding, Require Male</option>
+                    {AdvertisementTypes}
                 </select>
                 <br />
                 <br />
@@ -139,17 +140,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
                 >
-                    <option value="$">USD $</option>
-                    <option value="€">EUR €</option>
-                    <option value="£">GBP £</option>
-                    <option value="zł">PLN zł</option>
-                    <option value="CAD">CAD</option>
-                    <option value="AUD">AUD</option>
-                    <option value="NZD">NZD</option>
-                    <option value="SEK">SEK</option>
-                    <option value="NOK">NOK</option>
-                    <option value="DKK">DKK</option>
-                    <option value="CHF">CHF</option>
+                    {Currencies}
                 </select>
                 <br />
                 <br />

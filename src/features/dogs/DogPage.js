@@ -14,30 +14,32 @@ const DogPage = () => {
 
     const { dogid } = useParams()
 
+    // GET the dog with all of it's .values
     const { dog } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             dog: data?.entities[dogid]
         }),
     })
 
+    // GET the user who administrates the dog with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             user: data?.entities[dog?.user]
         }),
     })
 
+    // GET the litter that the dog was born to with all of it's .values
     const { parentLitter } = useGetLittersQuery("littersList", {
         selectFromResult: ({ data }) => ({
             parentLitter: data?.entities[dog?.litter]
         }),
     })
 
-    console.log(parentLitter)
-
     let filteredLitters
     let childrenLitterIds
     let allChildren
 
+    // GET all the litters
     const {
         data: litters,
         isLoading,
@@ -49,7 +51,8 @@ const DogPage = () => {
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
-    
+   
+    // Variable to display errors or content for litters
     let littersContent
 
     if (isLoading) littersContent = <p>Loading...</p>
@@ -61,16 +64,20 @@ const DogPage = () => {
     if (isSuccess) {
         const { ids, entities } = litters
 
+        // Filter all the litters to see whether the dog is a parent of any
         const filteredIds = dog?.female === true
             ? ids.filter(litterId => entities[litterId].mother === dog?.id)
             : ids.filter(litterId => entities[litterId].father === dog?.id)
 
         if (filteredIds?.length) {
+            // If yes, store the litter with all of it's values
             filteredLitters = filteredIds.map(litterId => entities[litterId])
+            // And keep the ID to look for dogs who belong to said litter (the dog's children)
             childrenLitterIds = filteredIds
         }
     }
 
+    // GET all the dogs
     const {
         data: dogs,
         isLoading: isDogsLoading,
@@ -94,7 +101,9 @@ const DogPage = () => {
     if (isDogsSuccess) {
         const { ids, entities } = dogs
 
+        // Filter all the IDs of dogs who have a litter that THE dog is a parent of (children)
         const filteredIds = ids.filter(dogId => childrenLitterIds?.includes(entities[dogId].litter))
+        // Filter all the IDs of dogs who have the same litter as THE dog (siblings)
         const filteredSiblingIds = ids.filter(dogId => dog?.litter?.length && entities[dogId].litter === dog?.litter && dogId !== dog?.id)
 
         if (filteredSiblingIds?.length) {
@@ -108,11 +117,12 @@ const DogPage = () => {
 
     let filteredParents
     let parentDogs
-    console.log(filteredLitters)
 
     if (isSuccess) {
-        const { ids, entities } = dogs
-        console.log(ids)
+
+        const { entities } = dogs
+
+        // Find the ID of the other parent of the litter that THE dog is a parent of
         filteredParents = filteredLitters?.map(litter => {
             if (dog?.female === true) {
                 return litter?.father
@@ -120,9 +130,9 @@ const DogPage = () => {
                 return litter?.mother
             }
         })
+
+        // If found, store it with all of it's .values
         parentDogs = filteredParents?.map(dogId => entities[dogId])
-        console.log(filteredParents)
-        console.log(parentDogs)
 
         littersContent = filteredLitters?.map(litter => 
             <>
@@ -141,12 +151,14 @@ const DogPage = () => {
         )
     }
 
+    // GET the mother dog of the dog's litter
     const { mother } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             mother: data?.entities[parentLitter?.mother]
         }),
     })
 
+    // GET the father dog of the dog's litter
     const { father } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             father: data?.entities[parentLitter?.father]
@@ -157,6 +169,7 @@ const DogPage = () => {
         return null
     }
 
+    // Variable for an EDIT button in case the logged in user is the administrative user of THE dog
     let content = null
 
     if (userId === dog?.user) {
@@ -189,9 +202,11 @@ const DogPage = () => {
     let siblingsContent = null
 
     if (siblings?.length) {
+        // <p> for each sibling
         siblingsContent = <>{siblings.map(sibling => <p><b>{sibling?.female === true ? <>Sister </> : <>Brother </>}</b><Link className="orange-link" to={`/dogs/${sibling?.id}`}><b>{sibling?.name}</b></Link></p>)}<br /></>
     } else {
         if (parentLitter) {
+            // THE dog is added to a litter, but has no siblings
             siblingsContent = <><p>{dog?.name} is not connected to any siblings through it's litter in the database</p><br /></>
         }
     }

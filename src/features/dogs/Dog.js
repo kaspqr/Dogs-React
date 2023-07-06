@@ -5,12 +5,14 @@ import { memo } from "react"
 
 const Dog = ({ dogId }) => {
 
+    // GET the dog with all of it's .values
     const { dog } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             dog: data?.entities[dogId]
         }),
     })
 
+    // GET the user who administrates the dog with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             user: data?.entities[dog?.user]

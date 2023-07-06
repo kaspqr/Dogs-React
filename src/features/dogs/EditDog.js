@@ -10,12 +10,14 @@ const EditDog = () => {
 
   const { userId } = useAuth()
 
+  // GET the dog with all of it's .values
   const { dog } = useGetDogsQuery("dogsList", {
     selectFromResult: ({ data }) => ({
       dog: data?.entities[id]
     }),
   })
 
+  // GET all the users with their .values
   const { users } = useGetUsersQuery("usersList", {
     selectFromResult: ({ data }) => ({
       users: data?.ids.map(id => data?.entities[id])
@@ -28,6 +30,7 @@ const EditDog = () => {
 
   if (!dog || !users?.length) return <PulseLoader color={'#000'} />
 
+  // Allow access to only the person who is the dog's administrative user
   if (dog.user !== userId) { 
     return <p>No access</p>
   }

@@ -14,39 +14,45 @@ const ConversationPage = () => {
 
     const [newMessage, setNewMessage] = useState()
 
+    // POST method for a new message
     const [addNewMessage, {
-        isMessageLoading,
-        isMessageSuccess,
-        isMessageError,
-        messageError
+        isLoading: isMessageLoading,
+        isSuccess: isMessageSuccess,
+        isError: isMessageError,
+        error: messageError
     }] = useAddNewMessageMutation()
 
     async function handleSendMessage(e) {
         e.preventDefault()
         if (newMessage?.length) {
+            // POST the new message
             await addNewMessage({ sender: userId, conversation: conversationid, text: newMessage })
             setNewMessage('')
         }
     }
 
+    // GET the conversation with all of it's .values
     const { conversation } = useGetConversationsQuery("conversationsList", {
         selectFromResult: ({ data }) => ({
             conversation: data?.entities[conversationid]
         }),
     })
 
+    // GET the user who is the sender of said conversation with all of it's .values
     const { sender } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             sender: data?.entities[conversation?.sender]
         }),
     })
 
+    // GET the user who is the receiver of said conversation with all of it's .values
     const { receiver } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             receiver: data?.entities[conversation?.receiver]
         }),
     })
 
+    // GET all the messages
     const {
         data: messages,
         isLoading,
@@ -68,12 +74,14 @@ const ConversationPage = () => {
         }
     })
 
+    // Clear the input if the previous message has been successfully sent
     useEffect(() => {
         if (isMessageSuccess) {
             setNewMessage('')
         }
     }, [isMessageSuccess])
     
+    // Variable for errors and content
     let messageContent
     
     if (isLoading) messageContent = <p>Loading...</p>
@@ -85,14 +93,17 @@ const ConversationPage = () => {
     if (isSuccess) {
         const { ids, entities } = messages
 
+        // Variable to store all messages in this conversation
         let filteredMessages
 
+        // Filter all the IDs of all the messages in this conversation
         const filteredIds = ids.filter(messageId => entities[messageId].conversation === conversation?.id)
 
         if (filteredIds?.length) {
             filteredMessages = filteredIds.map(messageId => entities[messageId])
         }
 
+        // Variable to store all Message components for each message in the conversation
         let tableContent
 
         if (filteredMessages?.length) {
@@ -130,6 +141,7 @@ const ConversationPage = () => {
         return null
     }
 
+    // Check that the logged in user is a participant of said conversation
     if (userId !== conversation?.sender && userId !== conversation?.receiver) {
         return null
     }

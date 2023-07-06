@@ -10,6 +10,7 @@ const NewLitterForm = () => {
 
     const { userId } = useAuth()
 
+    // POST function for adding a new litter
     const [addNewLitter, {
         isLoading: isLitterLoading,
         isSuccess: isLitterSuccess,
@@ -26,6 +27,7 @@ const NewLitterForm = () => {
 
     const [validMother, setValidMother] = useState(false)
 
+    // Clear the inputs if the litter has been successfully posted
     useEffect(() => {
         if (isLitterSuccess) {
             setBorn('')
@@ -46,11 +48,10 @@ const NewLitterForm = () => {
 
     const handleSaveLitterClicked = async (e) => {
         e.preventDefault()
-        console.log(canSave)
-        console.log(mother)
-        console.log(born)
         if (canSave) {
+            // Format the date
             let finalBorn = born !== '' ? new Date(born.getTime()).toDateString() : ''
+            // POST the litter
             await addNewLitter({ mother, born: finalBorn })
         }
 
@@ -60,6 +61,7 @@ const NewLitterForm = () => {
     }
 
 
+    // GET all the dogs
     const {
         data: dogs,
         isLoading,
@@ -77,11 +79,9 @@ const NewLitterForm = () => {
     
     if (isLoading) {
         dogsContent = <p>Loading...</p>
-        console.log('loading dogs')
     }
     
     if (isError) {
-        console.log('isDogsError')
         dogsContent = <p className="errmsg">{error?.data?.message}</p>
     }
     
@@ -89,11 +89,14 @@ const NewLitterForm = () => {
 
         const { ids, entities } = dogs
 
+        // Filter all the female dog IDs who are administrated by the logged in user
         const filteredIds = ids.filter(dogId => entities[dogId].user === userId && entities[dogId].female === true)
+        // And get their .values
         const filteredDogs = filteredIds.map(dogId => entities[dogId])
 
-        if (!filteredIds.length) return <p>You have no dogs.</p>
+        if (!filteredIds.length) return <p>You have no female dogs.</p>
 
+        // Create an <option>s list for each female dog administrated by the logged in user
         if (filteredDogs?.length) {
             ownedDogs = filteredDogs.map(dog => (
                 <option
@@ -106,6 +109,7 @@ const NewLitterForm = () => {
         }
     }
 
+    // Boolean to control the style and 'disabled' value of the SAVE button
     const canSave = validMother && born !== '' && !isLoading
 
     if (!dogs) return null

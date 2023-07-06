@@ -4,9 +4,11 @@ import useAuth from "../hooks/useAuth"
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
 
 const Header = () => {
+
   const { userId } = useAuth()
   const navigate = useNavigate()
 
+  // POST request to clear the refreshtoken
   const [sendLogout, {
     isLoading,
     isSuccess,
@@ -14,6 +16,7 @@ const Header = () => {
     error
   }] = useSendLogoutMutation()
 
+  // Go to homepage when logging out
   useEffect(() => {
     if (isSuccess) navigate("/")
   }, [isSuccess, navigate])
@@ -24,6 +27,7 @@ const Header = () => {
 
   if (isError) return <p>Error: {error.data?.message}</p>
 
+  // Variable for content varying on whether the user is logged in or not
   let navRight
 
   if (userId) {

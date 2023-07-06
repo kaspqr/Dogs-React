@@ -7,6 +7,7 @@ const DogsList = () => {
 
   const { userId } = useAuth()
 
+  // GET all the dogs
   const {
     data: dogs,
     isLoading,
@@ -19,6 +20,7 @@ const DogsList = () => {
     refetchOnMountOrArgChange: true
   })
 
+  // Variable for errors and content
   let content
 
   if (isLoading) content = <p>Loading...</p>
@@ -30,6 +32,7 @@ const DogsList = () => {
   if (isSuccess) {
     const { ids } = dogs
 
+    // Dog component for each dog
     const tableContent = ids?.length
       ? ids.map(dogId => <Dog key={dogId} dogId={dogId} />)
       : null

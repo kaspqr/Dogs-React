@@ -5,12 +5,14 @@ import { memo } from "react"
 
 const Advertisement = ({ advertisementId }) => {
 
+    // GET the advertisement in props with all of it's .values
     const { advertisement } = useGetAdvertisementsQuery("advertisementsList", {
         selectFromResult: ({ data }) => ({
             advertisement: data?.entities[advertisementId]
         }),
     })
 
+    // GET the user who is the poster of the advertisement with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             user: data?.entities[advertisement?.poster]

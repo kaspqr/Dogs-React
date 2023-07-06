@@ -9,6 +9,7 @@ import { Regions } from "../../config/regions"
 
 const EditDogForm = ({ dog }) => {
 
+    // PATCH function for updating THE dog
     const [updateDog, {
         isLoading,
         isSuccess,
@@ -16,6 +17,7 @@ const EditDogForm = ({ dog }) => {
         error
     }] = useUpdateDogMutation()
 
+    // DELETE function for THE dog
     const [deleteDog, {
         isSuccess: isDelSuccess,
         isError: isDelError,
@@ -51,16 +53,16 @@ const EditDogForm = ({ dog }) => {
 
 
     useEffect(() => {
-        if (isSuccess || isDelSuccess) {
+        if (isSuccess) {
             navigate(`/dogs/${dog?.id}`)
         }
-    }, [isSuccess, isDelSuccess, navigate])
+    }, [isSuccess, navigate])
 
+    // Clear the region each time the country is changed to avoid having a region from another country
     const handleCountryChanged = (e) => {
         setCountry(e.target.value)
         setRegion('')
     }
-    const handleRegionChanged = e => setRegion(e.target.value)
 
     const handleDeathChanged = date => setDeath(date)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
@@ -82,6 +84,10 @@ const EditDogForm = ({ dog }) => {
         let updatedTiktok = tiktok
         let updatedRegion = region
 
+        // Values that can be cleared need to be changed to 'none '
+        // They need to have a length in order to PATCH them in the backend
+        // That is due to the fact that dogs are also PATCHed when they are added to litters
+        // Adding to litters only provides the dog's ID and the litter's ID
         if (!instagram?.length) {
             updatedInstagram = 'none '
         }
@@ -102,20 +108,22 @@ const EditDogForm = ({ dog }) => {
             updatedRegion = 'none '
         }
 
+        // PATCH the dog
         await updateDog({ id: dog.id, 
             country, region: updatedRegion, death, sterilized, passport, microchipped, chipnumber, info, heat, 
             instagram: updatedInstagram, facebook: updatedFacebook, 
             youtube: updatedYoutube, tiktok: updatedTiktok })
     }
 
+    // DELETE the dog
     const handleDeleteDogClicked = async () => {
         await deleteDog({ id: dog.id })
     }
 
+    // Boolean to control the 'disabled' value of the SAVE button
     let canSave = !isLoading
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
-
 
     const content = (
         <>
@@ -350,4 +358,3 @@ const EditDogForm = ({ dog }) => {
 }
 
 export default EditDogForm
-

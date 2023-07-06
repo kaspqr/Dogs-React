@@ -8,18 +8,21 @@ const Conversation = ({ conversationId }) => {
 
     const { userId } = useAuth()
 
+    // GET the conversation with all of it's .values
     const { conversation } = useGetConversationsQuery("conversationsList", {
         selectFromResult: ({ data }) => ({
             conversation: data?.entities[conversationId]
         }),
     })
 
+    // GET the user who is the receiver of said conversation
     const { receiver } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             receiver: data?.entities[conversation?.receiver]
         }),
     })
 
+    // GET the user who is the sender of said conversation
     const { sender } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             sender: data?.entities[conversation?.sender]
@@ -38,6 +41,7 @@ const Conversation = ({ conversationId }) => {
         return null
     }
 
+    // Variable for the other user who you're having a conversation with
     let otherUser
 
     if (receiver?.id === userId) {

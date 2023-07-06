@@ -7,6 +7,7 @@ const LittersList = () => {
 
   const { userId } = useAuth()
 
+  // GET all the litters
   const {
     data: litters,
     isLoading,
@@ -19,6 +20,7 @@ const LittersList = () => {
     refetchOnMountOrArgChange: true
   })
 
+  // Variable for error messages and content
   let content
 
   if (isLoading) content = <p>Loading...</p>
@@ -30,6 +32,7 @@ const LittersList = () => {
   if (isSuccess) {
     const { ids } = litters
 
+    // Litter component for each litter in the list
     const tableContent = ids?.length
       ? ids.map(litterId => <Litter key={litterId} litterId={litterId} />)
       : null

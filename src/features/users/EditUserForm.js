@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react"
 import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
-import useAuth from "../../hooks/useAuth"
-
-const NAME_REGEX = /^[A-z]{2,20}$/
-const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
-const LOCATION_REGEX = /^[A-z]{4,50}$/
-const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
-
 
 const EditUserForm = ({ user }) => {
 
-    const { userId } = useAuth()
+    const NAME_REGEX = /^[A-z]{2,20}$/
+    const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
+    const LOCATION_REGEX = /^[A-z]{4,50}$/
+    const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
+    // PATCH function for updating the user
     const [updateUser, {
         isLoading,
         isSuccess,
@@ -20,6 +17,7 @@ const EditUserForm = ({ user }) => {
         error
     }] = useUpdateUserMutation()
 
+    // DELETE function for deleting the user
     const [deleteUser, {
         isSuccess: isDelSuccess,
         isError: isDelError,
@@ -31,36 +29,16 @@ const EditUserForm = ({ user }) => {
 
 
     const [password, setPassword] = useState('')
-    const [validPassword, setValidPassword] = useState(false)
 
     const [name, setName] = useState('')
-    const [validName, setValidName] = useState(false)
 
     const [email, setEmail] = useState('')
-    const [validEmail, setValidEmail] = useState(false)
 
     const [location, setLocation] = useState('')
-    const [validLocation, setValidLocation] = useState(false)
 
     const [active, setActive] = useState(user.active)
 
-    useEffect(() => {
-        setValidPassword(PASSWORD_REGEX.test(password))
-    }, [password])
-
-    useEffect(() => {
-        setValidName(NAME_REGEX.test(name))
-    }, [name])
-
-    useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email))
-    }, [email])
-
-    useEffect(() => {
-        setValidLocation(LOCATION_REGEX.test(location))
-    }, [location])
-
-
+    // Clear the inputs if the user has been updated or deleted successfully
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
             setPassword('')
@@ -78,6 +56,7 @@ const EditUserForm = ({ user }) => {
 
     const handleActiveChanged = () => setActive(prev => !prev)
 
+    // PATCH the user
     const handleSaveUserClicked = async () => {
         if (password) {
             await updateUser({ id: user.id, password, name, email, location, active })
@@ -86,6 +65,7 @@ const EditUserForm = ({ user }) => {
         }
     }
 
+    // DELETE the user
     const handleDeleteUserClicked = async () => {
         await deleteUser({ id: user.id })
     }

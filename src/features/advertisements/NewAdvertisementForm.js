@@ -5,11 +5,15 @@ import useAuth from "../../hooks/useAuth"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
+import { AdvertisementTypes } from "../../config/advertisementTypes"
+import { Currencies } from "../../config/currencies"
 
 const NewAdvertisementForm = () => {
 
     const { userId } = useAuth()
 
+
+    // POST method for a new advertisement
     const [addNewAdvertisement, {
         isLoading: isAdvertisementLoading,
         isSuccess: isAdvertisementSuccess,
@@ -35,27 +39,35 @@ const NewAdvertisementForm = () => {
     const [info, setInfo] = useState('')
 
     useEffect(() => {
+        // Once POSTed, set everything back to default
         if (isAdvertisementSuccess) {
             setTitle('')
             setType('')
             setPrice('')
+            setCurrency('$')
+            setCountry('Argentina')
+            setRegion('')
             setInfo('')
             navigate('/')
         }
     }, [isAdvertisementSuccess, navigate])
 
 
+    // Boolean to control the style and 'disabled' value of the SAVE button
     const canSave = title?.length && type?.length && price?.length && !isAdvertisementLoading
 
+    // Variable for an error message
     let errMsg
 
     const handleSaveAdvertisementClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
+            // POST method for an advertisement
             await addNewAdvertisement({ poster: userId, title, price, type, info, currency, country, region })
         }
     }
 
+    // Clear the region every time the country is changed to prevent having a region from a different country
     const handleCountryChanged = (e) => {
         setRegion('')
         setCountry(e.target.value)
@@ -93,13 +105,7 @@ const NewAdvertisementForm = () => {
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                 >
-                    <option value=""><span className="select-option-span">Select Type</span></option>
-                    <option value="Sell"><span className="select-option-span">Sell</span></option>
-                    <option value="Buy"><span className="select-option-span">Buy</span></option>
-                    <option value="Found"><span className="select-option-span">Found</span></option>
-                    <option value="Lost"><span className="select-option-span">Lost</span></option>
-                    <option value="BreedingFemale"><span className="select-option-span">Breeding, Require Female</span></option>
-                    <option value="BreedingMale"><span className="select-option-span">Breeding, Require Male</span></option>
+                    {AdvertisementTypes}
                 </select>
                 <br />
                 <br />
@@ -128,17 +134,7 @@ const NewAdvertisementForm = () => {
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
                 >
-                    <option value="$">USD $</option>
-                    <option value="€">EUR €</option>
-                    <option value="£">GBP £</option>
-                    <option value="zł">PLN zł</option>
-                    <option value="CAD">CAD</option>
-                    <option value="AUD">AUD</option>
-                    <option value="NZD">NZD</option>
-                    <option value="SEK">SEK</option>
-                    <option value="NOK">NOK</option>
-                    <option value="DKK">DKK</option>
-                    <option value="CHF">CHF</option>
+                    {Currencies}
                 </select>
                 <br />
                 <br />

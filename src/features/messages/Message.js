@@ -7,12 +7,14 @@ const Message = ({ messageId }) => {
 
     const { userId } = useAuth()
 
+    // GET the message with all of it's .values
     const { message } = useGetMessagesQuery("messagesList", {
         selectFromResult: ({ data }) => ({
             message: data?.entities[messageId]
         }),
     })
 
+    // GET the user who is the sender of THE message with all of it's .values
     const { sender } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
             sender: data?.entities[message?.sender]
@@ -23,16 +25,7 @@ const Message = ({ messageId }) => {
         return null
     }
 
-    let isSender
-
-    if (message?.sender?.length && message.sender === userId) {
-        isSender = true
-    }
-
-    if (message?.sender?.length && message.sender !== userId) {
-        isSender = false
-    }
-
+    // Different style for messages sent by the logged in user
     const messageStyle = message.sender === userId ? {backgroundColor: "rgb(235, 155, 52)", float: "right"} : {backgroundColor: "lightgrey", float: "left"}
     const timeStyle = message.sender === userId ? {float: "right"} : {float: "left"}
 

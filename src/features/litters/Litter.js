@@ -5,20 +5,19 @@ import { memo } from "react"
 
 const Litter = ({ litterId }) => {
 
+    // GET the litter with all of it's .values
     const { litter } = useGetLittersQuery("littersList", {
         selectFromResult: ({ data }) => ({
             litter: data?.entities[litterId]
         }),
     })
 
+    // GET the litter's mother dog with all of it's .values
     const { mother } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             mother: data?.entities[litter?.mother]
         }),
     })
-
-    console.log(mother)
-    console.log(litter?.mother)
 
     if (!litter) {
         return null

@@ -6,6 +6,7 @@ const ConversationsList = () => {
 
   const { userId } = useAuth()
 
+  // GET all the conversations
   const {
     data: conversations,
     isLoading,
@@ -18,6 +19,7 @@ const ConversationsList = () => {
     refetchOnMountOrArgChange: true
   })
 
+  // Variable for displaying errors and content
   let content
 
   if (isLoading) content = <p>Loading...</p>
@@ -29,8 +31,10 @@ const ConversationsList = () => {
   if (isSuccess) {
     const { ids, entities } = conversations
 
+    // Filter all the IDs of conversations where the logged in user is a participant in
     const filteredIds = ids.filter(conversationId => entities[conversationId].sender === userId || entities[conversationId].receiver === userId)
 
+    // Variable to store all Conversation components for each conversation the logged in user is a participant in
     let tableContent
 
     if (filteredIds?.length) {

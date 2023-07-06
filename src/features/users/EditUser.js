@@ -5,9 +5,11 @@ import { PulseLoader } from "react-spinners"
 import useAuth from "../../hooks/useAuth"
 
 const EditUser = () => {
+
   const { id } = useParams()
   const { userId } = useAuth()
   
+  // GET the user with all of it's .values
   const { user } = useGetUsersQuery("usersList", {
     selectFromResult: ({ data }) => ({
       user: data?.entities[id]

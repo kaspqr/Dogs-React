@@ -3,6 +3,7 @@ import User from "./User"
 
 const UsersList = () => {
 
+  // GET all the users
   const {
     data: users,
     isLoading,
@@ -15,6 +16,7 @@ const UsersList = () => {
     refetchOnMountOrArgChange: true
   })
 
+  // Variable for storing errors and content
   let content
 
   if (isLoading) content = <p>Loading...</p>
@@ -26,6 +28,7 @@ const UsersList = () => {
   if (isSuccess) {
     const { ids } = users
 
+    // User component for each user in the list
     const tableContent = ids?.length
       ? ids.map(userId => <User key={userId} userId={userId} />)
       : null

@@ -3,16 +3,17 @@ import { useAddNewUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 
-const USERNAME_REGEX = /^[A-z]{6,20}$/
-const NAME_REGEX = /^[A-z]{2,20}$/
-const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
-const LOCATION_REGEX = /^[A-z]{4,50}$/
-const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
-
 const NewUserForm = () => {
+
+    const USERNAME_REGEX = /^[A-z]{6,20}$/
+    const NAME_REGEX = /^[A-z]{2,20}$/
+    const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
+    const LOCATION_REGEX = /^[A-z]{4,50}$/
+    const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
     const auth = useAuth()
 
+    // POST method for registering a new user
     const [addNewUser, {
         isLoading,
         isSuccess,
@@ -60,6 +61,7 @@ const NewUserForm = () => {
         setValidLocation(LOCATION_REGEX.test(location))
     }, [location])
 
+    // Clear the inputs if a user was POSTed successfully
     useEffect(() => {
         if (isSuccess) {
             setUsername('')
@@ -78,17 +80,16 @@ const NewUserForm = () => {
     const handleEmailChanged = e => setEmail(e.target.value)
     const handleLocationChanged = e => setLocation(e.target.value)
 
+    // Boolean to control the style and 'disabled' value of the SAVE button
     const canSave = [validUsername, validPassword, validName, validEmail, validLocation].every(Boolean) && !isLoading
 
     const handleSaveUserClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
+            // POST the user
             await addNewUser({ username, password, name, email, location })
         }
-        console.log(`${username} ${password} ${name} ${email} ${location}`)
     }
-
-    const errClass = isError ? "errmsg" : "offscreen"
 
     if (auth?.username?.length) {
         return <p>You are currently logged in. Please logout before registering a new user.</p>
@@ -96,7 +97,7 @@ const NewUserForm = () => {
 
     const content = (
         <>
-            <p className={errClass}>{error?.data?.message}</p>
+            <p>{error?.data?.message}</p>
 
             <form onSubmit={handleSaveUserClicked}>
                 <div>
