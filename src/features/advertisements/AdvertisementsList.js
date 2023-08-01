@@ -43,10 +43,10 @@ const AdvertisementsList = () => {
         <table id="advertisement-table" className="content-table">
           <thead>
             <tr>
-              <th className="table-4-columns">Title</th>
-              <th className="table-4-columns">Poster</th>
-              <th className="table-4-columns">Type</th>
-              <th className="table-4-columns">Price</th>
+              <th className="first-th">Title</th>
+              <th>Poster</th>
+              <th>Type</th>
+              <th className="last-th">Price</th>
             </tr>
           </thead>
           <tbody>

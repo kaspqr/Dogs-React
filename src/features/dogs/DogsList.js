@@ -43,11 +43,11 @@ const DogsList = () => {
         <table className="content-table">
           <thead>
             <tr>
-              <th>Name</th>
+              <th className="first-th">Name</th>
               <th>Breed</th>
               <th>Good</th>
               <th>Born</th>
-              <th>Administered by</th>
+              <th className="last-th">Administered by</th>
             </tr>
           </thead>
           <tbody>

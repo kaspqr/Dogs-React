@@ -83,6 +83,8 @@ const EditDogForm = ({ dog }) => {
         let updatedYoutube = youtube
         let updatedTiktok = tiktok
         let updatedRegion = region
+        let updatedInfo = info
+        let updatedChipnumber = chipnumber
 
         // Values that can be cleared need to be changed to 'none '
         // They need to have a length in order to PATCH them in the backend
@@ -108,9 +110,18 @@ const EditDogForm = ({ dog }) => {
             updatedRegion = 'none '
         }
 
+        if (!info?.length) {
+            updatedInfo = 'none '
+        }
+
+        if (!chipnumber?.length) {
+            updatedChipnumber = 'none '
+        }
+
         // PATCH the dog
         await updateDog({ id: dog.id, 
-            country, region: updatedRegion, death, sterilized, passport, microchipped, chipnumber, info, heat, 
+            country, region: updatedRegion, death, sterilized, passport, microchipped, 
+            chipnumber: updatedChipnumber, info: updatedInfo, heat, 
             instagram: updatedInstagram, facebook: updatedFacebook, 
             youtube: updatedYoutube, tiktok: updatedTiktok })
     }
@@ -118,6 +129,7 @@ const EditDogForm = ({ dog }) => {
     // DELETE the dog
     const handleDeleteDogClicked = async () => {
         await deleteDog({ id: dog.id })
+        navigate('/dogs')
     }
 
     // Boolean to control the 'disabled' value of the SAVE button

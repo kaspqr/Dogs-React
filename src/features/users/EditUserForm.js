@@ -30,11 +30,11 @@ const EditUserForm = ({ user }) => {
 
     const [password, setPassword] = useState('')
 
-    const [name, setName] = useState('')
+    const [name, setName] = useState(user.name)
 
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState(user.email)
 
-    const [location, setLocation] = useState('')
+    const [location, setLocation] = useState(user.location)
 
     const [active, setActive] = useState(user.active)
 

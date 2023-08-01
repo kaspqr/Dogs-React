@@ -25,10 +25,10 @@ const Advertisement = ({ advertisementId }) => {
 
     return (
         <tr>
-            <td><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></td>
+            <td className="first-td"><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></td>
             <td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
             <td>{advertisement?.type}</td>
-            <td>{advertisement?.type !== 'Found' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</td>
+            <td className="last-td">{advertisement?.type !== 'Found' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</td>
         </tr>
     )
 }

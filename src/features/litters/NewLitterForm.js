@@ -25,6 +25,8 @@ const NewLitterForm = () => {
 
     const [born, setBorn] = useState('')
 
+    const [children, setChildren] = useState()
+
     const [validMother, setValidMother] = useState(false)
 
     // Clear the inputs if the litter has been successfully posted
@@ -32,6 +34,7 @@ const NewLitterForm = () => {
         if (isLitterSuccess) {
             setBorn('')
             setMother('')
+            setChildren('')
         }
     }, [isLitterSuccess, navigate])
 
@@ -52,7 +55,8 @@ const NewLitterForm = () => {
             // Format the date
             let finalBorn = born !== '' ? new Date(born.getTime()).toDateString() : ''
             // POST the litter
-            await addNewLitter({ mother, born: finalBorn })
+            await addNewLitter({ mother, born: finalBorn, children })
+            navigate('/litters')
         }
 
         if (isLitterError) {
@@ -110,7 +114,7 @@ const NewLitterForm = () => {
     }
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = validMother && born !== '' && !isLoading
+    const canSave = validMother && born !== '' && !isLoading && children > 0
 
     if (!dogs) return null
 
@@ -166,7 +170,22 @@ const NewLitterForm = () => {
                 </label>
                 <br />
                 <Calendar maxDate={new Date()} onChange={handleBornChanged} value={born} />
+                <br />
+                <br />
 
+                <label htmlFor="puppies">
+                    <b>Amount of puppies born:</b>
+                </label>
+                <br />
+                <input 
+                    value={children}
+                    onChange={(e) => setChildren(e.target.value)}
+                    type="number" 
+                    name="puppies"
+                    id="puppies"
+                    min="1"
+                    max="30"
+                />
                 
             </form>
         </>

@@ -25,11 +25,11 @@ const Dog = ({ dogId }) => {
 
     return (
         <tr>
-            <td><Link className="orange-link" to={`/dogs/${dogId}`}><b>{dog.name}</b></Link></td>
+            <td className="first-td"><Link className="orange-link" to={`/dogs/${dogId}`}><b>{dog.name}</b></Link></td>
             <td>{dog.breed}</td>
             <td>{dog.female === true ? 'Girl' : 'Boy'}</td>
             <td>{dog.birth?.split(' ').slice(1, 4).join(' ')}</td>
-            <td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
+            <td className="last-td"><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
         </tr>
     )
 }

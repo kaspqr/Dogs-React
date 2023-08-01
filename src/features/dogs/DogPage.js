@@ -5,6 +5,7 @@ import { useGetLittersQuery } from "../litters/littersApiSlice"
 import { useNavigate, useParams, Link } from "react-router-dom"
 
 import useAuth from "../../hooks/useAuth"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const DogPage = () => {
 
@@ -137,12 +138,13 @@ const DogPage = () => {
         littersContent = filteredLitters?.map(litter => 
             <>
                 <p>
-                    <Link className="orange-link" to={`/litters/${litter?.id}`}><b>Litter</b></Link>   
-                    {dog?.female === true ? <> with <Link className="orange-link" to={`/dogs/${litter?.father}`}><b>{parentDogs?.find(parent => parent?.id === litter?.father)?.name}</b></Link></> : null}
-                    {dog?.female === false ? <> with <Link className="orange-link" to={`/dogs/${litter?.mother}`}><b>{parentDogs?.find(parent => parent?.id === litter?.mother)?.name}</b></Link></> : null}
+                    <Link key={litter?.id} className="orange-link" to={`/litters/${litter?.id}`}><b>Litter</b></Link>
+                    {parentDogs ? ' with ' : null} 
+                    {dog?.female === true ? <Link key={litter?.father} className="orange-link" to={`/dogs/${litter?.father}`}><b>{parentDogs?.find(parent => parent?.id === litter?.father)?.name}</b></Link> : null}
+                    {dog?.female === false ? <Link key={litter?.mother} className="orange-link" to={`/dogs/${litter?.mother}`}><b>{parentDogs?.find(parent => parent?.id === litter?.mother)?.name}</b></Link> : null}
                     {litter?.born?.length ? <><br /><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</> : null}
                     {allChildren?.map(child => child?.litter === litter?.id 
-                        ? <><br />{child?.female === true ? <b>Daughter </b> : <b>Son </b>}<Link className="orange-link" to={`/dogs/${child?.id}`}><b>{child?.name}</b></Link></>
+                        ? <><br />{child?.female === true ? <b>Daughter </b> : <b>Son </b>}<Link key={child?.id} className="orange-link" to={`/dogs/${child?.id}`}><b>{child?.name}</b></Link></>
                         : null
                     )}
                 </p>
@@ -238,11 +240,11 @@ const DogPage = () => {
             {dog?.female === true && dog?.sterilized === false ? <p><b>{dog?.heat === true ? 'Currently in Heat' : 'Currently not in heat'}</b></p> : null}
             <p><b>{dog?.sterilized === true ? null : 'Not '}{dog?.female === true ? 'Sterilized' : 'Castrated'}</b></p>
             <p><b>{dog?.microchipped === true ? 'Microchipped' : 'Not Microchipped'}</b></p>
-            {dog?.microchipped === true && dog?.chipnumber?.length ? <p><b>Chipnumber </b>{dog?.chipnumber}</p> : null}
+            {dog?.microchipped === true && dog?.chipnumber?.length && dog?.chipnumber !== 'none ' ? <p><b>Chipnumber </b>{dog?.chipnumber}</p> : null}
             <p><b>{dog?.passport === true ? 'Has a Passport' : 'Does Not Have a Passport'}</b></p>
             <br />
             <p><b>Additional Info</b></p>
-            <p>{dog?.info}</p>
+            <p>{dog?.info && dog?.info !== 'none ' ? dog?.info : null}</p>
             <br />
             <p className="family-tree-title"><b>Instant Family Tree</b></p>
             <br />

@@ -89,10 +89,6 @@ th {
   color: white;
 }
 
-.table-4-columns {
-  width: 25%;
-}
-
 .list-add-new-title, 
 .edit-advertisement-link,
 .litters-page-add-title {
@@ -115,6 +111,11 @@ a {
 .orange-link {
   text-decoration: none;
   color: rgb(235, 155, 52);
+}
+
+.grey-link {
+  text-decoration: none;
+  color: grey;
 }
 
 textarea, 
@@ -221,4 +222,14 @@ select {
 .youtube-icon,
 .tiktok-icon {
   margin-right: 5px;
+}
+
+.first-th, .first-td {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.last-th, .last-td {
+  text-align: right;
+  padding-right: 10px;
 }

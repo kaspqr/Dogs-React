@@ -2,6 +2,8 @@ import { useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faComments, faUser, faDoorOpen, faHouseChimney } from "@fortawesome/free-solid-svg-icons"
 
 const Header = () => {
 
@@ -33,8 +35,9 @@ const Header = () => {
   if (userId) {
     navRight = (
       <>
-        <span className="nav-right header-link" onClick={onLogoutClicked}>Logout</span>
-        <Link className="nav-right header-link" to={'/conversations'}>Messages</Link>
+        <span className="nav-right header-link" onClick={onLogoutClicked}><FontAwesomeIcon icon={faDoorOpen} /></span>
+        <Link className="nav-right header-link" to={`/users/${userId}`}><FontAwesomeIcon icon={faUser} /></Link>
+        <Link className="nav-right header-link" to={'/conversations'}><FontAwesomeIcon icon={faComments} /></Link>
       </>
     )
   } else {
@@ -49,7 +52,7 @@ const Header = () => {
   const content = (
     <header id="layout-header">
       <nav>
-      <Link className="header-link" to={'/'}>Home</Link>
+      <Link className="header-link" to={'/'}><FontAwesomeIcon icon={faHouseChimney} /></Link>
       <Link className="header-link" to={'/dogs'}>Dogs</Link>
       <Link className="header-link" to={'/users'}>Users</Link>
       <Link className="header-link" to={'/litters'}>Litters</Link>

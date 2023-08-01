@@ -2,7 +2,7 @@ import { useGetConversationsQuery } from "./conversationsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useGetMessagesQuery, useAddNewMessageMutation } from "../messages/messagesApiSlice"
 import Message from "../messages/Message"
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { useState, useEffect, useRef } from "react"
 
@@ -148,7 +148,14 @@ const ConversationPage = () => {
 
     return (
         <>
-            {sender.id === userId ? <p className="conversation-page-username-title">{receiver.username}</p> : <p className="conversation-page-username-title">{sender.username}</p>}
+            {sender.id === userId 
+                ? <p className="conversation-page-username-title">
+                    <Link className="grey-link" to={`/users/${receiver.id}`}>{receiver.username}</Link>
+                </p> 
+                : <p className="conversation-page-username-title">
+                    <Link className="grey-link" to={`/users/${sender.id}`}>{sender.username}</Link>
+                </p>
+            }
             <br />
             {isSuccess && messageContent}
         </>

@@ -30,8 +30,6 @@ const NewDogForm = () => {
     const [name, setName] = useState('')
     const [validName, setValidName] = useState(false)
 
-    const [owner, setOwner] = useState('')
-
     const [heat, setHeat] = useState(false)
 
     const [sterilized, setSterilized] = useState(false)
@@ -71,7 +69,6 @@ const NewDogForm = () => {
     useEffect(() => {
         if (isSuccess) {
             setName('')
-            setOwner('')
             setSterilized(false)
             setHeat(false)
             setPassport(false)
@@ -121,7 +118,7 @@ const NewDogForm = () => {
             let finalBirth = birth !== '' ? new Date(birth.getTime()).toDateString() : ''
             let finalDeath = death !== '' ? new Date(death.getTime()).toDateString() : ''
             // POST the dog
-            await addNewDog({ name, country, region, owner, breed, heat, sterilized, passport, 
+            await addNewDog({ name, country, region, breed, heat, sterilized, passport, 
                 microchipped, chipnumber, birth: finalBirth, death: finalDeath, info, female, "user": userId })
         }
     }

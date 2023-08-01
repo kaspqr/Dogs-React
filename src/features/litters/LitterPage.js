@@ -30,7 +30,7 @@ const LitterPage = () => {
         error: litterError
     }] = useUpdateLitterMutation()
 
-    const [selectedDog, setSelectedDog] = useState()
+    const [selectedDog, setSelectedDog] = useState('')
     const [selectedFather, setSelectedFather] = useState('')
 
     const navigate = useNavigate()
@@ -262,6 +262,7 @@ const LitterPage = () => {
             <button
                 className="black-button"
                 disabled={selectedDog?.length ? false : true}
+                style={selectedDog?.length ? null : {backgroundColor: "grey"}}
                 onClick={() => addToLitter()}
             >
                 Add Dog
