@@ -32,6 +32,7 @@ import useTitle from "./hooks/useTitle"
 import DogReportPage from "./features/dogreports/DogReportPage"
 import AdvertisementReportPage from "./features/advertisementreports/AdvertisementReportPage"
 import UserReportPage from "./features/userreports/UserReportPage"
+import MessageReportPage from "./features/messagereports/MessageReportPage"
 
 function App() {
 
@@ -108,6 +109,11 @@ function App() {
 
             <Route element={<RequireAuth />}>
               <Route path="reportuser/:userid" element={<UserReportPage />} />
+            </Route>
+
+
+            <Route element={<RequireAuth />}>
+              <Route path="reportmessage/:messageid" element={<MessageReportPage />} />
             </Route>
 
 

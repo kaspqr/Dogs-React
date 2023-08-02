@@ -173,6 +173,13 @@ input {
   margin-left: 10px;
 }
 
+.report-message-button {
+  border: none;
+  background-color: transparent;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
 thead {
   background-color: black;
 }
