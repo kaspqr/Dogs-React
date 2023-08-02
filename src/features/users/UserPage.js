@@ -179,6 +179,17 @@ const UserPage = () => {
             <p><b>From </b>{user.location}</p>
             {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p></> : null}
             {filteredDogs?.length ? <><br /><p><b>Dogs administered</b></p><br />{dogContent}</> : null}
+            <br />
+            <br />
+            {userId?.length && id !== userId
+                ? <button 
+                    className="black-button"
+                    onClick={() => navigate(`/reportuser/${id}`)}
+                >
+                    Report User
+                </button>
+                : null
+            }
         </>
     )
 

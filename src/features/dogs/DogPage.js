@@ -5,7 +5,6 @@ import { useGetLittersQuery } from "../litters/littersApiSlice"
 import { useNavigate, useParams, Link } from "react-router-dom"
 
 import useAuth from "../../hooks/useAuth"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const DogPage = () => {
 
@@ -257,6 +256,17 @@ const DogPage = () => {
             {siblingsContent}
             {filteredLitters?.length ? <><p><b>{dog?.name}'s litters and each litter's puppies</b></p><br /></> : null}
             {filteredLitters?.length ? littersContent : <>{dog?.name} has no litters and therefore has no children in the database</>}
+            <br />
+            <br />
+            {userId?.length && dog?.user !== userId
+                ? <button 
+                    className="black-button"
+                    onClick={() => navigate(`/reportdog/${dog?.id}`)}
+                >
+                    Report Dog
+                </button>
+                : null
+            }
         </>
     )
 }

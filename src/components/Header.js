@@ -3,11 +3,11 @@ import { useNavigate, Link } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faComments, faUser, faDoorOpen, faHouseChimney } from "@fortawesome/free-solid-svg-icons"
+import { faComments, faUser, faDoorOpen, faHouseChimney, faFlag } from "@fortawesome/free-solid-svg-icons"
 
 const Header = () => {
 
-  const { userId } = useAuth()
+  const { userId, isAdmin, isSuperAdmin } = useAuth()
   const navigate = useNavigate()
 
   // POST request to clear the refreshtoken
@@ -38,6 +38,10 @@ const Header = () => {
         <span className="nav-right header-link" onClick={onLogoutClicked}><FontAwesomeIcon icon={faDoorOpen} /></span>
         <Link className="nav-right header-link" to={`/users/${userId}`}><FontAwesomeIcon icon={faUser} /></Link>
         <Link className="nav-right header-link" to={'/conversations'}><FontAwesomeIcon icon={faComments} /></Link>
+        {isAdmin || isSuperAdmin
+          ? <span className="nav-right header-link"><FontAwesomeIcon icon={faFlag} /></span> 
+          : null
+        }
       </>
     )
   } else {

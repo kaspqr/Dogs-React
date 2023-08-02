@@ -29,6 +29,10 @@ import PersistLogin from "./features/auth/PersistLogin"
 import RequireAuth from "./features/auth/RequireAuth"
 import useTitle from "./hooks/useTitle"
 
+import DogReportPage from "./features/dogreports/DogReportPage"
+import AdvertisementReportPage from "./features/advertisementreports/AdvertisementReportPage"
+import UserReportPage from "./features/userreports/UserReportPage"
+
 function App() {
 
   useTitle('Dogs App')
@@ -89,6 +93,21 @@ function App() {
                 <Route index element={<ConversationsList />} />
                 <Route path=":conversationid" element={<ConversationPage />} />
               </Route>
+            </Route>
+
+
+            <Route element={<RequireAuth />}>
+              <Route path="reportdog/:dogid" element={<DogReportPage />} />
+            </Route>
+
+
+            <Route element={<RequireAuth />}>
+              <Route path="reportadvertisement/:advertisementid" element={<AdvertisementReportPage />} />
+            </Route>
+
+
+            <Route element={<RequireAuth />}>
+              <Route path="reportuser/:userid" element={<UserReportPage />} />
             </Route>
 
 

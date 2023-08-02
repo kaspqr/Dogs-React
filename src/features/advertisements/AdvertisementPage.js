@@ -1,9 +1,11 @@
 import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 
 const AdvertisementPage = () => {
+
+    const navigate = useNavigate()
 
     const { userId } = useAuth()
 
@@ -41,6 +43,17 @@ const AdvertisementPage = () => {
             <p>{advertisement?.region ? advertisement?.region + ', ' : null}{advertisement?.country}</p>
             <p><b>Info</b></p>
             <p>{advertisement?.info}</p>
+            <br />
+            <br />
+            {userId?.length && advertisement?.poster !== userId
+                ? <button 
+                    className="black-button"
+                    onClick={() => navigate(`/reportadvertisement/${advertisement?.id}`)}
+                >
+                    Report Advertisement
+                </button>
+                : null
+            }
         </>
     )
 }
