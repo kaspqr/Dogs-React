@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import { useGetUsersQuery } from "./usersApiSlice"
+import { useGetUsersQuery, useUpdateUserMutation } from "./usersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import { useGetConversationsQuery, useAddNewConversationMutation } from "../conversations/conversationsApiSlice"
 
@@ -9,7 +9,7 @@ const UserPage = () => {
     const navigate = useNavigate()
 
     // User that's logged in
-    const { userId } = useAuth()
+    const { userId, isAdmin, isSuperAdmin } = useAuth()
 
     // User whose page we're on
     const { id } = useParams()
@@ -29,6 +29,14 @@ const UserPage = () => {
             user: data?.entities[id]
         }),
     })
+
+    // PATCH function for updating the user
+    const [updateUser, {
+        isLoading: isUpdateLoading,
+        isSuccess: isUpdateSuccess,
+        isError: isUpdateError,
+        error: updateError
+    }] = useUpdateUserMutation()
 
     // GET all conversations
     const {
@@ -153,6 +161,14 @@ const UserPage = () => {
         }
     }
 
+    const handleBanUser = async () => {
+        await updateUser({ id: user?.id, active: false })
+    }
+
+    const handleUnbanUser = async () => {
+        await updateUser({ id: user?.id, active: true })
+    }
+
     const content = (
         <>
             {userId === id 
@@ -188,6 +204,12 @@ const UserPage = () => {
                 >
                     Report User
                 </button>
+                : null
+            }
+            {isAdmin || isSuperAdmin
+                ? user?.active
+                    ? <><br /><br /><button className="black-button" onClick={handleBanUser}>Ban User</button></>
+                    : <><br /><br /><button className="black-button" onClick={handleUnbanUser}>Unban User</button></>
                 : null
             }
         </>

@@ -1,4 +1,4 @@
-import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
+import { useGetAdvertisementsQuery, useDeleteAdvertisementMutation } from "./advertisementsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
@@ -7,7 +7,7 @@ const AdvertisementPage = () => {
 
     const navigate = useNavigate()
 
-    const { userId } = useAuth()
+    const { userId, isAdmin, isSuperAdmin } = useAuth()
 
     const { advertisementid } = useParams()
 
@@ -24,6 +24,18 @@ const AdvertisementPage = () => {
             user: data?.entities[advertisement?.poster]
         }),
     })
+
+    // DELETE method to delete the advertisement
+    const [deleteAdvertisement, {
+        isSuccess: isDelSuccess,
+        isError: isDelError,
+        error: delerror
+    }] = useDeleteAdvertisementMutation()
+
+    const handleAdminDelete = async () => {
+        await deleteAdvertisement({ id: advertisement?.id })
+        navigate('/')
+    }
 
     if (!advertisement) {
         return null
@@ -52,6 +64,12 @@ const AdvertisementPage = () => {
                 >
                     Report Advertisement
                 </button>
+                : null
+            }
+            {isAdmin || isSuperAdmin
+                ? <><br /><br /><button className="black-button" onClick={handleAdminDelete}>
+                    Delete as Admin
+                </button></>
                 : null
             }
         </>

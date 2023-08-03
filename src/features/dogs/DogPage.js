@@ -1,4 +1,4 @@
-import { useGetDogsQuery } from "./dogsApiSlice"
+import { useGetDogsQuery, useDeleteDogMutation } from "./dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useGetLittersQuery } from "../litters/littersApiSlice"
 
@@ -10,7 +10,7 @@ const DogPage = () => {
 
     const navigate = useNavigate()
 
-    const { userId } = useAuth()
+    const { userId, isAdmin, isSuperAdmin } = useAuth()
 
     const { dogid } = useParams()
 
@@ -20,6 +20,18 @@ const DogPage = () => {
             dog: data?.entities[dogid]
         }),
     })
+
+    // DELETE method to delete the dog
+    const [deleteDog, {
+        isSuccess: isDelSuccess,
+        isError: isDelError,
+        error: delerror
+    }] = useDeleteDogMutation()
+
+    const handleAdminDelete = async () => {
+        await deleteDog({ id: dog?.id })
+        navigate('/dogs')
+    }
 
     // GET the user who administrates the dog with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
@@ -265,6 +277,10 @@ const DogPage = () => {
                 >
                     Report Dog
                 </button>
+                : null
+            }
+            {isAdmin || isSuperAdmin
+                ? <><br /><br /><button className="black-button" onClick={handleAdminDelete}>Delete as Admin</button></>
                 : null
             }
         </>
