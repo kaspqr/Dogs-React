@@ -169,6 +169,7 @@ input {
 .edit-profile-delete-button,
 .edit-dog-delete-button,
 .checkbox-to-the-right,
+.search-icon-right,
 .send-message-button {
   margin-left: 10px;
 }
@@ -229,4 +230,12 @@ select {
 .youtube-icon,
 .tiktok-icon {
   margin-right: 5px;
+}
+
+.search-icon-right {
+  cursor: pointer;
+  background-color: rgb(235, 155, 52);
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 3px;
 }
