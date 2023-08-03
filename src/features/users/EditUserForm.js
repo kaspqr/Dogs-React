@@ -4,11 +4,6 @@ import { useNavigate } from "react-router-dom"
 
 const EditUserForm = ({ user }) => {
 
-    const NAME_REGEX = /^[A-z]{2,20}$/
-    const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
-    const LOCATION_REGEX = /^[A-z]{4,50}$/
-    const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
-
     // PATCH function for updating the user
     const [updateUser, {
         isLoading,
@@ -36,8 +31,6 @@ const EditUserForm = ({ user }) => {
 
     const [location, setLocation] = useState(user.location)
 
-    const [active, setActive] = useState(user.active)
-
     // Clear the inputs if the user has been updated or deleted successfully
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
@@ -54,14 +47,12 @@ const EditUserForm = ({ user }) => {
     const handleEmailChanged = e => setEmail(e.target.value)
     const handleLocationChanged = e => setLocation(e.target.value)
 
-    const handleActiveChanged = () => setActive(prev => !prev)
-
     // PATCH the user
     const handleSaveUserClicked = async () => {
         if (password) {
-            await updateUser({ id: user.id, password, name, email, location, active })
+            await updateUser({ id: user.id, password, name, email, location })
         } else {
-            await updateUser({ id: user.id, name, email, location, active })
+            await updateUser({ id: user.id, name, email, location })
         }
     }
 
@@ -133,20 +124,6 @@ const EditUserForm = ({ user }) => {
                     name="location"
                     value={location}
                     onChange={handleLocationChanged}
-                />
-                <br />
-                <br />
-
-                <label htmlFor="user-active">
-                    <b>Active</b>
-                </label>
-                <input 
-                    className="checkbox-to-the-right"
-                    type="checkbox"
-                    checked={active} 
-                    id="user-active"
-                    name="user-active"
-                    onChange={handleActiveChanged}
                 />
                 <br />
                 <br />
