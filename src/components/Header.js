@@ -39,7 +39,9 @@ const Header = () => {
         <Link className="nav-right header-link" to={`/users/${userId}`}><FontAwesomeIcon icon={faUser} /></Link>
         <Link className="nav-right header-link" to={'/conversations'}><FontAwesomeIcon icon={faComments} /></Link>
         {isAdmin || isSuperAdmin
-          ? <span className="nav-right header-link"><FontAwesomeIcon icon={faFlag} /></span> 
+          ? <span className="nav-right header-link">
+            <Link to={'/adminpage'}><FontAwesomeIcon icon={faFlag} /></Link>
+          </span> 
           : null
         }
       </>

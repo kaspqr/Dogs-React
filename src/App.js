@@ -34,6 +34,20 @@ import AdvertisementReportPage from "./features/advertisementreports/Advertiseme
 import UserReportPage from "./features/userreports/UserReportPage"
 import MessageReportPage from "./features/messagereports/MessageReportPage"
 
+import AdminPage from "./features/adminpage/AdminPage"
+
+import AdvertisementReportsList from "./features/adminpage/AdvertisementReportsList"
+import ReportedAdvertisementPage from "./features/adminpage/ReportedAdvertisementPage"
+
+import DogReportsList from "./features/adminpage/DogReportsList"
+import ReportedDogPage from "./features/adminpage/ReportedDogPage"
+
+import MessageReportsList from "./features/adminpage/MessageReportsList"
+import ReportedMessagePage from "./features/adminpage/ReportedMessagePage"
+
+import UserReportsList from "./features/adminpage/UserReportsList"
+import ReportedUserPage from "./features/adminpage/ReportedUserPage"
+
 function App() {
 
   useTitle('Dogs App')
@@ -117,6 +131,39 @@ function App() {
             </Route>
 
 
+            <Route element={<RequireAuth />}>
+              <Route path="adminpage" element={<AdminPage />} />
+            </Route>
+
+
+            <Route path="advertisementreports">
+
+              <Route index element={<AdvertisementReportsList />} />
+              <Route path=":advertisementreportid" element={<ReportedAdvertisementPage />} />
+            </Route>
+
+
+            <Route path="dogreports">
+
+              <Route index element={<DogReportsList />} />
+              <Route path=":dogreportid" element={<ReportedDogPage />} />
+            </Route>
+
+
+            <Route path="messagereports">
+
+              <Route index element={<MessageReportsList />} />
+              <Route path=":messagereportid" element={<ReportedMessagePage />} />
+            </Route>
+
+
+            <Route path="userreports">
+
+              <Route index element={<UserReportsList />} />
+              <Route path=":userreportid" element={<ReportedUserPage />} />
+            </Route>
+
+            
           </Route>
         </Route>
       </Route>

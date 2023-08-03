@@ -96,7 +96,7 @@ const UserPage = () => {
     if (isSuccess) {
         const { ids, entities } = dogs
 
-        const filteredIds = ids.filter(dogId => entities[dogId].user === user.id)
+        const filteredIds = ids?.filter(dogId => entities[dogId]?.user === user?.id)
 
         if (filteredIds?.length) {
             filteredDogs = filteredIds.map(dogId => entities[dogId])
