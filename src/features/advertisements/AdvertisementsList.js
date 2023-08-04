@@ -103,6 +103,7 @@ const AdvertisementsList = () => {
         
         <p><b>Title</b></p>
         <input 
+          value={title}
           name="advertisement-title-search-input" 
           id="advertisement-title-search-input" 
           onChange={(e) => setTitle(e.target.value)}
@@ -110,6 +111,7 @@ const AdvertisementsList = () => {
         
         <p><b>Type</b></p>
         <select 
+          value={type}
           name="advertisement-type" 
           id="advertisement-type"
           onChange={(e) => setType(e.target.value)}
@@ -120,6 +122,7 @@ const AdvertisementsList = () => {
         
         <p><b>Country</b></p>
         <select 
+          value={country}
           name="advertisement-country" 
           id="advertisement-country"
           onChange={handleCountryChanged}
@@ -130,8 +133,9 @@ const AdvertisementsList = () => {
         
         <p><b>Region</b></p>
         <select 
-          name="advertisement-country" 
-          id="advertisement-country"
+          value={region}
+          name="advertisement-region" 
+          id="advertisement-region"
           onChange={(e) => setRegion(e.target.value)}
         >
           <option value="">--</option>
