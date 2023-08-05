@@ -75,6 +75,15 @@ const DogsList = () => {
     setGender(e.target.value)
   }
 
+  const handleToggleFilterView = () => {
+    const filterDiv = document.getElementById('dog-filter-div')
+    if (filterDiv?.style?.display === 'none') {
+      filterDiv.style.display = 'block'
+    } else {
+      filterDiv.style.display = 'none'
+    }
+  }
+
   const handleSearchClicked = () => {
   
     const filteredDogsName = Object.values(dogs?.entities)?.filter((dog) => {
@@ -183,136 +192,150 @@ const DogsList = () => {
 
     // Dog component for each dog
     const tableContent = filteredIds?.length
-      ? filteredIds.map(dogId => <Dog key={dogId} dogId={dogId} />)
-      : ids?.map(dogId => <Dog key={dogId} dogId={dogId} />)
+      ? filteredIds.map(dogId => <Dog key={dogId} dogId={dogId} />).reverse()
+      : ids?.map(dogId => <Dog key={dogId} dogId={dogId} />).reverse()
 
     content = (
       <>
-        {userId?.length ? (<Link className="list-add-new-title" to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link>) : null}
-        
-        <p><b>Name</b></p>
-        <input 
-          value={name}
-          name="dog-name-search-input" 
-          id="dog-name-search-input" 
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <p><b>Breed</b></p>
-        <select 
-          onChange={(e) => setBreed(e.target.value)}
-          value={breed}
-          name="dogs-filter-breed-select" 
-          id="dogs-filter-breed-select"
-        >
-          <option value="">--</option>
-          {breedOptions}
-        </select>
-
-        <p><b>Country</b></p>
-        <select 
-          value={country}
-          name="dog-country" 
-          id="dog-country"
-          onChange={handleCountryChanged}
-        >
-          <option value="">--</option>
-          {Countries}
-        </select>
-        
-        <p><b>Region</b></p>
-        <select 
-          value={region}
-          name="dog-region" 
-          id="dog-region"
-          onChange={(e) => setRegion(e.target.value)}
-        >
-          <option value="">--</option>
-          {bigCountries?.includes(country)
-            ? Regions[country]
-            : null
-          }
-        </select>
-
-        <p><b>Passport</b></p>
-        <select 
-          value={passport} 
-          onChange={(e) => setPassport(e.target.value)}
-          name="passport" 
-          id="passport"
-        >
-          <option value="">--</option>
-          <option value="yes">Documented</option>
-          <option value="no">Not Documented</option>
-        </select>
-
-        <p><b>Fixed</b></p>
-        <select 
-          value={fixed} 
-          onChange={(e) => setFixed(e.target.value)}
-          name="fixed" 
-          id="fixed"
-        >
-          <option value="">--</option>
-          <option value="yes">Fixed</option>
-          <option value="no">Not Fixed</option>
-        </select>
-
-        <p><b>Good</b></p>
-        <select 
-          value={gender} 
-          onChange={handleGenderChanged}
-          name="gender" 
-          id="gender"
-        >
-          <option value="">--</option>
-          <option value="female">Girl</option>
-          <option value="male">Boy</option>
-        </select>
-
-        <p><b>Currently in Heat</b></p>
-        <select 
-          disabled={gender !== 'female'}
-          value={heat} 
-          onChange={(e) => setHeat(e.target.value)}
-          name="heat" 
-          id="heat"
-        >
-          <option value="">--</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-
-        <p><b>Chipped</b></p>
-        <select 
-          value={chipped} 
-          onChange={handleChippedChanged}
-          name="chipped" 
-          id="chipped"
-        >
-          <option value="">--</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-
-        <p><b>Chipnumber</b></p>
-        <input 
-          disabled={chipped !== 'yes'}
-          value={chipnumber} 
-          onChange={(e) => setChipnumber(e.target.value)}
-          name="chipnumber" 
-          id="chipnumber"
-        />
-
-        <br />
-        <br />
-
-        <button 
-          onClick={handleSearchClicked}
+        <button
           className="black-button"
+          onClick={handleToggleFilterView}
         >
-          Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+          Toggle Search View
         </button>
+
+        <br />
+        <br />
+
+        <div id="dog-filter-div" style={{display: "none"}}>
+          <p><b>Name</b></p>
+          <input 
+            value={name}
+            name="dog-name-search-input" 
+            id="dog-name-search-input" 
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <p><b>Breed</b></p>
+          <select 
+            onChange={(e) => setBreed(e.target.value)}
+            value={breed}
+            name="dogs-filter-breed-select" 
+            id="dogs-filter-breed-select"
+          >
+            <option value="">--</option>
+            {breedOptions}
+          </select>
+
+          <p><b>Country</b></p>
+          <select 
+            value={country}
+            name="dog-country" 
+            id="dog-country"
+            onChange={handleCountryChanged}
+          >
+            <option value="">--</option>
+            {Countries}
+          </select>
+          
+          <p><b>Region</b></p>
+          <select 
+            value={region}
+            name="dog-region" 
+            id="dog-region"
+            onChange={(e) => setRegion(e.target.value)}
+          >
+            <option value="">--</option>
+            {bigCountries?.includes(country)
+              ? Regions[country]
+              : null
+            }
+          </select>
+
+          <p><b>Passport</b></p>
+          <select 
+            value={passport} 
+            onChange={(e) => setPassport(e.target.value)}
+            name="passport" 
+            id="passport"
+          >
+            <option value="">--</option>
+            <option value="yes">Documented</option>
+            <option value="no">Not Documented</option>
+          </select>
+
+          <p><b>Fixed</b></p>
+          <select 
+            value={fixed} 
+            onChange={(e) => setFixed(e.target.value)}
+            name="fixed" 
+            id="fixed"
+          >
+            <option value="">--</option>
+            <option value="yes">Fixed</option>
+            <option value="no">Not Fixed</option>
+          </select>
+
+          <p><b>Good</b></p>
+          <select 
+            value={gender} 
+            onChange={handleGenderChanged}
+            name="gender" 
+            id="gender"
+          >
+            <option value="">--</option>
+            <option value="female">Girl</option>
+            <option value="male">Boy</option>
+          </select>
+
+          <p><b>Currently in Heat</b></p>
+          <select 
+            disabled={gender !== 'female'}
+            value={heat} 
+            onChange={(e) => setHeat(e.target.value)}
+            name="heat" 
+            id="heat"
+          >
+            <option value="">--</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+
+          <p><b>Chipped</b></p>
+          <select 
+            value={chipped} 
+            onChange={handleChippedChanged}
+            name="chipped" 
+            id="chipped"
+          >
+            <option value="">--</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+
+          <p><b>Chipnumber</b></p>
+          <input 
+            disabled={chipped !== 'yes'}
+            value={chipnumber} 
+            onChange={(e) => setChipnumber(e.target.value)}
+            name="chipnumber" 
+            id="chipnumber"
+          />
+
+          <br />
+          <br />
+
+          <button 
+            onClick={handleSearchClicked}
+            className="black-button search-button"
+          >
+            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+          </button>
+          <br />
+          <br />
+        </div>
+
+        {userId?.length ? (<Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link>) : null}
 
         <br />
         <br />

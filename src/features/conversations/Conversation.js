@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { useGetConversationsQuery } from "./conversationsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
+import { useGetMessagesQuery } from "../messages/messagesApiSlice"
 import { memo } from "react"
 import useAuth from "../../hooks/useAuth"
 
@@ -29,6 +30,23 @@ const Conversation = ({ conversationId }) => {
         }),
     })
 
+    // GET all the messages
+    const {
+        data: messages,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetMessagesQuery('messagesList', {
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
+
+    if (isLoading) return <p>Loading...</p>
+
+    if (isError) return <p>Error: {error}</p>
+
     if (!conversation) {
         return null
     }
@@ -41,24 +59,43 @@ const Conversation = ({ conversationId }) => {
         return null
     }
 
-    // Variable for the other user who you're having a conversation with
-    let otherUser
+    if (isSuccess) {
+        const { entities } = messages
 
-    if (receiver?.id === userId) {
-        otherUser = sender
+        // Get the messages of current conversation
+        const currentConversationMessages = Object.values(entities)?.filter(message => {
+            return message.conversation === conversationId
+        })
+
+        // Get the last message in the conversation
+        const lastMessage = currentConversationMessages?.length 
+            ? currentConversationMessages[currentConversationMessages.length - 1] 
+            : null
+
+        // Variable for the other user who you're having a conversation with
+        let otherUser
+
+        if (receiver?.id === userId) {
+            otherUser = sender
+        }
+
+        if (sender?.id === userId) {
+            otherUser = receiver
+        }
+
+
+        return (
+            <tr>
+                <td><Link className="orange-link" to={`/conversations/${conversation.id}`}><b>{otherUser.username}</b></Link></td>
+                <td>{lastMessage?.sender ? 
+                    lastMessage?.text?.length > 20 
+                        ? `${lastMessage?.text?.slice(0, 20)}...` 
+                        : `${lastMessage?.text}`
+                    : null
+                }</td>
+            </tr>
+        )
     }
-
-    if (sender?.id === userId) {
-        otherUser = receiver
-    }
-
-
-    return (
-        <tr>
-            <td><Link className="orange-link" to={`/users/${otherUser.id}`}><b>{otherUser.username}</b></Link></td>
-            <td><Link className="orange-link" to={`/conversations/${conversation.id}`}><b>Open</b></Link></td>
-        </tr>
-    )
 }
 
 const memoizedConversation = memo(Conversation)

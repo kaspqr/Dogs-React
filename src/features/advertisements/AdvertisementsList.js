@@ -42,6 +42,15 @@ const AdvertisementsList = () => {
     setCountry(e.target.value)
   }
 
+  const handleToggleFilterView = () => {
+    const filterDiv = document.getElementById('ad-filter-div')
+    if (filterDiv?.style?.display === 'none') {
+      filterDiv.style.display = 'block'
+    } else {
+      filterDiv.style.display = 'none'
+    }
+  }
+
   const handleSearchClicked = () => {
   
     const filteredAdsTitle = Object.values(advertisements?.entities)?.filter((ad) => {
@@ -94,66 +103,81 @@ const AdvertisementsList = () => {
     const { ids } = advertisements
 
     const tableContent = filteredIds?.length
-      ? filteredIds?.map(advertisementId => <Advertisement key={advertisementId} advertisementId={advertisementId} />)
-      : ids?.map(advertisementId => <Advertisement key={advertisementId} advertisementId={advertisementId} />)
+      ? filteredIds?.map(advertisementId => <Advertisement key={advertisementId} advertisementId={advertisementId} />).reverse()
+      : ids?.map(advertisementId => <Advertisement key={advertisementId} advertisementId={advertisementId} />).reverse()
 
     content = (
       <>
-        {userId?.length ? <Link className="list-add-new-title" to={'/advertisements/new'}><button className="black-button">Post an Advertisement</button></Link> : null}
-        
-        <p><b>Title</b></p>
-        <input 
-          value={title}
-          name="advertisement-title-search-input" 
-          id="advertisement-title-search-input" 
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        
-        <p><b>Type</b></p>
-        <select 
-          value={type}
-          name="advertisement-type" 
-          id="advertisement-type"
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="">--</option>
-          {AdvertisementTypes}
-        </select>
-        
-        <p><b>Country</b></p>
-        <select 
-          value={country}
-          name="advertisement-country" 
-          id="advertisement-country"
-          onChange={handleCountryChanged}
-        >
-          <option value="">--</option>
-          {Countries}
-        </select>
-        
-        <p><b>Region</b></p>
-        <select 
-          value={region}
-          name="advertisement-region" 
-          id="advertisement-region"
-          onChange={(e) => setRegion(e.target.value)}
-        >
-          <option value="">--</option>
-          {bigCountries?.includes(country)
-            ? Regions[country]
-            : null
-          }
-        </select>
-
-        <br />
-        <br />
-
-        <button 
-          onClick={handleSearchClicked}
+        <button
           className="black-button"
+          onClick={handleToggleFilterView}
         >
-          Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+          Toggle Search View
         </button>
+
+        <br />
+        <br />
+
+        <div id="ad-filter-div" style={{display: "none"}}>
+          <p><b>Title</b></p>
+          <input 
+            value={title}
+            name="advertisement-title-search-input" 
+            id="advertisement-title-search-input" 
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          
+          <p><b>Type</b></p>
+          <select 
+            value={type}
+            name="advertisement-type" 
+            id="advertisement-type"
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="">--</option>
+            {AdvertisementTypes}
+          </select>
+          
+          <p><b>Country</b></p>
+          <select 
+            value={country}
+            name="advertisement-country" 
+            id="advertisement-country"
+            onChange={handleCountryChanged}
+          >
+            <option value="">--</option>
+            {Countries}
+          </select>
+          
+          <p><b>Region</b></p>
+          <select 
+            value={region}
+            name="advertisement-region" 
+            id="advertisement-region"
+            onChange={(e) => setRegion(e.target.value)}
+          >
+            <option value="">--</option>
+            {bigCountries?.includes(country)
+              ? Regions[country]
+              : null
+            }
+          </select>
+
+          <br />
+          <br />
+
+          <button 
+            onClick={handleSearchClicked}
+            className="black-button search-button"
+          >
+            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+          </button>
+
+          <br />
+          <br />
+        </div>
+
+        {userId?.length ? <Link to={'/advertisements/new'}><button className="black-button">Post an Advertisement</button></Link> : null}
 
         <br />
         <br />

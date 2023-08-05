@@ -59,6 +59,7 @@ const EditUserForm = ({ user }) => {
     // DELETE the user
     const handleDeleteUserClicked = async () => {
         await deleteUser({ id: user.id })
+        navigate('/')
     }
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''

@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faComments, faUser, faDoorOpen, faHouseChimney, faFlag } from "@fortawesome/free-solid-svg-icons"
+import { faComments, faUser, faDoorOpen, faHouseChimney, faFlag, faClipboardUser } from "@fortawesome/free-solid-svg-icons"
 
 const Header = () => {
 
@@ -49,8 +49,8 @@ const Header = () => {
   } else {
     navRight = (
       <>
-        <Link className="nav-right header-link" to={'/register'}>Register</Link>
-        <Link className="nav-right header-link" to={'/login'}>Login</Link>
+        <Link className="nav-right header-link" to={'/register'}><FontAwesomeIcon icon={faClipboardUser} /></Link>
+        <Link className="nav-right header-link" to={'/login'}><FontAwesomeIcon icon={faDoorOpen} /></Link>
       </>
     )
   }

@@ -48,8 +48,8 @@ const ConversationsList = () => {
         <table className="content-table">
           <thead>
             <tr>
-              <th>Username</th>
-              <th>Open Convo</th>
+              <th>User</th>
+              <th>Last Message</th>
             </tr>
           </thead>
           <tbody>
