@@ -12,7 +12,9 @@ const LittersList = () => {
 
   const { userId } = useAuth()
 
-  const [born, setBorn] = useState('')
+  const [bornEarliest, setBornEarliest] = useState('')
+
+  const [bornLatest, setBornLatest] = useState('')
 
   const [puppies, setPuppies] = useState()
 
@@ -31,7 +33,9 @@ const LittersList = () => {
     refetchOnMountOrArgChange: true
   })
 
-  const handleBornChanged = date => setBorn(date)
+  const handleBornEarliestChanged = date => setBornEarliest(date)
+
+  const handleBornLatestChanged = date => setBornLatest(date)
 
   const handleToggleFilterView = () => {
     const filterDiv = document.getElementById('litter-filter-div')
@@ -44,19 +48,27 @@ const LittersList = () => {
 
   const handleSearchClicked = () => {
 
-    const finalBorn = born !== '' ? new Date(born.getTime()).toDateString() : ''
+    const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
 
-    const filteredLittersBorn = born?.length
+    const filteredLittersBornEarliest = finalBornEarliest !== ''
       ? Object.values(litters?.entities)?.filter((litter) => {
-        return litter.born === finalBorn
+        return new Date(litter.born) >= finalBornEarliest
       })
       : Object.values(litters?.entities)
+
+    const finalBornLatest = bornLatest !== '' ? new Date(bornLatest) : ''
+
+    const filteredLittersBornLatest = finalBornLatest !== ''
+      ? filteredLittersBornEarliest?.filter((litter) => {
+        return new Date(litter.born) <= finalBornLatest
+      })
+      : filteredLittersBornEarliest
   
     const filteredLittersPuppies = puppies?.length
-      ? filteredLittersBorn?.filter((litter) => {
+      ? filteredLittersBornLatest?.filter((litter) => {
         return litter.children.toString() === puppies
       })
-      : filteredLittersBorn
+      : filteredLittersBornLatest
 
     const finalFilteredLitters = filteredLittersPuppies
 
@@ -100,8 +112,15 @@ const LittersList = () => {
         <br />
 
         <div id="litter-filter-div" style={{display: "none"}}>
-          <p><b>Born on</b></p>
-          <Calendar maxDate={new Date()} onChange={handleBornChanged} value={born} />
+          <p><b>Born at Earliest</b></p>
+          <Calendar maxDate={new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
+
+          <br />
+
+          <p><b>Born at Latest</b></p>
+          <Calendar maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
+
+          <br />
 
           <p><b>Amount of Puppies</b></p>
           <input 

@@ -19,7 +19,7 @@ const LitterPage = () => {
     const [deleteLitter, {
         isSuccess: isDelSuccess,
         isError: isDelError,
-        error: delerror
+        error: delError
     }] = useDeleteLitterMutation()
 
     // PATCH function to add a father to the litter
@@ -86,10 +86,22 @@ const LitterPage = () => {
     let filteredDogs
     let filteredUserDogs
     
-    if (isLoading || isUpdateLoading) dogContent = <p>Loading...</p>
+    if (isLoading || isUpdateLoading || isLitterLoading) dogContent = <p>Loading...</p>
     
     if (isError) {
         dogContent = <p className="errmsg">{error?.data?.message}</p>
+    }
+    
+    if (isUpdateError) {
+        dogContent = <p className="errmsg">{updateError?.data?.message}</p>
+    }
+    
+    if (isDelError) {
+        dogContent = <p className="errmsg">{delError?.data?.message}</p>
+    }
+    
+    if (isLitterError) {
+        dogContent = <p className="errmsg">{litterError?.data?.message}</p>
     }
     
     if (isSuccess) {

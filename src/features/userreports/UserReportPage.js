@@ -57,7 +57,7 @@ const UserReportPage = () => {
                 className="black-button"
                 onClick={handleReportClicked}
                 disabled={report?.length < 1}
-                style={report?.length < 1 ? {backgroundColor: "grey"} : null}
+                style={report?.length < 1 ? {backgroundColor: "grey", cursor: "default"} : null}
             >
                 Report
             </button>

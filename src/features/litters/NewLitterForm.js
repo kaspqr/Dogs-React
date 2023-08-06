@@ -81,7 +81,7 @@ const NewLitterForm = () => {
     let dogsContent
     let ownedDogs
     
-    if (isLoading) {
+    if (isLoading || isLitterLoading) {
         dogsContent = <p>Loading...</p>
     }
     

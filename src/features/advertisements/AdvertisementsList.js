@@ -6,6 +6,7 @@ import { AdvertisementTypes } from "../../config/advertisementTypes"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
+import { Currencies } from "../../config/currencies"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
@@ -22,7 +23,13 @@ const AdvertisementsList = () => {
 
   const [region, setRegion] = useState('')
 
+  const [currency, setCurrency] = useState('')
+
+  const [price, setPrice] = useState()
+
   const [filteredIds, setFilteredIds] = useState([])
+
+  const currencyAndPriceDisabled = type === 'Found' || type === 'Lost' || type === ''
 
   // GET all the advertisements
   const {
@@ -40,6 +47,14 @@ const AdvertisementsList = () => {
   const handleCountryChanged = (e) => {
     setRegion('')
     setCountry(e.target.value)
+  }
+
+  const handleTypeChanged = (e) => {
+    if (e.target.value === '' || e.target.value === 'Found' || e.target.value === 'Lost') {
+      setCurrency('')
+      setPrice('')
+    }
+    setType(e.target.value)
   }
 
   const handleToggleFilterView = () => {
@@ -74,8 +89,14 @@ const AdvertisementsList = () => {
         return ad.type === type
       })
       : filteredAdsCountry
+  
+    const filteredAdsCurrency = currency?.length
+      ? filteredAdsType?.filter((ad) => {
+        return ad.currency === currency
+      })
+      : filteredAdsCountry
 
-    const finalFilteredAds = filteredAdsType
+    const finalFilteredAds = filteredAdsCurrency
 
     if (!finalFilteredAds?.length) alert("Unfortunately, no matching advertisement has been found")
 
@@ -132,7 +153,7 @@ const AdvertisementsList = () => {
             value={type}
             name="advertisement-type" 
             id="advertisement-type"
-            onChange={(e) => setType(e.target.value)}
+            onChange={handleTypeChanged}
           >
             <option value="">--</option>
             {AdvertisementTypes}
@@ -162,6 +183,28 @@ const AdvertisementsList = () => {
               : null
             }
           </select>
+
+          <p><b>Currency</b></p>
+          <select 
+            value={currency}
+            name="advertisement-currency" 
+            id="advertisement-currency"
+            onChange={(e) => setCurrency(e.target.value)}
+            disabled={currencyAndPriceDisabled}
+          >
+            <option value="">--</option>
+            {Currencies}
+          </select>
+
+          <p><b>Price</b></p>
+          <input 
+            disabled={currencyAndPriceDisabled}
+            type="number" 
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            name="advertisement-price"
+            id="advertisement-price"
+          />
 
           <br />
           <br />

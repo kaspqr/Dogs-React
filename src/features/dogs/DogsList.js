@@ -9,6 +9,8 @@ import { Breeds } from "../../config/breeds"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
+import Calendar from "react-calendar"
+import 'react-calendar/dist/Calendar.css'
 
 const DogsList = () => {
 
@@ -34,6 +36,10 @@ const DogsList = () => {
 
   const [fixed, setFixed] = useState('')
 
+  const [bornEarliest, setBornEarliest] = useState('')
+
+  const [bornLatest, setBornLatest] = useState('')
+
   const [filteredIds, setFilteredIds] = useState([])
 
   const breeds = [ ...Object.values(Breeds) ]
@@ -53,6 +59,10 @@ const DogsList = () => {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })
+
+  const handleBornEarliestChanged = date => setBornEarliest(date)
+
+  const handleBornLatestChanged = date => setBornLatest(date)
 
   const handleCountryChanged = (e) => {
     setRegion('')
@@ -85,10 +95,28 @@ const DogsList = () => {
   }
 
   const handleSearchClicked = () => {
-  
-    const filteredDogsName = Object.values(dogs?.entities)?.filter((dog) => {
-      return dog.name?.includes(name)
-    })
+
+    const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
+
+    const filteredDogsBornEarliest = finalBornEarliest !== ''
+      ? Object.values(dogs?.entities)?.filter((dog) => {
+        return new Date(dog.birth) >= finalBornEarliest
+      })
+      : Object.values(dogs?.entities)
+
+    const finalBornLatest = bornLatest !== '' ? new Date(bornLatest) : ''
+
+    const filteredDogsBornLatest = finalBornLatest !== ''
+      ? filteredDogsBornEarliest?.filter((dog) => {
+        return new Date(dog.birth) <= finalBornLatest
+      })
+      : filteredDogsBornEarliest
+
+    const filteredDogsName = name?.length
+      ? filteredDogsBornLatest?.filter((dog) => {
+        return dog.name?.includes(name)
+      })
+      : filteredDogsBornLatest
   
     const filteredDogsChipnumber = chipnumber?.length
       ? filteredDogsName?.filter((dog) => {
@@ -226,6 +254,33 @@ const DogsList = () => {
             <option value="">--</option>
             {breedOptions}
           </select>
+
+          <br />
+          <br />
+
+          <p><b>Born at Earliest</b></p>
+          <Calendar maxDate={new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
+          <button 
+            className="black-button"
+            onClick={() => setBornEarliest('')}
+          >
+            Clear Date
+          </button>
+
+          <br />
+          <br />
+
+          <p><b>Born at Latest</b></p>
+          <Calendar maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
+          <button 
+            className="black-button"
+            onClick={() => setBornLatest('')}
+          >
+            Clear Date
+          </button>
+
+          <br />
+          <br />
 
           <p><b>Country</b></p>
           <select 

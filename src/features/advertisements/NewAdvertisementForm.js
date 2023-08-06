@@ -26,7 +26,7 @@ const NewAdvertisementForm = () => {
 
     const [title, setTitle] = useState('')
 
-    const [type, setType] = useState('')
+    const [type, setType] = useState('Sell')
 
     const [price, setPrice] = useState()
 
@@ -54,7 +54,7 @@ const NewAdvertisementForm = () => {
 
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = title?.length && type?.length && price?.length && !isAdvertisementLoading
+    const canSave = title?.length && type?.length && (type === 'Found' || price?.length) && !isAdvertisementLoading
 
     // Variable for an error message
     let errMsg

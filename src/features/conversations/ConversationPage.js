@@ -60,7 +60,7 @@ const ConversationPage = () => {
         isError,
         error
     } = useGetMessagesQuery('messagesList', {
-        pollingInterval: 15000,
+        pollingInterval: 30000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -72,7 +72,7 @@ const ConversationPage = () => {
         if (conversationDivRef.current) {
             conversationDivRef.current.scrollTop = conversationDivRef.current.scrollHeight
         }
-    })
+    }, [messages])
 
     // Clear the input if the previous message has been successfully sent
     useEffect(() => {
@@ -84,10 +84,14 @@ const ConversationPage = () => {
     // Variable for errors and content
     let messageContent
     
-    if (isLoading) messageContent = <p>Loading...</p>
+    if (isLoading || isMessageLoading) messageContent = <p>Loading...</p>
     
     if (isError) {
         messageContent = <p className="errmsg">{error?.data?.message}</p>
+    }
+    
+    if (isMessageError) {
+        messageContent = <p className="errmsg">{messageError?.data?.message}</p>
     }
     
     if (isSuccess) {
