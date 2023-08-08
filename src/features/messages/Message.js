@@ -32,7 +32,7 @@ const Message = ({ messageId }) => {
 
     // Different style for messages sent by the logged in user
     const messageStyle = message?.sender === userId ? {backgroundColor: "rgb(235, 155, 52)", float: "right"} : {backgroundColor: "lightgrey", float: "left"}
-    const timeStyle = message?.sender === userId ? {float: "right"} : {float: "left", display: "none"}
+    const timeStyle = message?.sender === userId ? {float: "right", display: "none"} : {float: "left", display: "none"}
 
     const timeId = `time-${message?.id}`
     const msgId = `message-${message?.id}`

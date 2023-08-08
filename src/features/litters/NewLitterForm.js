@@ -104,7 +104,7 @@ const NewLitterForm = () => {
         if (filteredDogs?.length) {
             ownedDogs = filteredDogs.map(dog => (
                 <option
-                    key={dog}
+                    key={dog.id}
                     value={dog.id}
                 >
                     {dog.name}
@@ -125,24 +125,11 @@ const NewLitterForm = () => {
             <p>{dogsContent}</p>
 
             <form onSubmit={handleSaveLitterClicked}>
-                <div>
-                    <p className="register-litter-page-title">Register Litter</p>
-                    <br />
-                    <div>
-                        <button
-                            className="black-button"
-                            style={saveColor}
-                            title="Save"
-                            disabled={!canSave}
-                        >
-                            Save
-                        </button>
-                    </div>
-                </div>
+                <p className="register-litter-page-title">Register Litter</p>
                 <br />
                 
                 <label htmlFor="litter">
-                    <b>Litter's mother:</b>
+                    <b>Litter's Mother</b>
                 </label>
                 <br />
                 <select 
@@ -171,10 +158,9 @@ const NewLitterForm = () => {
                 <br />
                 <Calendar maxDate={new Date()} onChange={handleBornChanged} value={born} />
                 <br />
-                <br />
 
                 <label htmlFor="puppies">
-                    <b>Amount of puppies born:</b>
+                    <b>Amount of Puppies Born</b>
                 </label>
                 <br />
                 <input 
@@ -186,7 +172,18 @@ const NewLitterForm = () => {
                     min="1"
                     max="30"
                 />
+
+                <br />
+                <br />
                 
+                <button
+                    className="black-button"
+                    style={saveColor}
+                    title="Save"
+                    disabled={!canSave}
+                >
+                    Save
+                </button>
             </form>
         </>
     )

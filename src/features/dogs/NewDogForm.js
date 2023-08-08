@@ -95,10 +95,18 @@ const NewDogForm = () => {
     const handleHeatChanged = () => setHeat(prev => !prev)
     const handleSterilizedChanged = () => setSterilized(prev => !prev)
     const handlePassportChanged = () => setPassport(prev => !prev)
-    const handleMicrochippedChanged = () => setMicrochipped(prev => !prev)
+    const handleMicrochippedChanged = () => {
+        setChipnumber('')
+        setMicrochipped(prev => !prev)
+    }
 
     const handleInfoChanged = e => setInfo(e.target.value)
-    const handleFemaleChanged = e => setFemale(e.target.value === "female" ? true : false)
+    const handleFemaleChanged = e => {
+        if (e.target.value === 'male') {
+            setHeat(false)
+        }
+        setFemale(e.target.value === "female" ? true : false)
+    }
 
     // Clear the region each time the country is changed in order to avoid having a region from the wrong country
     const handleCountryChanged = (e) => {

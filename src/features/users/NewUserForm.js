@@ -2,13 +2,15 @@ import { useState, useEffect } from "react"
 import { useAddNewUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
 
 const NewUserForm = () => {
 
     const USERNAME_REGEX = /^[A-z]{6,20}$/
-    const NAME_REGEX = /^[A-z]{2,20}$/
-    const EMAIL_REGEX = /^[A-z0-9@.]{7,50}$/
-    const LOCATION_REGEX = /^[A-z]{4,50}$/
+    const NAME_REGEX = /^[A-z ]{2,20}$/
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
     const auth = useAuth()
@@ -37,8 +39,9 @@ const NewUserForm = () => {
     const [email, setEmail] = useState('')
     const [validEmail, setValidEmail] = useState(false)
 
-    const [location, setLocation] = useState('')
-    const [validLocation, setValidLocation] = useState(false)
+    const [country, setCountry] = useState('Argentina')
+
+    const [region, setRegion] = useState('')
 
 
     useEffect(() => {
@@ -57,10 +60,6 @@ const NewUserForm = () => {
         setValidEmail(EMAIL_REGEX.test(email))
     }, [email])
 
-    useEffect(() => {
-        setValidLocation(LOCATION_REGEX.test(location))
-    }, [location])
-
     // Clear the inputs if a user was POSTed successfully
     useEffect(() => {
         if (isSuccess) {
@@ -68,7 +67,8 @@ const NewUserForm = () => {
             setPassword('')
             setName('')
             setEmail('')
-            setLocation('')
+            setCountry('')
+            setRegion('')
             navigate('/users')
         }
     }, [isSuccess, navigate])
@@ -78,16 +78,20 @@ const NewUserForm = () => {
     const handlePasswordChanged = e => setPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
-    const handleLocationChanged = e => setLocation(e.target.value)
+
+    const handleCountryChanged = (e) => {
+        setRegion('')
+        setCountry(e.target.value)
+    }
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = [validUsername, validPassword, validName, validEmail, validLocation].every(Boolean) && !isLoading
+    const canSave = [validUsername, validPassword, validName, validEmail].every(Boolean) && !isLoading
 
     const handleSaveUserClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
             // POST the user
-            await addNewUser({ username, password, name, email, location })
+            await addNewUser({ username, password, name, email, country, region })
         }
     }
 
@@ -161,19 +165,41 @@ const NewUserForm = () => {
                 <br />
                 <br />
 
-                <label htmlFor="location">
-                    <b>Location</b>
+                <label htmlFor="country">
+                    <b>Country</b>
                 </label>
                 <br />
-                <input 
+                <select 
                     type="text" 
-                    id="location"
-                    name="location"
-                    value={location}
-                    onChange={handleLocationChanged}
-                />
+                    id="country"
+                    name="country"
+                    value={country}
+                    onChange={handleCountryChanged}
+                >
+                    {Countries}
+                </select>
                 <br />
                 <br />
+
+                {bigCountries?.includes(country) 
+                    ? <><label htmlFor="region">
+                                <b>Region</b>
+                            </label>
+                            <br />
+                            <select 
+                                name="region" 
+                                id="region"
+                                value={region}
+                                onChange={(e) => setRegion(e.target.value)}
+                            >
+                                <option value="none ">Region (optional)</option>
+                                {bigCountries?.includes(country) ? Regions[country] : null}
+                            </select>
+                            <br />
+                            <br />
+                        </>
+                    : null
+                }
 
                 <div className="register-page-button-div">
                     <button

@@ -119,7 +119,13 @@ const Login = () => {
           <br />
           <br />
 
-          <button className="black-button">Sign In</button>
+          <button 
+            className="black-button"
+            disabled={!username?.length || !password?.length}
+            style={!username?.length || !password?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+          >
+            Sign In
+          </button>
 
         </form>
       </main>

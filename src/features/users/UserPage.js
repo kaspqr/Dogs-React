@@ -192,7 +192,7 @@ const UserPage = () => {
             <p className="user-page-username">{user.username}</p>
             <p><b>{user.name}</b></p>
             <br />
-            <p><b>From </b>{user.location}</p>
+            <p><b>From </b>{user?.region ? `${user?.region}, ` : null}{user?.country}</p>
             {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p></> : null}
             {filteredDogs?.length ? <><br /><p><b>Dogs administered</b></p><br />{dogContent}</> : null}
             <br />

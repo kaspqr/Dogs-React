@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react"
 import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
 
 const EditUserForm = ({ user }) => {
 
@@ -29,7 +32,9 @@ const EditUserForm = ({ user }) => {
 
     const [email, setEmail] = useState(user.email)
 
-    const [location, setLocation] = useState(user.location)
+    const [country, setCountry] = useState(user.country)
+
+    const [region, setRegion] = useState(user.region?.length ? user.region : '')
 
     // Clear the inputs if the user has been updated or deleted successfully
     useEffect(() => {
@@ -37,7 +42,8 @@ const EditUserForm = ({ user }) => {
             setPassword('')
             setName('')
             setEmail('')
-            setLocation('')
+            setCountry('')
+            setRegion('')
             navigate('/users')
         }
     }, [isSuccess, isDelSuccess, navigate])
@@ -45,14 +51,18 @@ const EditUserForm = ({ user }) => {
     const handlePasswordChanged = e => setPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
-    const handleLocationChanged = e => setLocation(e.target.value)
+
+    const handleCountryChanged = e => {
+        setRegion('')
+        setCountry(e.target.value)
+    }
 
     // PATCH the user
     const handleSaveUserClicked = async () => {
         if (password) {
-            await updateUser({ id: user.id, password, name, email, location })
+            await updateUser({ id: user.id, password, name, email, country, region })
         } else {
-            await updateUser({ id: user.id, name, email, location })
+            await updateUser({ id: user.id, name, email, country, region })
         }
     }
 
@@ -115,19 +125,41 @@ const EditUserForm = ({ user }) => {
                 <br />
                 <br />
 
-                <label htmlFor="location">
-                    <b>Location</b>
+                <label htmlFor="country">
+                    <b>Country</b>
                 </label>
                 <br />
-                <input 
+                <select 
                     type="text" 
-                    id="location"
-                    name="location"
-                    value={location}
-                    onChange={handleLocationChanged}
-                />
+                    id="country"
+                    name="country"
+                    value={country}
+                    onChange={handleCountryChanged}
+                >
+                    {Countries}
+                </select>
                 <br />
                 <br />
+
+                {bigCountries?.includes(country) 
+                    ? <><label htmlFor="region">
+                                <b>Region</b>
+                            </label>
+                            <br />
+                            <select 
+                                name="region" 
+                                id="region"
+                                value={region}
+                                onChange={(e) => setRegion(e.target.value)}
+                            >
+                                <option value="none ">Region (optional)</option>
+                                {bigCountries?.includes(country) ? Regions[country] : null}
+                            </select>
+                            <br />
+                            <br />
+                        </>
+                    : null
+                }
                 
                 <div className="edit-profile-buttons-div">
                     <button

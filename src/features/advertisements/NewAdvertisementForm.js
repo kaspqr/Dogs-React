@@ -52,12 +52,12 @@ const NewAdvertisementForm = () => {
         }
     }, [isAdvertisementSuccess, navigate])
 
+    if (isAdvertisementError) return <p>{advertisementError}</p>
+
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = title?.length && type?.length && (type === 'Found' || price?.length) && !isAdvertisementLoading
+    const canSave = title?.length && type?.length && (type === 'Found' || type === 'Lost' || (price?.length && currency?.length)) && !isAdvertisementLoading
 
-    // Variable for an error message
-    let errMsg
 
     const handleSaveAdvertisementClicked = async (e) => {
         e.preventDefault()
@@ -73,9 +73,17 @@ const NewAdvertisementForm = () => {
         setCountry(e.target.value)
     }
 
+    const handleTypeChanged = (e) => {
+        if (e.target.value === 'Lost' || e.target.value === 'Found') {
+            setPrice('')
+            setCurrency('')
+        }
+
+        setType(e.target.value)
+    }
+
     const content = (
         <>
-            {errMsg}
             <form onSubmit={handleSaveAdvertisementClicked}>
                 <div>
                     <p className="advertisement-post-page-title">Post Advertisement</p>
@@ -103,7 +111,7 @@ const NewAdvertisementForm = () => {
                     id="type"
                     name="type"
                     value={type}
-                    onChange={(e) => setType(e.target.value)}
+                    onChange={handleTypeChanged}
                 >
                     {AdvertisementTypes}
                 </select>
@@ -119,6 +127,7 @@ const NewAdvertisementForm = () => {
                     id="price"
                     name="price"
                     value={price}
+                    disabled={type === 'Found' || type === 'Lost'}
                     onChange={(e) => setPrice(e.target.value)}
                 />
                 <br />
@@ -132,8 +141,10 @@ const NewAdvertisementForm = () => {
                     id="currency"
                     name="currency"
                     value={currency}
+                    disabled={type === 'Found' || type === 'Lost'}
                     onChange={(e) => setCurrency(e.target.value)}
                 >
+                    <option value="">--</option>
                     {Currencies}
                 </select>
                 <br />

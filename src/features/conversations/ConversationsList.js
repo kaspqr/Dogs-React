@@ -76,7 +76,7 @@ const ConversationsList = () => {
 
       tableContent = lastMessages?.map(message => {
         return filteredIds?.map(id => {
-          if (message.conversation === id) return <Conversation key={id} conversationId={id} />
+          if (message?.conversation === id) return <Conversation key={id} conversationId={id} />
         })
       })
     } else {

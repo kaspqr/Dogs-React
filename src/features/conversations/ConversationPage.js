@@ -12,7 +12,7 @@ const ConversationPage = () => {
 
     const { conversationid } = useParams()
 
-    const [newMessage, setNewMessage] = useState()
+    const [newMessage, setNewMessage] = useState('')
 
     // POST method for a new message
     const [addNewMessage, {
