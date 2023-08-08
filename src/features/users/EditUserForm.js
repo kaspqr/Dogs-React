@@ -53,7 +53,7 @@ const EditUserForm = ({ user }) => {
     const handleEmailChanged = e => setEmail(e.target.value)
 
     const handleCountryChanged = e => {
-        setRegion('')
+        setRegion('none ')
         setCountry(e.target.value)
     }
 

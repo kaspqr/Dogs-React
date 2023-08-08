@@ -1,7 +1,7 @@
 import { useGetUsersQuery } from "./usersApiSlice"
 import User from "./User"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
 
 const UsersList = () => {
@@ -9,6 +9,10 @@ const UsersList = () => {
   const [username, setUsername] = useState('')
 
   const [filteredIds, setFilteredIds] = useState([])
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const [newPage, setNewPage] = useState('')
 
   // GET all the users
   const {
@@ -25,6 +29,8 @@ const UsersList = () => {
 
   const handleSearchClicked = () => {
 
+    setCurrentPage(1)
+
     const filteredUsers = username?.length
       ? Object.values(users?.entities)?.filter((user) => {
         return user.username.includes(username)
@@ -33,7 +39,7 @@ const UsersList = () => {
 
     if (!filteredUsers?.length) alert("Unfortunately, no matching user has been found")
 
-    const filteredIds = filteredUsers?.map((user) => {
+    const filteredIds = filteredUsers?.reverse().map((user) => {
       return user._id
     })
 
@@ -51,12 +57,28 @@ const UsersList = () => {
   }
 
   if (isSuccess) {
-    const { ids } = users
 
-    // User component for each user in the list
-    const tableContent = filteredIds?.length
-      ? filteredIds.map(userId => <User key={userId} userId={userId} />)
-      : ids.map(userId => <User key={userId} userId={userId} />)
+    const reversedNewIds = Object.values(users?.entities)?.reverse().map((user) => {
+      return user._id
+    })
+
+    const itemsPerPage = 50
+
+    const maxPage = Math.ceil(filteredIds?.length ? filteredIds?.length / itemsPerPage : reversedNewIds?.length / itemsPerPage)
+
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+
+    const usersToDisplay = filteredIds?.length
+      ? filteredIds.slice(startIndex, endIndex)
+      : reversedNewIds.slice(startIndex, endIndex)
+
+    const goToPageButtonDisabled = newPage < 1 || newPage > maxPage || parseInt(newPage) === currentPage
+
+    // User component for each user
+    const tableContent = usersToDisplay.map(userId => (
+      <User key={userId} userId={userId} />
+    ))
 
     content = (
       <>
@@ -83,6 +105,57 @@ const UsersList = () => {
         <br />
         <br />
 
+        <p>
+          <button 
+            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === 1}
+            className="black-button pagination-button"
+            onClick={() => {
+              setCurrentPage(currentPage - 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+          </button>
+
+          {` Page ${currentPage} of ${maxPage} `}
+
+          <button 
+            className="black-button pagination-button"
+            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === maxPage}
+            onClick={() => {
+              setCurrentPage(currentPage + 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+          </button>
+
+          <span className="new-page-input-span">
+            <input 
+              onChange={(e) => setNewPage(e.target.value)} 
+              value={newPage} 
+              type="number" 
+              className="new-page-input"
+              placeholder="Page no."
+            />
+            <button
+              style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+              disabled={goToPageButtonDisabled}
+              onClick={() => {
+                if (newPage >= 1 && newPage <= maxPage) {
+                  setCurrentPage(parseInt(newPage))
+                }
+              }}
+              className="black-button"
+            >
+              Go to Page
+            </button>
+          </span>
+
+        </p>
+
+        <br />
+
         <table className="content-table">
           <thead>
             <tr>
@@ -93,6 +166,57 @@ const UsersList = () => {
             {tableContent}
           </tbody>
         </table>
+
+        <br />
+
+        <p>
+          <button 
+            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === 1}
+            className="black-button pagination-button"
+            onClick={() => {
+              setCurrentPage(currentPage - 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+          </button>
+
+          {` Page ${currentPage} of ${maxPage} `}
+
+          <button 
+            className="black-button pagination-button"
+            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === maxPage}
+            onClick={() => {
+              setCurrentPage(currentPage + 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+          </button>
+
+          <span className="new-page-input-span">
+            <input 
+              onChange={(e) => setNewPage(e.target.value)} 
+              value={newPage} 
+              type="number" 
+              className="new-page-input"
+              placeholder="Page no."
+            />
+            <button
+              style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+              disabled={goToPageButtonDisabled}
+              onClick={() => {
+                if (newPage >= 1 && newPage <= maxPage) {
+                  setCurrentPage(parseInt(newPage))
+                }
+              }}
+              className="black-button"
+            >
+              Go to Page
+            </button>
+          </span>
+
+        </p>
       </>
     )
   }

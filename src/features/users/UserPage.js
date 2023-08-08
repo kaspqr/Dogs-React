@@ -50,14 +50,6 @@ const UserPage = () => {
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
-    
-    // Variable for either an error or content after fetching the user's conversations
-    // In order to check if the visiting user already has a conversation started with said user
-    let conversationContent  
-    
-    if (isConversationError) {
-        conversationContent = <p className="errmsg">{conversationError?.data?.message}</p>
-    }
 
     // Variable for either an error or content after fetching the user's dogs
     let dogContent
@@ -92,7 +84,7 @@ const UserPage = () => {
         refetchOnMountOrArgChange: true
     })
     
-    if (isLoading) dogContent = <p>Loading...</p>
+    if (isLoading || isConversationLoading) dogContent = <p>Loading...</p>
     
     if (isError) {
         dogContent = <p className="errmsg">{error?.data?.message}</p>
@@ -162,37 +154,43 @@ const UserPage = () => {
     }
 
     const handleBanUser = async () => {
-        await updateUser({ id: user?.id, active: false })
+        console.log('trying to ban user')
+        const result = await updateUser({ id: user?.id, active: false })
+        console.log(result)
     }
 
     const handleUnbanUser = async () => {
-        await updateUser({ id: user?.id, active: true })
+        console.log('trying to unban user')
+        const result = await updateUser({ id: user?.id, active: true })
+        console.log(result)
     }
 
     const content = (
         <>
-            {userId === id 
-                ? <button
-                    className="user-page-edit-button black-button"
-                    onClick={handleEdit}
-                >
-                    Edit Profile
-                </button> 
-                : null
-            }
-            {userId?.length && userId !== id 
-                ? <button
-                    className="user-page-edit-button black-button"
-                    onClick={handleMessage}
-                >
-                    Message
-                </button> 
-                : null
-            }
-            <p className="user-page-username">{user.username}</p>
+            <p className="user-page-username">
+                {user.username}
+                {userId === id 
+                    ? <button
+                        className="user-page-edit-button black-button"
+                        onClick={handleEdit}
+                    >
+                        Edit Profile
+                    </button> 
+                    : null
+                }
+                {userId?.length && userId !== id 
+                    ? <button
+                        className="user-page-edit-button black-button"
+                        onClick={handleMessage}
+                    >
+                        Message
+                    </button> 
+                    : null
+                }
+            </p>
             <p><b>{user.name}</b></p>
             <br />
-            <p><b>From </b>{user?.region ? `${user?.region}, ` : null}{user?.country}</p>
+            <p><b>From </b>{user?.region && user?.region !== 'none ' ? `${user?.region}, ` : null}{user?.country}</p>
             {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p></> : null}
             {filteredDogs?.length ? <><br /><p><b>Dogs administered</b></p><br />{dogContent}</> : null}
             <br />
@@ -206,7 +204,7 @@ const UserPage = () => {
                 </button>
                 : null
             }
-            {isAdmin || isSuperAdmin
+            {(isAdmin || isSuperAdmin) && !user?.roles?.includes("Admin", "SuperAdmin") && id !== userId
                 ? user?.active
                     ? <><br /><br /><button className="black-button" onClick={handleBanUser}>Ban User</button></>
                     : <><br /><br /><button className="black-button" onClick={handleUnbanUser}>Unban User</button></>

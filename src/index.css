@@ -36,8 +36,14 @@ input[type=number] {
   margin-left: 15px;
 }
 
-.nav-right {
+.nav-right,
+.new-page-input-span {
   float: right;
+}
+
+.new-page-input {
+  width: 70px;
+  margin-right: 10px;
 }
 
 .header-link {
@@ -152,6 +158,14 @@ input {
 .register-page-title,
 .register-page-button-div {
   margin-bottom: 20px;
+}
+
+.user-page-edit-button {
+  float: right;
+}
+
+.pagination-button {
+  border-radius: 10px;
 }
 
 .black-button {

@@ -3,7 +3,7 @@ import Litter from "./Litter"
 import useAuth from "../../hooks/useAuth"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
 import Calendar from "react-calendar"
 import 'react-calendar/dist/Calendar.css'
@@ -19,6 +19,10 @@ const LittersList = () => {
   const [puppies, setPuppies] = useState()
 
   const [filteredIds, setFilteredIds] = useState([])
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const [newPage, setNewPage] = useState('')
 
   // GET all the litters
   const {
@@ -48,6 +52,8 @@ const LittersList = () => {
 
   const handleSearchClicked = () => {
 
+    setCurrentPage(1)
+
     const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
 
     const filteredLittersBornEarliest = finalBornEarliest !== ''
@@ -74,7 +80,7 @@ const LittersList = () => {
 
     if (!finalFilteredLitters?.length) alert("Unfortunately, no matching litter has been found")
 
-    const filteredIds = finalFilteredLitters?.map((litter) => {
+    const filteredIds = finalFilteredLitters?.reverse().map((litter) => {
       return litter._id
     })
 
@@ -92,15 +98,35 @@ const LittersList = () => {
   }
 
   if (isSuccess) {
-    const { ids } = litters
+    const reversedNewIds = Object.values(litters?.entities)?.reverse().map((litter) => {
+      return litter._id
+    })
 
-    // Litter component for each litter in the list
-    const tableContent = filteredIds?.length
-      ? filteredIds.map(litterId => <Litter key={litterId} litterId={litterId} />)
-      : ids.map(litterId => <Litter key={litterId} litterId={litterId} />)
+    const itemsPerPage = 50
+
+    const maxPage = Math.ceil(filteredIds?.length ? filteredIds?.length / itemsPerPage : reversedNewIds?.length / itemsPerPage)
+
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+
+    const littersToDisplay = filteredIds?.length
+      ? filteredIds.slice(startIndex, endIndex)
+      : reversedNewIds.slice(startIndex, endIndex)
+
+    const goToPageButtonDisabled = newPage < 1 || newPage > maxPage || parseInt(newPage) === currentPage
+
+    // Litter component for each litter
+    const tableContent = littersToDisplay.map(litterId => (
+      <Litter key={litterId} litterId={litterId} />
+    ))
 
     content = (
       <>
+        {userId?.length ? <Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link> : null}
+
+        <br />
+        <br />
+        
         <button
           className="black-button"
           onClick={handleToggleFilterView}
@@ -144,9 +170,55 @@ const LittersList = () => {
           <br />
         </div>
 
-        {userId?.length ? <Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link> : null}
+        <p>
+          <button 
+            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === 1}
+            className="black-button pagination-button"
+            onClick={() => {
+              setCurrentPage(currentPage - 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+          </button>
 
-        <br />
+          {` Page ${currentPage} of ${maxPage} `}
+
+          <button 
+            className="black-button pagination-button"
+            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === maxPage}
+            onClick={() => {
+              setCurrentPage(currentPage + 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+          </button>
+
+          <span className="new-page-input-span">
+            <input 
+              onChange={(e) => setNewPage(e.target.value)} 
+              value={newPage} 
+              type="number" 
+              className="new-page-input"
+              placeholder="Page no."
+            />
+            <button
+              style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+              disabled={goToPageButtonDisabled}
+              onClick={() => {
+                if (newPage >= 1 && newPage <= maxPage) {
+                  setCurrentPage(parseInt(newPage))
+                }
+              }}
+              className="black-button"
+            >
+              Go to Page
+            </button>
+          </span>
+
+        </p>
+
         <br />
 
         <table className="content-table">
@@ -161,6 +233,57 @@ const LittersList = () => {
             {tableContent}
           </tbody>
         </table>
+
+        <br />
+
+        <p>
+          <button 
+            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === 1}
+            className="black-button pagination-button"
+            onClick={() => {
+              setCurrentPage(currentPage - 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+          </button>
+
+          {` Page ${currentPage} of ${maxPage} `}
+
+          <button 
+            className="black-button pagination-button"
+            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            disabled={currentPage === maxPage}
+            onClick={() => {
+              setCurrentPage(currentPage + 1)
+            }}
+          >
+            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+          </button>
+
+          <span className="new-page-input-span">
+            <input 
+              onChange={(e) => setNewPage(e.target.value)} 
+              value={newPage} 
+              type="number" 
+              className="new-page-input"
+              placeholder="Page no."
+            />
+            <button
+              style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+              disabled={goToPageButtonDisabled}
+              onClick={() => {
+                if (newPage >= 1 && newPage <= maxPage) {
+                  setCurrentPage(parseInt(newPage))
+                }
+              }}
+              className="black-button"
+            >
+              Go to Page
+            </button>
+          </span>
+
+        </p>
       </>
     )
   }
