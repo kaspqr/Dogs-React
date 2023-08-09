@@ -148,12 +148,13 @@ const DogPage = () => {
 
         littersContent = filteredLitters?.map(litter => 
             <>
-                <p>
+                <p key={litter?.id}>
                     <Link key={litter?.id} className="orange-link" to={`/litters/${litter?.id}`}><b>Litter</b></Link>
-                    {parentDogs ? ' with ' : null} 
+                    {(dog?.female === true && dog?.father?.length) || (dog?.female === false && dog?.mother?.length) ? ' with ' : null} 
                     {dog?.female === true ? <Link key={litter?.father} className="orange-link" to={`/dogs/${litter?.father}`}><b>{parentDogs?.find(parent => parent?.id === litter?.father)?.name}</b></Link> : null}
                     {dog?.female === false ? <Link key={litter?.mother} className="orange-link" to={`/dogs/${litter?.mother}`}><b>{parentDogs?.find(parent => parent?.id === litter?.mother)?.name}</b></Link> : null}
                     {litter?.born?.length ? <><br /><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</> : null}
+                    {!allChildren?.length ? <><br />This litter doesn't have any puppies added to it</> : null}
                     {allChildren?.map(child => child?.litter === litter?.id 
                         ? <><br />{child?.female === true ? <b>Daughter </b> : <b>Son </b>}<Link key={child?.id} className="orange-link" to={`/dogs/${child?.id}`}><b>{child?.name}</b></Link></>
                         : null

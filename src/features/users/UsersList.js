@@ -2,7 +2,7 @@ import { useGetUsersQuery } from "./usersApiSlice"
 import User from "./User"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const UsersList = () => {
 
@@ -13,6 +13,20 @@ const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const [newPage, setNewPage] = useState('')
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   // GET all the users
   const {
@@ -130,7 +144,12 @@ const UsersList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
@@ -194,7 +213,12 @@ const UsersList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 

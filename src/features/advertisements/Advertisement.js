@@ -1,9 +1,23 @@
 import { Link } from "react-router-dom"
 import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { memo } from "react"
+import { memo, useState, useEffect } from "react"
 
 const Advertisement = ({ advertisementId }) => {
+
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth)
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     // GET the advertisement in props with all of it's .values
     const { advertisement } = useGetAdvertisementsQuery("advertisementsList", {
@@ -26,8 +40,11 @@ const Advertisement = ({ advertisementId }) => {
     return (
         <tr>
             <td className="first-td"><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></td>
-            <td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
-            <td>{advertisement?.type}</td>
+            {windowWidth > 600 
+                ? <><td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
+                    <td>{advertisement?.type}</td></>
+                : null
+            }
             <td className="last-td">{advertisement?.type !== 'Found' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</td>
         </tr>
     )

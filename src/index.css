@@ -206,6 +206,8 @@ thead {
 .message-text {
   padding: 5px;
   border-radius: 5px;
+  max-width: 300px;
+  margin-bottom: 10px;
 }
 
 .family-tree-title,
@@ -256,4 +258,15 @@ select {
 
 .search-button {
   margin-right: 10px;
+}
+
+@media (max-width: 1000px) {
+  .content {
+    grid-template-columns: none;
+  }
+
+  #layout-header {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }

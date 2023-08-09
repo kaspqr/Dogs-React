@@ -60,8 +60,8 @@ const Header = () => {
       <nav>
       <Link className="header-link" to={'/'}><FontAwesomeIcon icon={faHouseChimney} /></Link>
       <Link className="header-link" to={'/dogs'}>Dogs</Link>
-      <Link className="header-link" to={'/users'}>Users</Link>
       <Link className="header-link" to={'/litters'}>Litters</Link>
+      <Link className="header-link" to={'/users'}>Users</Link>
         {navRight}
       </nav>
     </header>

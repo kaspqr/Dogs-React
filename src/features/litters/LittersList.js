@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Calendar from "react-calendar"
 import 'react-calendar/dist/Calendar.css'
 
@@ -23,6 +23,20 @@ const LittersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const [newPage, setNewPage] = useState('')
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   // GET all the litters
   const {
@@ -195,7 +209,12 @@ const LittersList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
@@ -261,7 +280,12 @@ const LittersList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 

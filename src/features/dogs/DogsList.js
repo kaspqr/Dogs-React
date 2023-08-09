@@ -8,7 +8,7 @@ import { Regions } from "../../config/regions"
 import { Breeds } from "../../config/breeds"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Calendar from "react-calendar"
 import 'react-calendar/dist/Calendar.css'
 
@@ -45,6 +45,20 @@ const DogsList = () => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const [newPage, setNewPage] = useState('')
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   const breeds = [ ...Object.values(Breeds) ]
   const breedOptions = breeds.map(breed => (
@@ -442,7 +456,12 @@ const DogsList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
@@ -472,9 +491,12 @@ const DogsList = () => {
           <thead>
             <tr>
               <th className="first-th">Name</th>
-              <th>Breed</th>
-              <th>Good</th>
-              <th>Born</th>
+              {windowWidth > 600 
+                ? <><th>Breed</th>
+                  <th>Good</th>
+                  <th>Born</th></>
+                : null
+              }
               <th className="last-th">Administered by</th>
             </tr>
           </thead>
@@ -504,7 +526,12 @@ const DogsList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 

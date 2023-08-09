@@ -1,9 +1,23 @@
 import { Link } from "react-router-dom"
 import { useGetDogsQuery } from "./dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
 
 const Dog = ({ dogId }) => {
+
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth)
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     // GET the dog with all of it's .values
     const { dog } = useGetDogsQuery("dogsList", {
@@ -26,9 +40,13 @@ const Dog = ({ dogId }) => {
     return (
         <tr>
             <td className="first-td"><Link className="orange-link" to={`/dogs/${dogId}`}><b>{dog.name}</b></Link></td>
-            <td>{dog.breed}</td>
-            <td>{dog.female === true ? 'Girl' : 'Boy'}</td>
-            <td>{dog.birth?.split(' ').slice(1, 4).join(' ')}</td>
+            {windowWidth > 600 
+                ? <><td>{dog.breed}</td>
+                <td>{dog.female === true ? 'Girl' : 'Boy'}</td>
+                <td>{dog.birth?.split(' ').slice(1, 4).join(' ')}</td></>
+                : null
+              }
+            
             <td className="last-td"><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
         </tr>
     )

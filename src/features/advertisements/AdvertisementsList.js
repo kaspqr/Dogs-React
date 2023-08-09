@@ -9,7 +9,7 @@ import { Regions } from "../../config/regions"
 import { Currencies } from "../../config/currencies"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const AdvertisementsList = () => {
 
@@ -34,6 +34,20 @@ const AdvertisementsList = () => {
   const [newPage, setNewPage] = useState('')
 
   const currencyAndPriceDisabled = type === 'Found' || type === 'Lost' || type === ''
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   // GET all the advertisements
   const {
@@ -272,7 +286,12 @@ const AdvertisementsList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
@@ -302,8 +321,11 @@ const AdvertisementsList = () => {
           <thead>
             <tr>
               <th className="first-th">Title</th>
-              <th>Poster</th>
-              <th>Type</th>
+              {windowWidth > 600
+                ? <><th>Poster</th>
+                  <th>Type</th></>
+                : null
+              }
               <th className="last-th">Price</th>
             </tr>
           </thead>
@@ -337,7 +359,12 @@ const AdvertisementsList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          <span className="new-page-input-span">
+          {windowWidth > 600 ? null : <><br /><br /></>}
+
+          <span 
+            className="new-page-input-span"
+            style={windowWidth > 600 ? null : {float: "none"}}
+          >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 

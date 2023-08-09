@@ -47,8 +47,29 @@ const Message = ({ messageId }) => {
         }
     }
 
+    let allWords = message?.text?.split(' ')
+
+    for (let word = 0; word < allWords.length; word++) {
+        if (allWords[word].length > 34) {
+
+            let amountOfSlices = Math.ceil(allWords[word].length / 34)
+            let newWord = ''
+            let currentIndex = 0
+            for (let i = 0; i < amountOfSlices; i++) {
+                newWord += allWords[word].slice(currentIndex, currentIndex + 34)
+                if (i !== amountOfSlices - 1) {
+                    currentIndex += 35
+                    newWord += ' '
+                }
+            }
+            allWords[word] = newWord
+        }
+    }
+
+    const newMessage = allWords.join(' ')
+
     return (
-        <>
+        <div>
             <p id={timeId} style={timeStyle} className="message-time">
                 {message?.sender !== userId
                     ? <button
@@ -68,11 +89,11 @@ const Message = ({ messageId }) => {
                 className="message-text"
                 onClick={handleMessageClicked}
             >
-                {message?.text}
+                {newMessage}
             </p>
             <br />
             <br />
-        </>
+        </div>
     )
 }
 

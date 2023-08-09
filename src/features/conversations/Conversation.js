@@ -88,8 +88,8 @@ const Conversation = ({ conversationId }) => {
             <tr>
                 <td><Link className="orange-link" to={`/conversations/${conversation.id}`}><b>{otherUser.username}</b></Link></td>
                 <td>{lastMessage?.sender ? 
-                    lastMessage?.text?.length > 20 
-                        ? `${lastMessage?.text?.slice(0, 20)}...` 
+                    lastMessage?.text?.length > 12 
+                        ? `${lastMessage?.text?.slice(0, 12)}...` 
                         : `${lastMessage?.text}`
                     : null
                 }</td>

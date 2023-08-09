@@ -118,10 +118,13 @@ const ConversationPage = () => {
       
         messageContent = (
             <>
-                <div ref={conversationDivRef} className="conversation-page-messages-div">{tableContent}</div>
+                <div ref={conversationDivRef} className="conversation-page-messages-div">
+                    {tableContent}
+                </div>
+                
                 <div className="conversation-page-message-input-div">
                     <form onSubmit={(e) => handleSendMessage(e)}>
-                        <label htmlFor="new-message"><b>New Message:</b></label>
+                        <label htmlFor="new-message"><b>New Message</b></label>
                         <br />
                         <input 
                             value={newMessage} 
