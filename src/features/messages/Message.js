@@ -30,10 +30,6 @@ const Message = ({ messageId }) => {
         return null
     }
 
-    // Different style for messages sent by the logged in user
-    const messageStyle = message?.sender === userId ? {backgroundColor: "rgb(235, 155, 52)", float: "right"} : {backgroundColor: "lightgrey", float: "left"}
-    const timeStyle = message?.sender === userId ? {float: "right", display: "none"} : {float: "left", display: "none"}
-
     const timeId = `time-${message?.id}`
     const msgId = `message-${message?.id}`
 
@@ -47,30 +43,23 @@ const Message = ({ messageId }) => {
         }
     }
 
-    let allWords = message?.text?.split(' ')
-
-    for (let word = 0; word < allWords.length; word++) {
-        if (allWords[word].length > 34) {
-
-            let amountOfSlices = Math.ceil(allWords[word].length / 34)
-            let newWord = ''
-            let currentIndex = 0
-            for (let i = 0; i < amountOfSlices; i++) {
-                newWord += allWords[word].slice(currentIndex, currentIndex + 34)
-                if (i !== amountOfSlices - 1) {
-                    currentIndex += 35
-                    newWord += ' '
-                }
-            }
-            allWords[word] = newWord
-        }
+    const messageContainerStyle = {
+        display: 'grid',
+        justifyContent: message?.sender === userId ? 'flex-end' : 'flex-start',
+        marginBottom: '5px',
     }
 
-    const newMessage = allWords.join(' ')
+    const messageContentStyle = {
+        backgroundColor: message?.sender === userId ? 'rgb(235, 155, 52)' : 'lightgrey',
+        borderRadius: '5px',
+        padding: '5px',
+        maxWidth: '300px',
+        wordWrap: 'break-word'
+    }
 
     return (
-        <div>
-            <p id={timeId} style={timeStyle} className="message-time">
+        <div style={messageContainerStyle}>
+            <p id={timeId} className="message-time" style={{display: "none"}}>
                 {message?.sender !== userId
                     ? <button
                         onClick={() => navigate(`/reportmessage/${message?.id}`)}
@@ -82,17 +71,14 @@ const Message = ({ messageId }) => {
                 }
                 {message.time.split('T').join(' ').split('Z').join(' ').split(':').slice(0, 2).join(':')}
             </p>
-            <br />
             <p 
                 id={msgId}
-                style={messageStyle} 
+                style={messageContentStyle} 
                 className="message-text"
                 onClick={handleMessageClicked}
             >
-                {newMessage}
+                {message?.text}
             </p>
-            <br />
-            <br />
         </div>
     )
 }

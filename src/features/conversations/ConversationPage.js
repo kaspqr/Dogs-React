@@ -24,7 +24,7 @@ const ConversationPage = () => {
 
     async function handleSendMessage(e) {
         e.preventDefault()
-        if (newMessage?.length) {
+        if (newMessage?.trim().length) {
             // POST the new message
             await addNewMessage({ sender: userId, conversation: conversationid, text: newMessage })
             setNewMessage('')
