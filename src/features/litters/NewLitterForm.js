@@ -25,9 +25,13 @@ const NewLitterForm = () => {
 
     const [born, setBorn] = useState('')
 
-    const [children, setChildren] = useState()
+    const [breed, setBreed] = useState('')
+
+    const [children, setChildren] = useState(null)
 
     const [validMother, setValidMother] = useState(false)
+
+    const [breedOptions, setBreedOptions] = useState(null)
 
     // Clear the inputs if the litter has been successfully posted
     useEffect(() => {
@@ -39,7 +43,7 @@ const NewLitterForm = () => {
     }, [isLitterSuccess, navigate])
 
     useEffect(() => {
-        if (mother.length) {
+        if (mother?.length) {
             setValidMother(true)
         } else {
             setValidMother(false)
@@ -47,7 +51,29 @@ const NewLitterForm = () => {
     }, [mother])
 
     const handleBornChanged = date => setBorn(date)
-    const handleMotherChanged = e => setMother(e.target.value)
+    const handleMotherChanged = e => {
+
+        setBreed('')
+
+        const { ids, entities } = dogs
+
+        // Filter the mother's ID
+        const motherId = ids.find(dogId => entities[dogId].id === e.target.value)
+
+        // And get it's .values
+        const mother = entities[motherId]
+
+        if (mother?.breed === 'Mixed breed') {
+            setBreedOptions(<option key='Mixed breed' value='Mixed breed'>Mixed breed</option>)
+        } else {
+            setBreedOptions(<>
+                <option key='Mixed breed' value='Mixed breed'>Mixed breed</option>
+                <option key={mother?.breed} value={mother?.breed}>{mother?.breed}</option>
+            </>)
+        }
+        
+        setMother(e.target.value)
+    }
 
     const handleSaveLitterClicked = async (e) => {
         e.preventDefault()
@@ -114,7 +140,7 @@ const NewLitterForm = () => {
     }
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = validMother && born !== '' && !isLoading && children > 0
+    const canSave = validMother && born !== '' && !isLoading && children > 0 && breed !== ''
 
     if (!dogs) return null
 
@@ -150,13 +176,22 @@ const NewLitterForm = () => {
                     {ownedDogs}
                 </select>
                 <br />
-                <br />
 
-                <label htmlFor="born">
-                    <b>Born</b>
+                <label htmlFor="breed">
+                    <b>Puppies' Breed</b>
                 </label>
                 <br />
-                <Calendar maxDate={new Date()} onChange={handleBornChanged} value={born} />
+                <select 
+                    type="text" 
+                    id="breed"
+                    name="breed"
+                    value={breed}
+                    onChange={(e) => setBreed(e.target.value)}
+                >
+                    <option value="" disabled={true}>Breed</option>
+                    {breedOptions}
+                </select>
+
                 <br />
 
                 <label htmlFor="puppies">
@@ -174,6 +209,13 @@ const NewLitterForm = () => {
                 />
 
                 <br />
+                <br />
+
+                <label htmlFor="born">
+                    <b>Born</b>
+                </label>
+                <br />
+                <Calendar maxDate={new Date()} onChange={handleBornChanged} value={born} />
                 <br />
                 
                 <button

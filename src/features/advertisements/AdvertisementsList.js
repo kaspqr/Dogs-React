@@ -25,15 +25,13 @@ const AdvertisementsList = () => {
 
   const [currency, setCurrency] = useState('')
 
-  const [price, setPrice] = useState()
-
   const [filteredIds, setFilteredIds] = useState([])
 
   const [currentPage, setCurrentPage] = useState(1)
 
   const [newPage, setNewPage] = useState('')
 
-  const currencyAndPriceDisabled = type === 'Found' || type === 'Lost' || type === ''
+  const currencyDisabled = type === 'Found' || type === 'Lost' || type === ''
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
@@ -70,7 +68,6 @@ const AdvertisementsList = () => {
   const handleTypeChanged = (e) => {
     if (e.target.value === '' || e.target.value === 'Found' || e.target.value === 'Lost') {
       setCurrency('')
-      setPrice('')
     }
     setType(e.target.value)
   }
@@ -104,17 +101,23 @@ const AdvertisementsList = () => {
       })
       : filteredAdsRegion
   
+    console.log(type)
+    console.log(filteredAdsCountry)
+
     const filteredAdsType = type?.length
       ? filteredAdsCountry?.filter((ad) => {
+        console.log(ad.type)
         return ad.type === type
       })
       : filteredAdsCountry
+
+    console.log(filteredAdsType)
   
     const filteredAdsCurrency = currency?.length
       ? filteredAdsType?.filter((ad) => {
         return ad.currency === currency
       })
-      : filteredAdsCountry
+      : filteredAdsType
 
     const finalFilteredAds = filteredAdsCurrency
 
@@ -125,9 +128,6 @@ const AdvertisementsList = () => {
     })
 
     setFilteredIds(filteredIds || [])
-
-    console.log(filteredIds)
-    
   }
 
   // Variable for displaying either an error or the content if the fetch was sucessful
@@ -231,21 +231,11 @@ const AdvertisementsList = () => {
             name="advertisement-currency" 
             id="advertisement-currency"
             onChange={(e) => setCurrency(e.target.value)}
-            disabled={currencyAndPriceDisabled}
+            disabled={currencyDisabled}
           >
             <option value="">--</option>
             {Currencies}
           </select>
-
-          <p><b>Price</b></p>
-          <input 
-            disabled={currencyAndPriceDisabled}
-            type="number" 
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            name="advertisement-price"
-            id="advertisement-price"
-          />
 
           <br />
           <br />
@@ -263,9 +253,9 @@ const AdvertisementsList = () => {
 
         <p>
           <button 
-            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
-            className="black-button pagination-button"
+            className="pagination-button"
             onClick={() => {
               setCurrentPage(currentPage - 1)
             }}
@@ -276,8 +266,8 @@ const AdvertisementsList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
-            className="black-button pagination-button"
-            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            className="pagination-button"
+            style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
             onClick={() => {
               setCurrentPage(currentPage + 1)
@@ -286,11 +276,16 @@ const AdvertisementsList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          {windowWidth > 600 ? null : <><br /><br /></>}
+          {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
 
           <span 
             className="new-page-input-span"
-            style={windowWidth > 600 ? null : {float: "none"}}
+            style={maxPage === 1 
+              ? {display: "none"}
+              : windowWidth > 600 
+                ? null 
+                : {float: "none"}
+            }
           >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
@@ -336,9 +331,9 @@ const AdvertisementsList = () => {
 
         <p>
           <button 
-            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
-            className="black-button pagination-button"
+            className="pagination-button"
             onClick={() => {
               setCurrentPage(currentPage - 1)
             }}
@@ -349,8 +344,8 @@ const AdvertisementsList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
-            className="black-button pagination-button"
-            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            className="pagination-button"
+            style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
             onClick={() => {
               setCurrentPage(currentPage + 1)
@@ -359,11 +354,16 @@ const AdvertisementsList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          {windowWidth > 600 ? null : <><br /><br /></>}
+          {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
 
           <span 
             className="new-page-input-span"
-            style={windowWidth > 600 ? null : {float: "none"}}
+            style={maxPage === 1 
+              ? {display: "none"}
+              : windowWidth > 600 
+                ? null 
+                : {float: "none"}
+            }
           >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 

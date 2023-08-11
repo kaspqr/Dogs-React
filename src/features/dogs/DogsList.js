@@ -433,9 +433,9 @@ const DogsList = () => {
 
         <p>
           <button 
-            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
-            className="black-button pagination-button"
+            className="pagination-button"
             onClick={() => {
               setCurrentPage(currentPage - 1)
             }}
@@ -446,8 +446,8 @@ const DogsList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
-            className="black-button pagination-button"
-            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            className="pagination-button"
+            style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
             onClick={() => {
               setCurrentPage(currentPage + 1)
@@ -456,11 +456,16 @@ const DogsList = () => {
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          {windowWidth > 600 ? null : <><br /><br /></>}
+          {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
 
           <span 
             className="new-page-input-span"
-            style={windowWidth > 600 ? null : {float: "none"}}
+            style={maxPage === 1 
+              ? {display: "none"}
+              : windowWidth > 600 
+                ? null 
+                : {float: "none"}
+            }
           >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
@@ -509,28 +514,39 @@ const DogsList = () => {
 
         <p>
           <button 
-            style={currentPage === 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
-            className="black-button pagination-button"
-            onClick={() => setCurrentPage(currentPage - 1)}
+            className="pagination-button"
+            onClick={() => {
+              setCurrentPage(currentPage - 1)
+            }}
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
           </button>
+
           {` Page ${currentPage} of ${maxPage} `}
+
           <button 
-            className="black-button pagination-button"
-            style={currentPage === maxPage ? {backgroundColor: "grey", cursor: "default"} : null}
+            className="pagination-button"
+            style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
-            onClick={() => setCurrentPage(currentPage + 1)}
+            onClick={() => {
+              setCurrentPage(currentPage + 1)
+            }}
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
 
-          {windowWidth > 600 ? null : <><br /><br /></>}
+          {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
 
           <span 
             className="new-page-input-span"
-            style={windowWidth > 600 ? null : {float: "none"}}
+            style={maxPage === 1 
+              ? {display: "none"}
+              : windowWidth > 600 
+                ? null 
+                : {float: "none"}
+            }
           >
             <input 
               onChange={(e) => setNewPage(e.target.value)} 

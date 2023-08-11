@@ -103,12 +103,12 @@ const LitterPage = () => {
     if (isLitterError) {
         dogContent = <p className="errmsg">{litterError?.data?.message}</p>
     }
+
+    let filteredFathers
     
-    if (isSuccess) {
+    if (isSuccess || isLitterSuccess || isUpdateSuccess) {
 
         const { ids, entities } = dogs
-
-        let filteredFathers
 
         // Filter all the IDs of dogs whose litter is THE litter
         const filteredIds = ids.filter(dogId => entities[dogId].litter === litter?.id)
@@ -136,9 +136,11 @@ const LitterPage = () => {
         // AND is a male dog
         // These are the dogs that the user is able to add as the father of the litter
         const filteredFatherIds = ids.filter(dogId => entities[dogId].user === userId 
-            && entities[dogId].id !== mother?.id
             && entities[dogId].id !== father?.id
             && entities[dogId].female === false
+            && ((entities[dogId].breed !== 'Mixed breed' && entities[dogId].breed !== mother?.breed && litter?.breed === 'Mixed breed') 
+                || (entities[dogId].breed === 'Mixed breed' && litter?.breed === 'Mixed breed')
+                || (entities[dogId].breed === litter?.breed && litter?.breed === mother?.breed))
             && !filteredIds.includes(entities[dogId].id))
 
         // Convert IDs to objects with .values
@@ -213,14 +215,13 @@ const LitterPage = () => {
     if (mother?.user === userId) {
         content = (
             <>
+                <br />
                 <button
                     className="black-button"
                     onClick={() => handleDeleteLitter()}
                 >
                     Delete
                 </button>
-                <br />
-                <br />
             </>
         )
     }
@@ -232,16 +233,16 @@ const LitterPage = () => {
     }
 
     // Add father dog to the litter
-    async function addFatherToLitter() {
-        return updateLitter({ "id": litterid, "father": selectedFather })
+    const addFatherToLitter = async () => {
+        await updateLitter({ "id": litterid, "father": selectedFather })
     }
 
     // Boolean to control the style and 'disabled' value of the ADD FATHER button
     const canSaveFather = selectedFather?.length && !isLoading
-    const fatherButtonStyle = !canSaveFather ? {backgroundColor: "grey"} : null
+    const fatherButtonStyle = !canSaveFather ? {backgroundColor: "grey", cursor: "default"} : null
     
 
-    const fatherContent = father?.id?.length 
+    const fatherContent = father?.id?.length || !filteredFathers?.length
         ? null
         : <><p><b>Add father to litter</b></p>
                 <select value={selectedFather} onChange={(e) => setSelectedFather(e.target.value)}>
@@ -254,7 +255,7 @@ const LitterPage = () => {
                     className="black-button"
                     style={fatherButtonStyle}
                     disabled={!canSaveFather}
-                    onClick={() => addFatherToLitter()}
+                    onClick={addFatherToLitter}
                 >
                     Add Father
                 </button>
@@ -274,7 +275,7 @@ const LitterPage = () => {
             <button
                 className="black-button"
                 disabled={selectedDog?.length ? false : true}
-                style={selectedDog?.length ? null : {backgroundColor: "grey"}}
+                style={selectedDog?.length ? null : {backgroundColor: "grey", cursor: "default"}}
                 onClick={() => addToLitter()}
             >
                 Add Dog
@@ -286,7 +287,6 @@ const LitterPage = () => {
 
     return (
         <>
-            {content}
             <p><b>Mother </b><Link className="orange-link" to={`/dogs/${mother.id}`}><b>{mother?.name} </b></Link>({mother?.breed})</p>
             <p>
                 <b>Father </b> 
@@ -294,14 +294,19 @@ const LitterPage = () => {
                     ? <><Link className="orange-link" to={`/dogs/${father?.id}`}><b>{father?.name} </b></Link>({father?.breed})</>
                     : 'Not Added'}
             </p>
+            <p><b>Puppies' Breed </b>{litter?.breed}</p>
             <p><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
             <p><b>{litter?.children} Puppies</b></p>
             <br />
             {fatherContent}
             {addPuppyContent}
-            <p><b>Puppies</b></p>
-            <br />
-            {dogContent}
+            {filteredDogs?.length 
+                ? <><p><b>Puppies</b></p>
+                    <br />
+                    {dogContent}</>
+                : <p>No puppies have been added to this litter yet</p>
+            }
+            {content}
         </>
     )
 }

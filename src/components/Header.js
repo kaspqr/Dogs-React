@@ -35,9 +35,9 @@ const Header = () => {
   if (userId) {
     navRight = (
       <>
-        <span className="nav-right header-link" onClick={onLogoutClicked}><FontAwesomeIcon icon={faDoorOpen} /></span>
-        <Link className="nav-right header-link" to={`/users/${userId}`}><FontAwesomeIcon icon={faUser} /></Link>
-        <Link className="nav-right header-link" to={'/conversations'}><FontAwesomeIcon icon={faComments} /></Link>
+        <span className="nav-right header-link header-hover" onClick={onLogoutClicked}><FontAwesomeIcon icon={faDoorOpen} /></span>
+        <Link className="nav-right header-link header-hover" to={`/users/${userId}`}><FontAwesomeIcon icon={faUser} /></Link>
+        <Link className="nav-right header-link header-hover" to={'/conversations'}><FontAwesomeIcon icon={faComments} /></Link>
         {isAdmin || isSuperAdmin
           ? <span className="nav-right header-link">
             <Link to={'/adminpage'}><FontAwesomeIcon icon={faFlag} /></Link>
@@ -49,8 +49,8 @@ const Header = () => {
   } else {
     navRight = (
       <>
-        <Link className="nav-right header-link" to={'/register'}><FontAwesomeIcon icon={faClipboardUser} /></Link>
-        <Link className="nav-right header-link" to={'/login'}><FontAwesomeIcon icon={faDoorOpen} /></Link>
+        <Link className="nav-right header-link header-hover" to={'/register'}><FontAwesomeIcon icon={faClipboardUser} /></Link>
+        <Link className="nav-right header-link header-hover" to={'/login'}><FontAwesomeIcon icon={faDoorOpen} /></Link>
       </>
     )
   }
@@ -58,10 +58,10 @@ const Header = () => {
   const content = (
     <header id="layout-header">
       <nav>
-      <Link className="header-link" to={'/'}><FontAwesomeIcon icon={faHouseChimney} /></Link>
-      <Link className="header-link" to={'/dogs'}>Dogs</Link>
-      <Link className="header-link" to={'/litters'}>Litters</Link>
-      <Link className="header-link" to={'/users'}>Users</Link>
+      <Link className="header-link header-hover" to={'/'}><FontAwesomeIcon icon={faHouseChimney} /></Link>
+      <Link className="header-link orange-background" to={'/dogs'}>Dogs</Link>
+      <Link className="header-link orange-background" to={'/litters'}>Litters</Link>
+      <Link className="header-link orange-background" to={'/users'}>Users</Link>
         {navRight}
       </nav>
     </header>

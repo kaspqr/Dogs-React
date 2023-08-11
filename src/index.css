@@ -60,13 +60,29 @@ input[type=number] {
 }
 
 #layout-header {
-  background-color: rgb(235, 155, 52);
-  height: 70px;
+  height: 100px;
   padding: 20px;
   display: grid;
   align-items: center;
   padding-left: 70px;
   padding-right: 70px;
+}
+
+.header-hover:hover {
+  color: rgb(235, 155, 52);
+}
+
+.orange-background {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  padding-top: 4px;
+  padding-bottom: 6px;
+  border-radius: 20px;
+}
+
+.orange-background:hover {
+  background-color: rgb(235, 155, 52);
 }
 
 .content {
@@ -165,7 +181,9 @@ input {
 }
 
 .pagination-button {
-  border-radius: 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .black-button {
@@ -177,6 +195,10 @@ input {
   color: white;
   font-weight: bold;
   cursor: pointer;
+}
+
+.black-button:hover {
+  background-color: rgb(235, 155, 52);
 }
 
 .edit-advertisement-delete-button,
