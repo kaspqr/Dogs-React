@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react"
 import { useUpdateAdvertisementMutation, useDeleteAdvertisementMutation } from "./advertisementsApiSlice"
 import { useNavigate } from "react-router-dom"
-import { Countries } from "../../config/countries"
-import { bigCountries } from "../../config/bigCountries"
-import { Regions } from "../../config/regions"
 import { Currencies } from "../../config/currencies"
-import { AdvertisementTypes } from "../../config/advertisementTypes"
 
 const EditAdvertisementForm = ({ advertisement }) => {
 
@@ -24,13 +20,11 @@ const EditAdvertisementForm = ({ advertisement }) => {
         error: delerror
     }] = useDeleteAdvertisementMutation()
 
-    const PRICE_REGEX = /^[0-9]{1,10}$/
+    const PRICE_REGEX = /^[1-9]\d{0,11}$/
 
     const navigate = useNavigate()
 
     const [title, setTitle] = useState(advertisement?.title)
-
-    const [type, setType] = useState(advertisement?.type)
 
     const [price, setPrice] = useState(advertisement?.price)
     const [validPrice, setValidPrice] = useState(PRICE_REGEX.test(price))
@@ -38,10 +32,6 @@ const EditAdvertisementForm = ({ advertisement }) => {
     const [currency, setCurrency] = useState(advertisement?.currency)
 
     const [info, setInfo] = useState(advertisement?.info)
-
-    const [country, setCountry] = useState(advertisement?.country)
-
-    const [region, setRegion] = useState(advertisement?.region)
 
     useEffect(() => {
         setValidPrice(PRICE_REGEX.test(price))
@@ -60,7 +50,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
     // PATCH function
     const handleSaveAdvertisementClicked = async () => {
-        await updateAdvertisement({ id: advertisement.id, title, info, type, price, currency, country, region })
+        await updateAdvertisement({ id: advertisement.id, title, info, price, currency })
     }
 
     // DELETE function
@@ -68,14 +58,8 @@ const EditAdvertisementForm = ({ advertisement }) => {
         await deleteAdvertisement({ id: advertisement.id })
     }
 
-    // Clear the region each time a country is changed to avoid having a region from a different country
-    const handleCountryChanged = (e) => {
-        setRegion('')
-        setCountry(e.target.value)
-    }
-
     // Boolean to control the style and 'disabled' of the SAVE button
-    let canSave = title?.length && type?.length && validPrice && !isLoading
+    let canSave = title?.length && info?.length && (validPrice || advertisement?.type === 'Found' || advertisement?.type === 'Lost') && !isLoading
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
@@ -101,82 +85,40 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 <br />
                 <br />
 
-                <label htmlFor="type">
-                    <b>Type</b>
-                </label>
-                <br />
-                <select 
-                    id="type"
-                    name="type"
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                >
-                    {AdvertisementTypes}
-                </select>
-                <br />
-                <br />
+                {advertisement?.type !== 'Found' && advertisement?.type !== 'Lost'
+                    ? <><label htmlFor="price">
+                        <b>Price</b>
+                        </label>
+                        <br />
+                        <input 
+                            type="text" 
+                            id="price"
+                            name="price"
+                            maxLength="12"
+                            value={price}
+                            onChange={(e) => {
+                                if (PRICE_REGEX.test(e.target.value) || e.target.value === "") {
+                                    setPrice(e.target.value)
+                                }
+                            }}
+                        />
+                        <br />
+                        <br />
 
-                <label htmlFor="price">
-                    <b>Price</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="price"
-                    name="price"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                />
-                <br />
-                <br />
-
-                <label htmlFor="currency">
-                    <b>Currency</b>
-                </label>
-                <br />
-                <select 
-                    id="currency"
-                    name="currency"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                >
-                    {Currencies}
-                </select>
-                <br />
-                <br />
-
-                <label htmlFor="country">
-                    <b>Country</b>
-                </label>
-                <br />
-                <select 
-                    name="country" 
-                    id="country"
-                    value={country}
-                    onChange={handleCountryChanged}
-                >
-                    {Countries}
-                </select>
-                <br />
-                <br />
-
-                {bigCountries?.includes(country) 
-                    ? <><label htmlFor="region">
-                                <b>Region</b>
-                            </label>
-                            <br />
-                            <select 
-                                name="region" 
-                                id="region"
-                                value={region}
-                                onChange={(e) => setRegion(e.target.value)}
-                            >
-                                <option value="">Region (optional)</option>
-                                {bigCountries?.includes(country) ? Regions[country] : null}
-                            </select>
-                            <br />
-                            <br />
-                        </>
+                        <label htmlFor="currency">
+                            <b>Currency</b>
+                        </label>
+                        <br />
+                        <select 
+                            id="currency"
+                            name="currency"
+                            value={currency}
+                            onChange={(e) => setCurrency(e.target.value)}
+                        >
+                            {Currencies}
+                        </select>
+                        <br />
+                        <br /></>
                     : null
                 }
 
@@ -200,6 +142,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                             className="edit-advertisement-save-button black-button"
                             onClick={handleSaveAdvertisementClicked}
                             disabled={!canSave}
+                            style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                         >
                             Save
                         </button>

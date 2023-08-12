@@ -165,10 +165,7 @@ const AdvertisementsList = () => {
 
     content = (
       <>
-        {userId?.length ? <Link to={'/advertisements/new'}><button className="black-button">Post an Advertisement</button></Link> : null}
-
-        <br />
-        <br />
+        {userId?.length ? <><Link to={'/advertisements/new'}><button className="black-button">Post an Advertisement</button></Link><br /><br /></> : null}
 
         <button
           className="black-button"

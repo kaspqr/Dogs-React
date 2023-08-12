@@ -230,7 +230,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="sterilized">
-                    <b>Sterilized</b>
+                    <b>{dog?.female === true ? 'Sterilized' : 'Castrated'}</b>
                 </label>
                 <input 
                     className="checkbox-to-the-right"
@@ -339,7 +339,7 @@ const EditDogForm = ({ dog }) => {
                     cols="30"
                     id="info"
                     name="info"
-                    value={info}
+                    value={info !== 'none ' ? info : ''}
                     onChange={handleInfoChanged}
                 />
 

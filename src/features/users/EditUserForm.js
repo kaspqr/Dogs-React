@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
+import { useSendLogoutMutation } from "../auth/authApiSlice"
 import { useNavigate } from "react-router-dom"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
@@ -17,16 +18,31 @@ const EditUserForm = ({ user }) => {
 
     // DELETE function for deleting the user
     const [deleteUser, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
     }] = useDeleteUserMutation()
 
+    // POST request to clear the refreshtoken
+    const [sendLogout, {
+        isLoading: isLogoutLoading,
+        isSuccess: isLogoutSuccess,
+        isError: isLogoutError,
+        error: logoutError
+    }] = useSendLogoutMutation()
 
     const navigate = useNavigate()
 
+    const NAME_REGEX = /^[A-z ]{2,20}$/
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
     const [password, setPassword] = useState('')
+
+    const [confirmPassword, setConfirmPassword] = useState('')
+
+    const [currentPassword, setCurrentPassword] = useState('')
 
     const [name, setName] = useState(user.name)
 
@@ -36,10 +52,13 @@ const EditUserForm = ({ user }) => {
 
     const [region, setRegion] = useState(user.region?.length ? user.region : '')
 
+    const [changePasswordError, setChangePasswordError] = useState('')
+
     // Clear the inputs if the user has been updated or deleted successfully
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
             setPassword('')
+            setConfirmPassword('')
             setName('')
             setEmail('')
             setCountry('')
@@ -49,6 +68,8 @@ const EditUserForm = ({ user }) => {
     }, [isSuccess, isDelSuccess, navigate])
 
     const handlePasswordChanged = e => setPassword(e.target.value)
+    const handleConfirmPasswordChanged = e => setConfirmPassword(e.target.value)
+    const handleCurrentPasswordChanged = e => setCurrentPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
 
@@ -59,32 +80,69 @@ const EditUserForm = ({ user }) => {
 
     // PATCH the user
     const handleSaveUserClicked = async () => {
-        if (password) {
-            await updateUser({ id: user.id, password, name, email, country, region })
+        setChangePasswordError('')
+        if (password?.length) {
+            if (password !== confirmPassword) {
+                setChangePasswordError(<>New Password doesn't match with Confirm Password</>)
+            }
+            await updateUser({ id: user.id, password, name, email, country, region, currentPassword })
         } else {
-            await updateUser({ id: user.id, name, email, country, region })
+            await updateUser({ id: user.id, name, email, country, region, currentPassword })
         }
     }
 
     // DELETE the user
     const handleDeleteUserClicked = async () => {
-        await deleteUser({ id: user.id })
-        navigate('/')
+        const response = await deleteUser({ id: user.id, currentPassword })
+
+        if (!response?.error) {
+            sendLogout()
+        }
     }
 
-    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
+    useEffect(() => {
+        if (isLogoutSuccess) navigate('/')
+    }, [isLogoutSuccess, navigate])
 
+    if (isLoading || isDelLoading || isLogoutLoading) return <p>Loading...</p>
+
+    const errContent = isError 
+        ? error?.data?.message
+        : isDelError
+            ? delerror?.data?.message 
+            : isLogoutError
+                ? logoutError
+                : ''
+
+    const canSave = currentPassword?.length && NAME_REGEX.test(name) && EMAIL_REGEX.test(email)
+        && ((!password?.length && !confirmPassword?.length) || (PASSWORD_REGEX.test(password) && password === confirmPassword))
 
     const content = (
         <>
-            <p>{errContent}</p>
+            {changePasswordError?.length ? <p>{changePasswordError}</p> : null}
+            {errContent?.length ? <p>{errContent}</p> : null}
 
             <form onSubmit={e => e.preventDefault()}>
                 <div>
                     <p className="edit-profile-page-title">Edit Profile</p>
                 </div>
+
+                <label htmlFor="current-password">
+                    <b>Current Password</b>
+                </label>
+                <br />
+                <input 
+                    type="password" 
+                    id="current-password"
+                    name="current-password"
+                    value={currentPassword}
+                    onChange={handleCurrentPasswordChanged}
+                />
+                <br />
+                <br />
+
                 <label htmlFor="password">
-                    <b>Password [8-20 characters, including !@#%]</b>
+                    <b>New Password (8-20 characters, including !@#%)</b>
                 </label>
                 <br />
                 <input 
@@ -93,6 +151,20 @@ const EditUserForm = ({ user }) => {
                     name="password"
                     value={password}
                     onChange={handlePasswordChanged}
+                />
+                <br />
+                <br />
+
+                <label htmlFor="confirm-password">
+                    <b>Confirm Password</b>
+                </label>
+                <br />
+                <input 
+                    type="password" 
+                    id="confirm-password"
+                    name="confirm-password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChanged}
                 />
                 <br />
                 <br />
@@ -165,6 +237,8 @@ const EditUserForm = ({ user }) => {
                     <button
                         className="black-button"
                         title="Save"
+                        disabled={!canSave}
+                        style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                         onClick={handleSaveUserClicked}
                     >
                         Save
@@ -172,9 +246,11 @@ const EditUserForm = ({ user }) => {
                     <button
                         title="Delete"
                         onClick={handleDeleteUserClicked}
+                        disabled={!currentPassword?.length}
+                        style={!currentPassword?.length ? {backgroundColor: "grey", cursor: "default"} : null}
                         className="edit-profile-delete-button black-button"
                     >
-                        Delete
+                        Delete Account
                     </button>
                 </div>
             </form>

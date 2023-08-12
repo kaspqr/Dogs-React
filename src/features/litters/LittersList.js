@@ -136,10 +136,7 @@ const LittersList = () => {
 
     content = (
       <>
-        {userId?.length ? <Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link> : null}
-
-        <br />
-        <br />
+        {userId?.length ? <><Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link><br /><br /></> : null}
         
         <button
           className="black-button"
@@ -154,12 +151,30 @@ const LittersList = () => {
         <div id="litter-filter-div" style={{display: "none"}}>
           <p><b>Born at Earliest</b></p>
           <Calendar maxDate={new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
+          <button 
+            className="black-button"
+            disabled={bornEarliest === ''}
+            style={bornEarliest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+            onClick={() => setBornEarliest('')}
+          >
+            Clear Date
+          </button>
 
+          <br />
           <br />
 
           <p><b>Born at Latest</b></p>
           <Calendar maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
+          <button 
+            className="black-button"
+            disabled={bornLatest === ''}
+            style={bornLatest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+            onClick={() => setBornLatest('')}
+          >
+            Clear Date
+          </button>
 
+          <br />
           <br />
 
           <p><b>Amount of Puppies</b></p>

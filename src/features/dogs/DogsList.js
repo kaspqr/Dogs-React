@@ -261,10 +261,7 @@ const DogsList = () => {
 
     content = (
       <>
-        {userId?.length ? (<Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link>) : null}
-
-        <br />
-        <br />
+        {userId?.length ? <><Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link><br /><br /></> : null}
 
         <button
           className="black-button"
@@ -303,6 +300,8 @@ const DogsList = () => {
           <Calendar maxDate={new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
           <button 
             className="black-button"
+            disabled={bornEarliest === ''}
+            style={bornEarliest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
             onClick={() => setBornEarliest('')}
           >
             Clear Date
@@ -315,6 +314,8 @@ const DogsList = () => {
           <Calendar maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
           <button 
             className="black-button"
+            disabled={bornLatest === ''}
+            style={bornLatest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
             onClick={() => setBornLatest('')}
           >
             Clear Date

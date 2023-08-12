@@ -33,6 +33,8 @@ const NewUserForm = () => {
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
 
+    const [confirmPassword, setConfirmPassword] = useState('')
+
     const [name, setName] = useState('')
     const [validName, setValidName] = useState(false)
 
@@ -65,6 +67,7 @@ const NewUserForm = () => {
         if (isSuccess) {
             setUsername('')
             setPassword('')
+            setConfirmPassword('')
             setName('')
             setEmail('')
             setCountry('')
@@ -76,6 +79,7 @@ const NewUserForm = () => {
 
     const handleUsernameChanged = e => setUsername(e.target.value)
     const handlePasswordChanged = e => setPassword(e.target.value)
+    const handleConfirmPasswordChanged = e => setConfirmPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
 
@@ -85,7 +89,7 @@ const NewUserForm = () => {
     }
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = [validUsername, validPassword, validName, validEmail].every(Boolean) && !isLoading
+    const canSave = [validUsername, validPassword, validName, validEmail].every(Boolean) && password === confirmPassword && !isLoading
 
     const handleSaveUserClicked = async (e) => {
         e.preventDefault()
@@ -109,7 +113,7 @@ const NewUserForm = () => {
                 </div>
                 
                 <label htmlFor="username">
-                    <b>Username [6-20 letters]</b>
+                    <b>Username (6-20 letters)</b>
                 </label>
                 <br />
                 <input 
@@ -124,7 +128,7 @@ const NewUserForm = () => {
                 <br />
 
                 <label htmlFor="password">
-                    <b>Password [8-20 characters, including !@#%]</b>
+                    <b>Password (8-20 characters, including !@#%)</b>
                 </label>
                 <br />
                 <input 
@@ -133,6 +137,20 @@ const NewUserForm = () => {
                     name="password"
                     value={password}
                     onChange={handlePasswordChanged}
+                />
+                <br />
+                <br />
+
+                <label htmlFor="confirm-password">
+                    <b>Confirm Password</b>
+                </label>
+                <br />
+                <input 
+                    type="password" 
+                    id="confirm-password"
+                    name="confirm-password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChanged}
                 />
                 <br />
                 <br />

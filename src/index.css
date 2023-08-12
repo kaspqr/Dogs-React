@@ -246,7 +246,7 @@ select {
 
 .conversation-page-messages-div {
   overflow-y: auto;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 245px);
 }
 
 .instagram-icon {
@@ -278,6 +278,20 @@ select {
 
 .search-button {
   margin-right: 10px;
+}
+
+.dropdown-links {
+  position: fixed;
+  top: 100px;
+  z-index: 1;
+  width: 100%;
+  height: calc(100vh - 100px);
+  background-color: white;
+}
+
+.nav-dropdown {
+  width: 100%;
+  float: right;
 }
 
 @media (max-width: 1000px) {

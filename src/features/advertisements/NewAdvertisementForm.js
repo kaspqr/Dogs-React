@@ -56,7 +56,7 @@ const NewAdvertisementForm = () => {
 
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = title?.length && type?.length && (type === 'Found' || type === 'Lost' || (price?.length && currency?.length)) && !isAdvertisementLoading
+    const canSave = title?.length && type?.length && info?.length && (type === 'Found' || type === 'Lost' || (price?.length && currency?.length)) && !isAdvertisementLoading
 
 
     const handleSaveAdvertisementClicked = async (e) => {

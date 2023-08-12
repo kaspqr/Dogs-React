@@ -181,6 +181,9 @@ const UsersList = () => {
         <br />
 
         <table className="content-table">
+          <thead>
+            <tr><th>Username</th></tr>
+          </thead>
           <tbody>
             {tableContent}
           </tbody>

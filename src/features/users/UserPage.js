@@ -3,6 +3,7 @@ import useAuth from "../../hooks/useAuth"
 import { useGetUsersQuery, useUpdateUserMutation } from "./usersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import { useGetConversationsQuery, useAddNewConversationMutation } from "../conversations/conversationsApiSlice"
+import { useState, useEffect } from "react"
 
 const UserPage = () => {
 
@@ -14,6 +15,19 @@ const UserPage = () => {
     // User whose page we're on
     const { id } = useParams()
 
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth)
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     // POST method for /conversations
     const [addNewConversation, {
@@ -109,8 +123,7 @@ const UserPage = () => {
             tableContent = filteredDogs.map(dog => (
                 <tr key={dog.id}>
                     <td><Link className="orange-link" to={`/dogs/${dog.id}`}><b>{dog.name}</b></Link></td>
-                    <td>{dog.breed}</td>
-                    <td>{dog.female === true ? 'Female' : 'Male'}</td>
+                    {windowWidth > 600 ? <><td>{dog.breed}</td><td>{dog.female === true ? 'Female' : 'Male'}</td></> : null}
                     <td>{dog.birth.split(' ').slice(1, 4).join(' ')}</td>
                 </tr>
             ))
@@ -121,8 +134,7 @@ const UserPage = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Breed</th>
-                        <th>Good</th>
+                        {windowWidth > 600 ? <><th>Breed</th><th>Good</th></> : null}
                         <th>Born</th>
                     </tr>
                 </thead>

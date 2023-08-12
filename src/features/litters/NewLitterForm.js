@@ -10,6 +10,8 @@ const NewLitterForm = () => {
 
     const { userId } = useAuth()
 
+    const PUPPIES_REGEX = /^[1-9]\d{0,1}$/
+
     // POST function for adding a new litter
     const [addNewLitter, {
         isLoading: isLitterLoading,
@@ -27,7 +29,7 @@ const NewLitterForm = () => {
 
     const [breed, setBreed] = useState('')
 
-    const [children, setChildren] = useState(null)
+    const [children, setChildren] = useState('')
 
     const [validMother, setValidMother] = useState(false)
 
@@ -200,12 +202,15 @@ const NewLitterForm = () => {
                 <br />
                 <input 
                     value={children}
-                    onChange={(e) => setChildren(e.target.value)}
-                    type="number" 
+                    onChange={(e) => {
+                        if (PUPPIES_REGEX.test(e.target.value) || e.target.value === '') {
+                            setChildren(e.target.value)
+                        }
+                    }}
+                    type="text" 
                     name="puppies"
                     id="puppies"
-                    min="1"
-                    max="30"
+                    maxLength="2"
                 />
 
                 <br />

@@ -107,7 +107,7 @@ const Login = () => {
           <br />
 
           <label htmlFor="persist">
-            <b>Trust This Device:</b>
+            <b>Trust This Device</b>
             <input 
               className="checkbox-to-the-right"
               type="checkbox" 

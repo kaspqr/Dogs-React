@@ -2,6 +2,7 @@ import { useGetAdvertisementsQuery, useDeleteAdvertisementMutation } from "./adv
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
+import { useState, useEffect } from "react"
 
 const AdvertisementPage = () => {
 
@@ -10,6 +11,20 @@ const AdvertisementPage = () => {
     const { userId, isAdmin, isSuperAdmin } = useAuth()
 
     const { advertisementid } = useParams()
+
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth)
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     // GET the advertisement with all of it's .values
     const { advertisement } = useGetAdvertisementsQuery("advertisementsList", {
@@ -43,31 +58,32 @@ const AdvertisementPage = () => {
 
     return (
         <>
-            {userId === advertisement?.poster ? <Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement.id}`}><button className="black-button">Edit</button></Link> : null}
             <p className="advertisement-title-p">
                 <span className="advertisement-page-title">{advertisement?.title}</span>
-                <span className="nav-right"><b>Posted by <Link className="orange-link" to={`/users/${user.id}`}>{user.username}</Link></b></span>
+                {windowWidth > 600 ? null : <br />}
+                <span className={windowWidth > 600 ? "nav-right" : null}><b>Posted by <Link className="orange-link" to={`/users/${user?.id}`}>{user?.username}</Link></b></span>
             </p>
             <p><b>{advertisement?.type}</b></p>
             {advertisement?.type !== "Found" ? <p><b>{advertisement?.currency}{advertisement?.price}</b></p> : null}
             <br />
             <p><b>Location</b></p>
             <p>{advertisement?.region ? advertisement?.region + ', ' : null}{advertisement?.country}</p>
+            <br />
             <p><b>Info</b></p>
             <p>{advertisement?.info}</p>
             <br />
-            <br />
+            {userId === advertisement?.poster ? <><Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement?.id}`}><button className="black-button">Edit</button></Link></> : null}
             {userId?.length && advertisement?.poster !== userId
-                ? <button 
+                ? <><button 
                     className="black-button"
                     onClick={() => navigate(`/reportadvertisement/${advertisement?.id}`)}
                 >
                     Report Advertisement
-                </button>
+                </button><br /><br /></>
                 : null
             }
             {isAdmin || isSuperAdmin
-                ? <><br /><br /><button className="black-button" onClick={handleAdminDelete}>
+                ? <><button className="black-button" onClick={handleAdminDelete}>
                     Delete as Admin
                 </button></>
                 : null

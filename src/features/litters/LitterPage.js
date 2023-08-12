@@ -261,7 +261,6 @@ const LitterPage = () => {
                 </button>
                 <br />
                 <br />
-                <br />
             </>
 
     const addPuppyContent = filteredUserDogs?.length && (litter?.children > filteredDogs?.length || !filteredDogs?.length)
