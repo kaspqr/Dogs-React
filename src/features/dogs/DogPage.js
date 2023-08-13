@@ -269,7 +269,7 @@ const DogPage = () => {
             {dog?.death?.length ? <p><b>Entered Dog Heaven on </b>{dog?.death?.split(' ').slice(1, 4).join(' ')}</p> : null}
             <p><b>From </b>{dog?.region?.length && dog?.region !== 'none ' ? <>{dog?.region}, </> : null}{dog?.country?.length ? <>{dog?.country}</> : null}</p>
             <br />
-            {dog?.female === true && dog?.sterilized === false ? <p><b>{dog?.heat === true ? 'Currently in Heat' : 'Currently not in heat'}</b></p> : null}
+            {dog?.female === true && dog?.sterilized === false ? <p><b>{dog?.heat === true ? 'Currently in Heat' : 'Currently Not in Heat'}</b></p> : null}
             <p><b>{dog?.sterilized === true ? null : 'Not '}{dog?.female === true ? 'Sterilized' : 'Castrated'}</b></p>
             <p><b>{dog?.microchipped === true ? 'Microchipped' : 'Not Microchipped'}</b></p>
             {dog?.microchipped === true && dog?.chipnumber?.length && dog?.chipnumber !== 'none ' ? <p><b>Chipnumber </b>{dog?.chipnumber}</p> : null}

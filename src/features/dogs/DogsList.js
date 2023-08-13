@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { useState, useEffect } from "react"
 import Calendar from "react-calendar"
-import 'react-calendar/dist/Calendar.css'
+import '../../styles/customCalendar.css'
 
 const DogsList = () => {
 

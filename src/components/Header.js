@@ -28,7 +28,16 @@ const Header = () => {
   }, [])
 
   const onBarsClicked = () => {
+    {dropdownVisible === false 
+      ? document.getElementById('content').style.display = 'none' 
+      : document.getElementById('content').style.display = 'grid'
+    }
     setDropdownVisible(dropdownVisible === false ? true : false)
+  }
+
+  const onMobileLinkClicked = () => {
+    document.getElementById('content').style.display = 'grid'
+    setDropdownVisible(false)
   }
 
   // POST request to clear the refreshtoken
@@ -44,7 +53,12 @@ const Header = () => {
     if (isSuccess) navigate("/")
   }, [isSuccess, navigate])
 
-  const onLogoutClicked = () => sendLogout()
+  const onLogoutClicked = () => {
+    sendLogout()
+    if (!windowWidth > 600) {
+      onMobileLinkClicked()
+    }
+  }
 
   if (isLoading) return <p>Logging Out...</p>
 
@@ -58,52 +72,159 @@ const Header = () => {
 
   if (userId) {
     navRight = <>
-        <span className="nav-right header-link header-hover" onClick={onLogoutClicked}><FontAwesomeIcon icon={faDoorOpen} /></span>
-        <Link className="nav-right header-link header-hover" to={`/users/${userId}`}><FontAwesomeIcon icon={faUser} /></Link>
-        <Link className="nav-right header-link header-hover" to={'/conversations'}><FontAwesomeIcon icon={faComments} /></Link>
+        <span 
+          className="nav-right header-link header-hover" 
+          onClick={onLogoutClicked}
+        >
+          <FontAwesomeIcon icon={faDoorOpen} />
+        </span>
+
+        <Link 
+          className="nav-right header-link header-hover" 
+          to={`/users/${userId}`}
+        >
+          <FontAwesomeIcon icon={faUser} />
+        </Link>
+
+        <Link 
+          className="nav-right header-link header-hover" 
+          to={'/conversations'}
+        >
+          <FontAwesomeIcon icon={faComments} />
+        </Link>
+
         {isAdmin || isSuperAdmin
           ? <span>
-            <Link className="nav-right header-link header-hover" to={'/adminpage'}><FontAwesomeIcon icon={faFlag} /></Link>
-          </span> 
+                <Link 
+                  className="nav-right header-link header-hover" 
+                  to={'/adminpage'}
+                >
+                  <FontAwesomeIcon icon={faFlag} />
+                </Link>
+            </span> 
           : null
         }
       </>
     
     dropdown = <>
-        <span onClick={onBarsClicked} className="nav-right header-link header-hover"><FontAwesomeIcon icon={faBars} /></span>
+        <span onClick={onBarsClicked} className="nav-right header-link header-hover">
+          <FontAwesomeIcon icon={faBars} />
+        </span>
+
         <div style={dropdownVisible === true ? null : {display: "none"}} className="dropdown-links">
           {isAdmin || isSuperAdmin
-            ? <Link className="nav-dropdown header-link header-hover" to={'/adminpage'}><p>Admin Panel</p></Link>
+            ? <Link 
+                className="nav-dropdown header-link header-hover" 
+                to={'/adminpage'}
+                onClick={onMobileLinkClicked}
+              >
+                <p>Admin Panel</p>
+              </Link>
             : null
           }
-          <Link className="nav-dropdown header-link header-hover" to={'/conversations'}><p>Conversations</p></Link>
-          <Link className="nav-dropdown header-link header-hover" to={`/users/${userId}`}><p>My Profile</p></Link>
-          <p onClick={onLogoutClicked} className="nav-dropdown header-link header-hover">Logout</p>
+
+          <Link 
+            className="nav-dropdown header-link header-hover" 
+            to={'/conversations'}
+            onClick={onMobileLinkClicked}
+          >
+            <p>Conversations</p>
+          </Link>
+
+          <Link 
+            className="nav-dropdown header-link header-hover" 
+            to={`/users/${userId}`}
+            onClick={onMobileLinkClicked}
+          >
+            <p>My Profile</p>
+          </Link>
+
+          <a 
+            className="nav-dropdown header-link header-hover" 
+            onClick={onLogoutClicked}
+          >
+            <p>Logout</p>
+          </a>
+
         </div>
       </>
   } else {
     navRight = <>
-      <Link className="nav-right header-link header-hover" to={'/register'}><FontAwesomeIcon icon={faClipboardUser} /></Link>
-      <Link className="nav-right header-link header-hover" to={'/login'}><FontAwesomeIcon icon={faDoorOpen} /></Link>
+      <Link className="nav-right header-link header-hover" to={'/register'}>
+        <FontAwesomeIcon icon={faClipboardUser} />
+      </Link>
+
+      <Link className="nav-right header-link header-hover" to={'/login'}>
+        <FontAwesomeIcon icon={faDoorOpen} />
+      </Link>
     </>
 
     dropdown = <>
-        <span onClick={onBarsClicked} className="nav-right header-link header-hover"><FontAwesomeIcon icon={faBars} /></span>
+        <span 
+          onClick={onBarsClicked} 
+          className="nav-right header-link header-hover"
+        >
+          <FontAwesomeIcon icon={faBars} />
+        </span>
+
         <div style={dropdownVisible === true ? null : {display: "none"}} className="dropdown-links">
-          <Link className="nav-dropdown header-link header-hover" to={'/login'}><p>Login</p></Link>
-          <Link className="nav-dropdown header-link header-hover" to={'/register'}><p>Register</p></Link>
+          <Link 
+            className="nav-dropdown header-link header-hover" 
+            to={'/login'}
+            onClick={onMobileLinkClicked}
+          >
+            <p>Login</p>
+          </Link>
+
+          <Link 
+            className="nav-dropdown header-link header-hover" 
+            to={'/register'}
+            onClick={onMobileLinkClicked}
+          >
+            <p>Register</p>
+          </Link>
+
         </div>
       </>
   }
 
   const content = (
-    <header id="layout-header">
+    <header style={dropdownVisible === true ? {position: "fixed", width: "100%"} : null} id="layout-header"> 
       <nav>
-        <Link className="header-link header-hover" to={'/'}><FontAwesomeIcon icon={faHouseChimney} /></Link>
-        <Link className="header-link orange-background" to={'/dogs'}>Dogs</Link>
-        <Link className="header-link orange-background" to={'/litters'}>Litters</Link>
-        <Link className="header-link orange-background" to={'/users'}>Users</Link>
+        <Link 
+          className="header-link header-hover" 
+          to={'/'}
+          onClick={windowWidth > 600 ? null : onMobileLinkClicked}
+        >
+          <FontAwesomeIcon icon={faHouseChimney} />
+        </Link>
+
+        <Link 
+          className="header-link orange-background" 
+          to={'/dogs'}
+          onClick={windowWidth > 600 ? null : onMobileLinkClicked}
+        >
+          Dogs
+        </Link>
+
+        <Link 
+          className="header-link orange-background" 
+          to={'/litters'}
+          onClick={windowWidth > 600 ? null : onMobileLinkClicked}
+        >
+          Litters
+        </Link>
+
+        <Link 
+          className="header-link orange-background" 
+          to={'/users'}
+          onClick={windowWidth > 600 ? null : onMobileLinkClicked}
+        >
+          Users
+        </Link>
+
         {windowWidth > 600 ? navRight : dropdown}
+
       </nav>
     </header>
   )

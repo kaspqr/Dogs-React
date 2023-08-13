@@ -48,7 +48,6 @@ input[type=number] {
 
 .header-link {
   text-decoration: none;
-  color: black;
   margin-right: 10px;
   font-weight: bold;
 }
@@ -66,15 +65,17 @@ input[type=number] {
   align-items: center;
   padding-left: 70px;
   padding-right: 70px;
+  border-bottom: 2px solid lightgrey;
+  background-color: rgb(255, 248, 240);
 }
 
 .header-hover:hover {
   color: rgb(235, 155, 52);
+  cursor: pointer;
 }
 
 .orange-background {
-  background-color: black;
-  color: white;
+  color: black;
   padding: 10px;
   padding-top: 4px;
   padding-bottom: 6px;
@@ -99,11 +100,11 @@ input[type=number] {
 td, 
 th {
   text-align: center;
-  border-bottom: 2px solid black;
 }
 
 td {
   height: 50px;
+  border-bottom: 1px solid lightgray;
 }
 
 th {
@@ -287,11 +288,13 @@ select {
   width: 100%;
   height: calc(100vh - 100px);
   background-color: white;
+  padding-top: 20px;
 }
 
 .nav-dropdown {
   width: 100%;
-  float: right;
+  height: 50px;
+  border-bottom: 2px solid lightgray;
 }
 
 @media (max-width: 1000px) {

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { Breeds } from "../../config/breeds"
 import useAuth from "../../hooks/useAuth"
 import Calendar from "react-calendar"
-import 'react-calendar/dist/Calendar.css'
+import '../../styles/customCalendar.css'
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"

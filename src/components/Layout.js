@@ -17,7 +17,7 @@ const Layout = () => {
   return (
     <>
       <Header />
-      <div className="content">
+      <div id="content" className="content">
         <div></div>
         <div>
           {!userId?.length || user?.active === true
