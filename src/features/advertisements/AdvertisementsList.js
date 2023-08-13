@@ -15,6 +15,8 @@ const AdvertisementsList = () => {
 
   const { userId } = useAuth()
 
+  const PRICE_REGEX = /^[1-9]\d{0,11}$/
+
   const [title, setTitle] = useState('')
 
   const [type, setType] = useState('')
@@ -24,6 +26,10 @@ const AdvertisementsList = () => {
   const [region, setRegion] = useState('')
 
   const [currency, setCurrency] = useState('')
+
+  const [lowestPrice, setLowestPrice] = useState('')
+
+  const [highestPrice, setHighestPrice] = useState('')
 
   const [filteredIds, setFilteredIds] = useState([])
 
@@ -65,6 +71,14 @@ const AdvertisementsList = () => {
     setCountry(e.target.value)
   }
 
+  const handleCurrencyChanged = (e) => {
+    if (e.target.value === '') {
+      setLowestPrice('')
+      setHighestPrice('')
+    }
+    setCurrency(e.target.value)
+  }
+
   const handleTypeChanged = (e) => {
     if (e.target.value === '' || e.target.value === 'Found' || e.target.value === 'Lost') {
       setCurrency('')
@@ -83,6 +97,10 @@ const AdvertisementsList = () => {
 
   const handleSearchClicked = () => {
 
+    if (lowestPrice?.length && highestPrice?.length && highestPrice < lowestPrice) {
+      return alert("Highest price cannot be lower than lowest price")
+    }
+
     setCurrentPage(1)
   
     const filteredAdsTitle = Object.values(advertisements?.entities)?.filter((ad) => {
@@ -100,9 +118,6 @@ const AdvertisementsList = () => {
         return ad.country === country
       })
       : filteredAdsRegion
-  
-    console.log(type)
-    console.log(filteredAdsCountry)
 
     const filteredAdsType = type?.length
       ? filteredAdsCountry?.filter((ad) => {
@@ -110,16 +125,26 @@ const AdvertisementsList = () => {
         return ad.type === type
       })
       : filteredAdsCountry
-
-    console.log(filteredAdsType)
   
     const filteredAdsCurrency = currency?.length
       ? filteredAdsType?.filter((ad) => {
         return ad.currency === currency
       })
       : filteredAdsType
+  
+    const filteredAdsLowestPrice = lowestPrice?.length
+      ? filteredAdsCurrency?.filter((ad) => {
+        return ad.price >= parseInt(lowestPrice)
+      })
+      : filteredAdsCurrency
+  
+    const filteredAdsHighestPrice = highestPrice?.length
+      ? filteredAdsLowestPrice?.filter((ad) => {
+        return ad.price <= parseInt(highestPrice)
+      })
+      : filteredAdsLowestPrice
 
-    const finalFilteredAds = filteredAdsCurrency
+    const finalFilteredAds = filteredAdsHighestPrice
 
     if (!finalFilteredAds?.length) alert("Unfortunately, no matching advertisement has been found")
 
@@ -227,12 +252,44 @@ const AdvertisementsList = () => {
             value={currency}
             name="advertisement-currency" 
             id="advertisement-currency"
-            onChange={(e) => setCurrency(e.target.value)}
+            onChange={handleCurrencyChanged}
             disabled={currencyDisabled}
           >
             <option value="">--</option>
             {Currencies}
           </select>
+
+          <br />
+
+          <p><b>Lowest Price</b></p>
+          <input 
+            type="text"
+            value={lowestPrice}
+            name="advertisement-lowest-price" 
+            id="advertisement-lowest-price"
+            onChange={(e) => {
+              if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
+                setLowestPrice(e.target.value)}
+              }
+            }
+            disabled={!currency?.length}
+          />
+
+          <br />
+
+          <p><b>Highest Price</b></p>
+          <input 
+            type="text"
+            value={highestPrice}
+            name="advertisement-highest-price" 
+            id="advertisement-highest-price"
+            onChange={(e) => {
+              if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
+                setHighestPrice(e.target.value)}
+              }
+            }
+            disabled={!currency?.length}
+          />
 
           <br />
           <br />

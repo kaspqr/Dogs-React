@@ -41,6 +41,10 @@ input[type=number] {
   float: right;
 }
 
+.menu-icons {
+  font-size: 23px;
+}
+
 .new-page-input {
   width: 70px;
   margin-right: 10px;

@@ -205,25 +205,22 @@ const NewDogForm = () => {
                 <br />
                 <br />
 
-                {bigCountries?.includes(country) 
-                    ? <><label htmlFor="region">
-                                <b>Region</b>
-                            </label>
-                            <br />
-                            <select 
-                                name="region" 
-                                id="region"
-                                value={region}
-                                onChange={(e) => setRegion(e.target.value)}
-                            >
-                                <option value="none ">Region (optional)</option>
-                                {bigCountries?.includes(country) ? Regions[country] : null}
-                            </select>
-                            <br />
-                            <br />
-                        </>
-                    : null
-                }
+                <label htmlFor="region">
+                    <b>Region</b>
+                </label>
+                <br />
+                <select 
+                    disabled={!bigCountries?.includes(country)}
+                    name="region" 
+                    id="region"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                >
+                    <option value="none ">Region (optional)</option>
+                    {bigCountries?.includes(country) ? Regions[country] : null}
+                </select>
+                <br />
+                <br />
 
                 <label htmlFor="passport">
                     <b>Passport</b>
@@ -239,22 +236,20 @@ const NewDogForm = () => {
                 <br />
                 <br />
 
-                {female === true 
-                    ? <><label htmlFor="heat">
-                        <b>Heat</b>
-                        </label>
-                        <input 
-                            className="checkbox-to-the-right"
-                            type="checkbox" 
-                            id="heat"
-                            name="heat"
-                            checked={heat}
-                            onChange={handleHeatChanged}
-                        />
-                        <br />
-                        <br /></> 
-                    : null
-                }
+                <label htmlFor="heat">
+                    <b>Heat</b>
+                </label>
+                <input 
+                    disabled={female === false}
+                    className="checkbox-to-the-right"
+                    type="checkbox" 
+                    id="heat"
+                    name="heat"
+                    checked={heat}
+                    onChange={handleHeatChanged}
+                />
+                <br />
+                <br />
 
                 <label htmlFor="sterilized">
                     <b>Fixed</b>
@@ -284,22 +279,20 @@ const NewDogForm = () => {
                 <br />
                 <br />
 
-                {microchipped === true 
-                    ? <><label htmlFor="chipnumber">
-                        <b>Chipnumber</b>
-                        </label>
-                        <br />
-                        <input 
-                            type="text" 
-                            id="chipnumber"
-                            name="chipnumber"
-                            value={chipnumber}
-                            onChange={handleChipnumberChanged}
-                        />
-                        <br />
-                        <br /></> 
-                    : null
-                }
+                <label htmlFor="chipnumber">
+                    <b>Chipnumber</b>
+                </label>
+                <br />
+                <input 
+                    disabled={microchipped === false}
+                    type="text" 
+                    id="chipnumber"
+                    name="chipnumber"
+                    value={chipnumber}
+                    onChange={handleChipnumberChanged}
+                />
+                <br />
+                <br />
 
                 <label htmlFor="birth">
                     <b>Date of Birth*</b>
@@ -307,13 +300,11 @@ const NewDogForm = () => {
                 <br />
                 <Calendar maxDate={death || new Date()} onChange={handleBirthChanged} value={birth} />
                 <br />
-                <br />
 
                 <label htmlFor="death">
-                    <b>Date of Death (if not alive)</b>
+                    <b>Date of Death (If Not Alive)</b>
                 </label>
-                <br />
-                <br />
+                <Calendar minDate={birth || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
                 <button 
                     className="black-button"
                     style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
@@ -324,12 +315,9 @@ const NewDogForm = () => {
                 </button>
                 <br />
                 <br />
-                <Calendar minDate={birth || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
-                <br />
-                <br />
 
                 <label htmlFor="info">
-                    <b>Info</b>
+                    <b>Additional Info</b>
                 </label>
                 <br />
                 <textarea 

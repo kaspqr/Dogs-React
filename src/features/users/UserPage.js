@@ -203,10 +203,9 @@ const UserPage = () => {
             <p><b>{user.name}</b></p>
             <br />
             <p><b>From </b>{user?.region && user?.region !== 'none ' ? `${user?.region}, ` : null}{user?.country}</p>
-            {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p></> : null}
-            {filteredDogs?.length ? <><br /><p><b>Dogs administered</b></p><br />{dogContent}</> : null}
             <br />
-            <br />
+            {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p><br /></> : null}
+            {filteredDogs?.length ? <><p><b>Dogs Administered</b></p><br />{dogContent}<br /></> : null}
             {userId?.length && id !== userId
                 ? <button 
                     className="black-button"

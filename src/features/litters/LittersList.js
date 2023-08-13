@@ -12,11 +12,15 @@ const LittersList = () => {
 
   const { userId } = useAuth()
 
+  const PUPPIES_AMOUNT_REGEX = /^[1-9]\d{0,1}$/
+
   const [bornEarliest, setBornEarliest] = useState('')
 
   const [bornLatest, setBornLatest] = useState('')
 
-  const [puppies, setPuppies] = useState()
+  const [lowestPuppies, setLowestPuppies] = useState('')
+
+  const [highestPuppies, setHighestPuppies] = useState('')
 
   const [filteredIds, setFilteredIds] = useState([])
 
@@ -66,6 +70,10 @@ const LittersList = () => {
 
   const handleSearchClicked = () => {
 
+    if (lowestPuppies?.length && highestPuppies?.length && highestPuppies < lowestPuppies) {
+      return alert("Highest amount of puppies cannot be lower than lowest amount of puppies")
+    }
+
     setCurrentPage(1)
 
     const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
@@ -84,13 +92,19 @@ const LittersList = () => {
       })
       : filteredLittersBornEarliest
   
-    const filteredLittersPuppies = puppies?.length
+    const filteredLittersLowestPuppies = lowestPuppies?.length
       ? filteredLittersBornLatest?.filter((litter) => {
-        return litter.children.toString() === puppies
+        return litter.children >= parseInt(lowestPuppies)
       })
       : filteredLittersBornLatest
+  
+    const filteredLittersHighestPuppies = highestPuppies?.length
+      ? filteredLittersLowestPuppies?.filter((litter) => {
+        return litter.children <= parseInt(highestPuppies)
+      })
+      : filteredLittersLowestPuppies
 
-    const finalFilteredLitters = filteredLittersPuppies
+    const finalFilteredLitters = filteredLittersHighestPuppies
 
     if (!finalFilteredLitters?.length) alert("Unfortunately, no matching litter has been found")
 
@@ -177,13 +191,32 @@ const LittersList = () => {
           <br />
           <br />
 
-          <p><b>Amount of Puppies</b></p>
+          <p><b>Lowest Amount of Puppies</b></p>
           <input 
-            type="number"
-            value={puppies}
-            name="litter-puppies-search-input" 
-            id="litter-puppies-search-input" 
-            onChange={(e) => setPuppies(e.target.value)}
+            type="text"
+            value={lowestPuppies}
+            name="litter-lowest-puppies-search-input" 
+            id="litter-lowest-puppies-search-input" 
+            onChange={(e) => {
+              if (PUPPIES_AMOUNT_REGEX.test(e.target.value) || e.target.value === '') {
+                setLowestPuppies(e.target.value)}
+              }
+            }
+          />
+
+          <br />
+
+          <p><b>Highest Amount of Puppies</b></p>
+          <input 
+            type="text"
+            value={highestPuppies}
+            name="litter-highest-puppies-search-input" 
+            id="litter-highest-puppies-search-input" 
+            onChange={(e) => {
+              if (PUPPIES_AMOUNT_REGEX.test(e.target.value) || e.target.value === '') {
+                setHighestPuppies(e.target.value)}
+              }
+            }
           />
 
           <br />

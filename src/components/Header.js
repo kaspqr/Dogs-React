@@ -108,7 +108,7 @@ const Header = () => {
     
     dropdown = <>
         <span onClick={onBarsClicked} className="nav-right header-link header-hover">
-          <FontAwesomeIcon icon={faBars} />
+          <FontAwesomeIcon icon={faBars} className="menu-icons" />
         </span>
 
         <div style={dropdownVisible === true ? null : {display: "none"}} className="dropdown-links">
@@ -164,7 +164,7 @@ const Header = () => {
           onClick={onBarsClicked} 
           className="nav-right header-link header-hover"
         >
-          <FontAwesomeIcon icon={faBars} />
+          <FontAwesomeIcon icon={faBars} className="menu-icons" />
         </span>
 
         <div style={dropdownVisible === true ? null : {display: "none"}} className="dropdown-links">
