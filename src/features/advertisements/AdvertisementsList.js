@@ -235,6 +235,7 @@ const AdvertisementsList = () => {
           
           <p><b>Region</b></p>
           <select 
+            disabled={!bigCountries.includes(country)}
             value={region}
             name="advertisement-region" 
             id="advertisement-region"

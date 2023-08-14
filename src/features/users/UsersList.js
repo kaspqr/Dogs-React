@@ -3,10 +3,17 @@ import User from "./User"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { useState, useEffect } from "react"
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
 
 const UsersList = () => {
 
   const [username, setUsername] = useState('')
+
+  const [country, setCountry] = useState('')
+
+  const [region, setRegion] = useState('')
 
   const [filteredIds, setFilteredIds] = useState([])
 
@@ -18,6 +25,20 @@ const UsersList = () => {
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
+  }
+
+  const handleCountryChanged = (e) => {
+    setRegion('')
+    setCountry(e.target.value)
+  }
+
+  const handleToggleFilterView = () => {
+    const filterDiv = document.getElementById('user-filter-div')
+    if (filterDiv?.style?.display === 'none') {
+      filterDiv.style.display = 'block'
+    } else {
+      filterDiv.style.display = 'none'
+    }
   }
 
   useEffect(() => {
@@ -51,9 +72,21 @@ const UsersList = () => {
       })
       : Object.values(users?.entities)
 
-    if (!filteredUsers?.length) alert("Unfortunately, no matching user has been found")
+    const filteredRegion = region?.length
+      ? filteredUsers?.filter((user) => {
+          return user.region === region
+        })
+      : filteredUsers
 
-    const filteredIds = filteredUsers?.reverse().map((user) => {
+    const filteredCountry = country?.length
+      ? filteredRegion?.filter((user) => {
+          return user.country === country
+        })
+      : filteredRegion
+
+    if (!filteredCountry?.length) alert("Unfortunately, no matching user has been found")
+
+    const filteredIds = filteredCountry?.reverse().map((user) => {
       return user._id
     })
 
@@ -96,28 +129,67 @@ const UsersList = () => {
 
     content = (
       <>
-
-        <p><b>Search by Username</b></p>
-        <input 
-          type="text"
-          value={username}
-          name="user-username-search-input" 
-          id="user-username-search-input" 
-          onChange={(e) => setUsername(e.target.value)}
-        />
-
-        <br />
-        <br />
-
-        <button 
-          onClick={handleSearchClicked}
-          className="black-button search-button"
+        <button
+          className="black-button"
+          onClick={handleToggleFilterView}
         >
-          Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+          Toggle Search View
         </button>
 
         <br />
         <br />
+
+        <div id="user-filter-div" style={{display: "none"}}>
+          <p><b>Username</b></p>
+          <input 
+            type="text"
+            value={username}
+            name="user-username-search-input" 
+            id="user-username-search-input" 
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <br />
+
+          <p><b>Country</b></p>
+          <select 
+            value={country}
+            name="advertisement-country" 
+            id="advertisement-country"
+            onChange={handleCountryChanged}
+          >
+            <option value="">--</option>
+            {Countries}
+          </select>
+          
+          <p><b>Region</b></p>
+          <select 
+            disabled={!bigCountries.includes(country)}
+            value={region}
+            name="advertisement-region" 
+            id="advertisement-region"
+            onChange={(e) => setRegion(e.target.value)}
+          >
+            <option value="">--</option>
+            {bigCountries?.includes(country)
+              ? Regions[country]
+              : null
+            }
+          </select>
+
+          <br />
+          <br />
+
+          <button 
+            onClick={handleSearchClicked}
+            className="black-button search-button"
+          >
+            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+          </button>
+
+          <br />
+          <br />
+        </div>
 
         <p>
           <button 
@@ -182,7 +254,7 @@ const UsersList = () => {
 
         <table className="content-table">
           <thead>
-            <tr><th>Username</th></tr>
+            <tr><th>Username</th><th>Location</th></tr>
           </thead>
           <tbody>
             {tableContent}

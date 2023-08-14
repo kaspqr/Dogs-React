@@ -15,7 +15,8 @@ const User = ({ userId }) => {
 
         return (
             <tr>
-                <td><Link className="orange-link" to={`/users/${userId}`}><b>{user.username}</b></Link></td>
+                <td><Link className="orange-link" to={`/users/${userId}`}><b>{user?.username}</b></Link></td>
+                <td>{user?.region?.length && user?.region !== 'none ' ? `${user?.region}, ` : null}{user?.country}</td>
             </tr>
         )
     } else return null
