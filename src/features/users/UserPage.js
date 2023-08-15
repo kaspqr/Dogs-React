@@ -3,6 +3,7 @@ import useAuth from "../../hooks/useAuth"
 import { useGetUsersQuery, useUpdateUserMutation } from "./usersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import { useGetConversationsQuery, useAddNewConversationMutation } from "../conversations/conversationsApiSlice"
+import { useGetDogProposesQuery, useAddNewDogProposeMutation, useDeleteDogProposeMutation } from "../dogs/proposeDogApiSlice"
 import { useState, useEffect } from "react"
 
 const UserPage = () => {
@@ -11,6 +12,8 @@ const UserPage = () => {
 
     // User that's logged in
     const { userId, isAdmin, isSuperAdmin } = useAuth()
+
+    const [selectedProposeDog, setSelectedProposeDog] = useState('')
 
     // User whose page we're on
     const { id } = useParams()
@@ -36,6 +39,22 @@ const UserPage = () => {
         isError: isErrorNewConversation,
         error: errorNewConversation
     }] = useAddNewConversationMutation()
+
+    // POST method for /dogproposes
+    const [addNewDogPropose, {
+        isLoading: isLoadingNewDogPropose,
+        isSuccess: isSuccessNewDogPropose,
+        isError: isErrorNewDogPropose,
+        error: errorNewDogPropose
+    }] = useAddNewDogProposeMutation()
+
+    // DELETE method for /dogproposes
+    const [deleteDogPropose, {
+        isLoading: isLoadingDeleteDogPropose,
+        isSuccess: isSuccessDeleteDogPropose,
+        isError: isErrorDeleteDogPropose,
+        error: errorDeleteDogPropose
+    }] = useDeleteDogProposeMutation()
 
     // GET the user whose page we're on with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
@@ -65,8 +84,23 @@ const UserPage = () => {
         refetchOnMountOrArgChange: true
     })
 
+    // GET all dog proposals
+    const {
+        data: dogproposes,
+        isLoading: isDogProposeLoading,
+        isSuccess: isDogProposeSuccess,
+        isError: isDogProposeError,
+        error: dogProposeError
+    } = useGetDogProposesQuery('dogProposesList', {
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
+
     // Variable for either an error or content after fetching the user's dogs
     let dogContent
+
+    let proposeDogContent
 
     // Variable to store the ID of the conversation between the two users
     let filteredConversation
@@ -104,16 +138,45 @@ const UserPage = () => {
         dogContent = <p className="errmsg">{error?.data?.message}</p>
     }
 
-    // Variable for storing all IDs of dogs that belong to the user
+    const handleProposeDog = async () => {
+        await addNewDogPropose({ "dog": selectedProposeDog, "user": user?.id })
+        setSelectedProposeDog('')
+    }
+
+    // Variable for storing all dogs that belong to the user
     let filteredDogs
+
+    // Variable for storing all dogs that belong to the logged in user
+    let filteredProposeDogs
+
+    // Variable for storing all proposals for dogs that were made to the user whose page we're on
+    let filteredProposedDogs
     
-    if (isSuccess) {
+    if (isSuccess && isDogProposeSuccess) {
         const { ids, entities } = dogs
 
+        const { ids: proposeIds, entities: proposeEntities } = dogproposes
+
+        const filteredProposeIds = proposeIds?.filter(proposeId => proposeEntities[proposeId]?.user === user?.id)
         const filteredIds = ids?.filter(dogId => entities[dogId]?.user === user?.id)
+
+        const filteredProposeDogIds = userId?.length && user?.id !== userId
+            ? ids?.filter(dogId => entities[dogId]?.user === userId)
+            : null
 
         if (filteredIds?.length) {
             filteredDogs = filteredIds.map(dogId => entities[dogId])
+        }
+
+        if (filteredProposeIds?.length) {
+            filteredProposedDogs = filteredProposeIds.map(proposeId => proposeEntities[proposeId]?.dog)
+        }
+        
+        if (filteredProposeDogIds?.length) {
+            filteredProposeDogs = filteredProposeDogIds.map(dogId => {
+                if (!filteredProposedDogs?.includes(dogId)) return entities[dogId]
+                return null
+            })
         }
 
         // Variable to contain '<tr>' rows for each dog the user administrates
@@ -128,8 +191,35 @@ const UserPage = () => {
                 </tr>
             ))
         }
+
+        if (filteredProposeDogs?.length) {
+            let proposeDogs = filteredProposeDogs?.map(dog => {
+                if (dog?.id) return <option value={dog?.id} key={dog?.id}>{dog?.name}</option>
+                return null
+            })
+
+            proposeDogContent = <>
+                <p><b>Transfer Dog to {user?.username}</b></p>
+                <select value={selectedProposeDog} onChange={(e) => setSelectedProposeDog(e.target.value)}>
+                    <option value="">--</option>
+                    {proposeDogs}
+                </select>
+                <br />
+                <br />
+                <button
+                    className="black-button"
+                    disabled={!selectedProposeDog?.length}
+                    style={!selectedProposeDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                    onClick={handleProposeDog}
+                >
+                    Propose Transfer
+                </button>
+                <br />
+                <br />
+            </>
+        }
       
-        dogContent = (
+        dogContent = <>
             <table className="content-table">
                 <thead>
                     <tr>
@@ -142,7 +232,8 @@ const UserPage = () => {
                     {tableContent}
                 </tbody>
             </table>
-        )
+            <br />
+        </>
     }
 
     if (!user) return <p>User not found</p>
@@ -166,15 +257,11 @@ const UserPage = () => {
     }
 
     const handleBanUser = async () => {
-        console.log('trying to ban user')
-        const result = await updateUser({ id: user?.id, active: false })
-        console.log(result)
+        await updateUser({ id: user?.id, active: false })
     }
 
     const handleUnbanUser = async () => {
-        console.log('trying to unban user')
-        const result = await updateUser({ id: user?.id, active: true })
-        console.log(result)
+        await updateUser({ id: user?.id, active: true })
     }
 
     const content = (
@@ -206,6 +293,7 @@ const UserPage = () => {
             <br />
             {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p><br /></> : null}
             {filteredDogs?.length ? <><p><b>Dogs Administered</b></p><br />{dogContent}<br /></> : null}
+            {proposeDogContent}
             {userId?.length && id !== userId
                 ? <button 
                     className="black-button"
