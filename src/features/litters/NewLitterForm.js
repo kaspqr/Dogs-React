@@ -83,7 +83,7 @@ const NewLitterForm = () => {
             // Format the date
             let finalBorn = born !== '' ? new Date(born.getTime()).toDateString() : ''
             // POST the litter
-            await addNewLitter({ mother, born: finalBorn, children })
+            await addNewLitter({ mother, born: finalBorn, children, breed })
             navigate('/litters')
         }
 

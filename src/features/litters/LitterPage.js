@@ -38,20 +38,6 @@ const LitterPage = () => {
         error: addPuppyProposeError
     }] = useAddNewPuppyProposeMutation()
 
-    // DELETE function for THE father proposal
-    const [deleteFatherPropose, {
-        isSuccess: isFatherProposeSuccess,
-        isError: isFatherProposeError,
-        error: fatherProposeError
-    }] = useDeleteFatherProposeMutation()
-
-    // DELETE function for THE puppy proposal
-    const [deletePuppyPropose, {
-        isSuccess: isPuppyProposeSuccess,
-        isError: isPuppyProposeError,
-        error: puppyProposeError
-    }] = useDeletePuppyProposeMutation()
-
     // PATCH function to add a father to the litter
     const [updateLitter, {
         isLoading: isLitterLoading,
@@ -62,6 +48,8 @@ const LitterPage = () => {
 
     const [selectedDog, setSelectedDog] = useState('')
     const [selectedFather, setSelectedFather] = useState('')
+    const [selectedProposeFather, setSelectedProposeFather] = useState('')
+    const [selectedProposePuppy, setSelectedProposePuppy] = useState('')
 
     const navigate = useNavigate()
 
@@ -161,14 +149,6 @@ const LitterPage = () => {
         dogContent = <p className="errmsg">{litterError?.data?.message}</p>
     }
     
-    if (isFatherProposeError) {
-        dogContent = <p className="errmsg">{fatherProposeError?.data?.message}</p>
-    }
-    
-    if (isPuppyProposeError) {
-        dogContent = <p className="errmsg">{puppyProposeError?.data?.message}</p>
-    }
-    
     if (isAllFatherProposesError) {
         dogContent = <p className="errmsg">{allFatherProposesError?.data?.message}</p>
     }
@@ -186,10 +166,12 @@ const LitterPage = () => {
     }
 
     let filteredFathers
+    let proposedFatherContent
+    let proposedPuppyContent
     
     if ((isSuccess && isAllPuppyProposesSuccess && isAllFatherProposesSuccess) 
         || isUpdateSuccess || isAddFatherProposeSuccess || isAddPuppyProposeSuccess 
-        || isPuppyProposeSuccess || isFatherProposeSuccess || isLitterSuccess) {
+        || isLitterSuccess) {
 
         const { ids, entities } = dogs
 
@@ -260,6 +242,16 @@ const LitterPage = () => {
 
         if (filteredUserIds?.length) {
             filteredUserDogs = filteredUserIds.map(dogId => entities[dogId])
+        }
+
+        if (userId === mother?.user) {
+            proposedFatherContent = filteredFatherProposals?.map(proposal => {
+                return <option value={proposal} key={proposal}>{entities[proposal]?.name}</option>
+            })
+
+            proposedPuppyContent = filteredPuppyProposals?.map(proposal => {
+                return <option value={proposal} key={proposal}>{entities[proposal]?.name}</option>
+            })
         }
 
         // Variable to store the LitterDog component for each dog belonging to the litter
@@ -339,6 +331,12 @@ const LitterPage = () => {
         setSelectedDog('')
     }
 
+    // Add litter to the proposed puppy
+    const addProposedPuppyToLitter = async () => {
+        await updateDog({ "id": selectedProposePuppy, "litter": litterid })
+        setSelectedProposePuppy('')
+    }
+
     // Add father dog to the litter
     const addFatherToLitter = async () => {
         await updateLitter({ "id": litterid, "father": selectedFather })
@@ -355,6 +353,16 @@ const LitterPage = () => {
     const proposePuppyToLitter = async () => {
         await addNewPuppyPropose({ "litter": litterid, "puppy": selectedDog })
         setSelectedDog('')
+    }
+
+    // Add proposed father to the litter
+    const addProposedFatherToLitter = async () => {
+        await updateLitter({ "id": litterid, "father": selectedProposeFather })
+        setSelectedProposeFather('')
+    }
+
+    const handleRemoveFather = async () => {
+        await updateLitter({ "id": litterid, "removeFather": true })
     }
 
     // Boolean to control the style and 'disabled' value of the ADD FATHER button
@@ -383,6 +391,50 @@ const LitterPage = () => {
                 <br />
             </>
 
+    const addProposedFatherContent = proposedFatherContent?.length && !father?.id?.length
+        ? <>
+            <p><b>Add Proposed Father</b></p>
+            <select value={selectedProposeFather} onChange={(e) => setSelectedProposeFather(e.target.value)}>
+                <option value="">--</option>
+                {proposedFatherContent}
+            </select>
+            <br />
+            <br />
+            <button
+                className="black-button"
+                style={!selectedProposeFather?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                disabled={!selectedProposeFather?.length}
+                onClick={addProposedFatherToLitter}
+            >
+                Add Father
+            </button>
+            <br />
+            <br />
+        </>
+        : null
+
+    const addProposedPuppyContent = proposedPuppyContent?.length && (litter?.children > filteredDogs?.length || !filteredDogs?.length)
+        ? <>
+            <p><b>Add Proposed Puppy</b></p>
+            <select value={selectedProposePuppy} onChange={(e) => setSelectedProposePuppy(e.target.value)}>
+                <option value="">--</option>
+                {proposedPuppyContent}
+            </select>
+            <br />
+            <br />
+            <button
+                className="black-button"
+                style={!selectedProposePuppy?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                disabled={!selectedProposePuppy?.length}
+                onClick={addProposedPuppyToLitter}
+            >
+                Add Puppy
+            </button>
+            <br />
+            <br />
+        </>
+        : null
+
     const addPuppyContent = filteredUserDogs?.length && (litter?.children > filteredDogs?.length || !filteredDogs?.length)
         ? <><p><b>{userId === mother?.user ? 'Add ' : 'Propose '}Puppy to Litter</b></p>
             <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
@@ -404,6 +456,18 @@ const LitterPage = () => {
             </>
         : null
 
+    const deleteFatherContent = father?.id?.length && (userId === mother?.user || userId === father?.user)
+        ? <><button
+            className="black-button"
+            onClick={handleRemoveFather}
+        >
+            Remove Father
+        </button>
+        <br />
+        <br />
+        </>
+        : null
+
     return (
         <>
             <p><b>Mother </b><Link className="orange-link" to={`/dogs/${mother.id}`}><b>{mother?.name} </b></Link>({mother?.breed})</p>
@@ -417,8 +481,11 @@ const LitterPage = () => {
             <p><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
             <p><b>{litter?.children} Puppies</b></p>
             <br />
+            {deleteFatherContent}
             {fatherContent}
+            {addProposedFatherContent}
             {addPuppyContent}
+            {addProposedPuppyContent}
             {filteredDogs?.length 
                 ? <><p><b>Puppies</b></p>
                     <br />
