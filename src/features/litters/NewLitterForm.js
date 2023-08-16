@@ -142,7 +142,7 @@ const NewLitterForm = () => {
     }
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = validMother && born !== '' && !isLoading && children > 0 && breed !== ''
+    const canSave = validMother && born !== '' && !isLoading && children > 0 && children < 31 && breed !== ''
 
     if (!dogs) return null
 

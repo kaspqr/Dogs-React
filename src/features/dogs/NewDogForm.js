@@ -9,11 +9,11 @@ import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
 
-const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
-
 const NewDogForm = () => {
 
     const { userId } = useAuth()
+
+    const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
 
     // POST function to add a new dog
     const [addNewDog, {
@@ -26,9 +26,7 @@ const NewDogForm = () => {
 
     const navigate = useNavigate()
 
-
     const [name, setName] = useState('')
-    const [validName, setValidName] = useState(false)
 
     const [heat, setHeat] = useState(false)
 
@@ -54,16 +52,10 @@ const NewDogForm = () => {
 
     const [region, setRegion] = useState('none ')
 
-
     const breeds = [ ...Object.values(Breeds) ]
     const breedOptions = breeds.map(breed => (
         <option key={breed} value={breed}>{breed}</option>
     ))
-
-
-    useEffect(() => {
-        setValidName(NAME_REGEX.test(name))
-    }, [name])
 
     // Reset all inputs once a dog has been POSTed
     useEffect(() => {
@@ -86,7 +78,6 @@ const NewDogForm = () => {
     }, [isSuccess, navigate])
 
 
-    const handleNameChanged = e => setName(e.target.value)
     const handleBreedChanged = e => setBreed(e.target.value)
     const handleChipnumberChanged = e => setChipnumber(e.target.value)
     const handleBirthChanged = date => setBirth(date)
@@ -115,8 +106,7 @@ const NewDogForm = () => {
     }
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = typeof validName === 'boolean' && validName === true 
-        && !isLoading && breed.length && typeof birth === 'object' && birth !== '' 
+    const canSave = NAME_REGEX.test(name) && !isLoading && breed.length && typeof birth === 'object' && birth !== '' 
         && ((typeof death === 'object' && death.getTime() >= birth.getTime()) || death === '')
 
     const handleSaveDogClicked = async (e) => {
@@ -146,18 +136,18 @@ const NewDogForm = () => {
                 <br />
                 
                 <label htmlFor="dogname">
-                    <b>Dog's name (2-20 letters)*</b>
+                    <b>Dog's Name (Max. 30 Letters)*</b>
                 </label>
                 <br />
                 <input 
                     type="text" 
+                    maxLength="30"
                     id="dogname"
                     name="dogname"
                     autoComplete="off"
                     value={name}
-                    onChange={handleNameChanged}
+                    onChange={(e) => setName(e.target.value)}
                 />
-                <br />
                 <br />
 
                 <label htmlFor="breed">
@@ -175,7 +165,6 @@ const NewDogForm = () => {
                     {breedOptions}
                 </select>
                 <br />
-                <br />
 
                 <label htmlFor="isFemale">
                     <b>Gender*</b>
@@ -187,7 +176,6 @@ const NewDogForm = () => {
                   <option value="female">Female</option>
                   <option value="male">Male</option>
                 </select>
-                <br />
                 <br />
 
                 <label htmlFor="country">
@@ -202,7 +190,6 @@ const NewDogForm = () => {
                 >
                     {Countries}
                 </select>
-                <br />
                 <br />
 
                 <label htmlFor="region">
@@ -220,7 +207,6 @@ const NewDogForm = () => {
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
-                <br />
 
                 <label htmlFor="passport">
                     <b>Passport</b>
@@ -233,7 +219,6 @@ const NewDogForm = () => {
                     checked={passport}
                     onChange={handlePassportChanged}
                 />
-                <br />
                 <br />
 
                 <label htmlFor="heat">
@@ -249,7 +234,6 @@ const NewDogForm = () => {
                     onChange={handleHeatChanged}
                 />
                 <br />
-                <br />
 
                 <label htmlFor="sterilized">
                     <b>Fixed</b>
@@ -263,7 +247,6 @@ const NewDogForm = () => {
                     onChange={handleSterilizedChanged}
                 />
                 <br />
-                <br />
 
                 <label htmlFor="microchipped">
                     <b>Microchipped</b>
@@ -276,7 +259,6 @@ const NewDogForm = () => {
                     checked={microchipped}
                     onChange={handleMicrochippedChanged}
                 />
-                <br />
                 <br />
 
                 <label htmlFor="chipnumber">
@@ -323,7 +305,7 @@ const NewDogForm = () => {
                 <textarea 
                     cols="30"
                     rows="10"
-                    maxLength="255"
+                    maxLength="500"
                     id="info"
                     name="info"
                     value={info}

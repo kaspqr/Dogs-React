@@ -34,7 +34,7 @@ const EditUserForm = ({ user }) => {
 
     const navigate = useNavigate()
 
-    const NAME_REGEX = /^[A-z ]{2,20}$/
+    const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
     const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
@@ -127,8 +127,11 @@ const EditUserForm = ({ user }) => {
                     <p className="edit-profile-page-title">Edit Profile</p>
                 </div>
 
+                <p>Fields marked with <b>*</b> are required</p>
+                <br />
+
                 <label htmlFor="current-password">
-                    <b>Current Password</b>
+                    <b>Current Password*</b>
                 </label>
                 <br />
                 <input 
@@ -156,7 +159,7 @@ const EditUserForm = ({ user }) => {
                 <br />
 
                 <label htmlFor="confirm-password">
-                    <b>Confirm Password</b>
+                    <b>Confirm New Password</b>
                 </label>
                 <br />
                 <input 
@@ -170,7 +173,7 @@ const EditUserForm = ({ user }) => {
                 <br />
 
                 <label htmlFor="email">
-                    <b>Email</b>
+                    <b>Email*</b>
                 </label>
                 <br />
                 <input 
@@ -184,7 +187,7 @@ const EditUserForm = ({ user }) => {
                 <br />
 
                 <label htmlFor="name">
-                    <b>Name</b>
+                    <b>Name (Max. 30 Letters)*</b>
                 </label>
                 <br />
                 <input 
@@ -198,7 +201,7 @@ const EditUserForm = ({ user }) => {
                 <br />
 
                 <label htmlFor="country">
-                    <b>Country</b>
+                    <b>Country*</b>
                 </label>
                 <br />
                 <select 
@@ -213,25 +216,22 @@ const EditUserForm = ({ user }) => {
                 <br />
                 <br />
 
-                {bigCountries?.includes(country) 
-                    ? <><label htmlFor="region">
-                                <b>Region</b>
-                            </label>
-                            <br />
-                            <select 
-                                name="region" 
-                                id="region"
-                                value={region}
-                                onChange={(e) => setRegion(e.target.value)}
-                            >
-                                <option value="none ">Region (optional)</option>
-                                {bigCountries?.includes(country) ? Regions[country] : null}
-                            </select>
-                            <br />
-                            <br />
-                        </>
-                    : null
-                }
+                <label htmlFor="region">
+                    <b>Region</b>
+                </label>
+                <br />
+                <select 
+                    disabled={!bigCountries?.includes(country)}
+                    name="region" 
+                    id="region"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                >
+                    <option value="none ">Region (optional)</option>
+                    {bigCountries?.includes(country) ? Regions[country] : null}
+                </select>
+                <br />
+                <br />
                 
                 <div className="edit-profile-buttons-div">
                     <button

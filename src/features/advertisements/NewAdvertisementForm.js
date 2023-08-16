@@ -24,6 +24,8 @@ const NewAdvertisementForm = () => {
 
     const navigate = useNavigate()
 
+    const PRICE_REGEX = /^[1-9]\d{0,11}$/
+
     const [title, setTitle] = useState('')
 
     const [type, setType] = useState('Sell')
@@ -97,10 +99,10 @@ const NewAdvertisementForm = () => {
                     type="text" 
                     id="title"
                     name="title"
+                    maxLength="50"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
-                <br />
                 <br />
 
                 <label htmlFor="type">
@@ -116,21 +118,23 @@ const NewAdvertisementForm = () => {
                     {AdvertisementTypes}
                 </select>
                 <br />
-                <br />
                 
                 <label htmlFor="price">
                     <b>Price</b>
                 </label>
                 <br />
                 <input 
-                    type="number" 
+                    type="text" 
                     id="price"
                     name="price"
                     value={price}
                     disabled={type === 'Found' || type === 'Lost'}
-                    onChange={(e) => setPrice(e.target.value)}
+                    onChange={(e) => {
+                        if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
+                            setPrice(e.target.value)}
+                        }
+                    }
                 />
-                <br />
                 <br />
                 
                 <label htmlFor="currency">
@@ -148,7 +152,6 @@ const NewAdvertisementForm = () => {
                     {Currencies}
                 </select>
                 <br />
-                <br />
 
                 <label htmlFor="country">
                     <b>Country</b>
@@ -163,27 +166,23 @@ const NewAdvertisementForm = () => {
                     {Countries}
                 </select>
                 <br />
-                <br />
 
-                {bigCountries?.includes(country) 
-                    ? <><label htmlFor="region">
-                                <b>Region</b>
-                            </label>
-                            <br />
-                            <select 
-                                name="region" 
-                                id="region"
-                                value={region}
-                                onChange={(e) => setRegion(e.target.value)}
-                            >
-                                <option value="">Region (optional)</option>
-                                {bigCountries?.includes(country) ? Regions[country] : null}
-                            </select>
-                            <br />
-                            <br />
-                        </>
-                    : null
-                }
+                <label htmlFor="region">
+                    <b>Region</b>
+                </label>
+                <br />
+                <select 
+                    disabled={!bigCountries?.includes(country)}
+                    name="region" 
+                    id="region"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                >
+                    <option value="">Region (optional)</option>
+                    {bigCountries?.includes(country) ? Regions[country] : null}
+                </select>
+                <br />
+                <br />
 
                 <label htmlFor="info">
                     <b>Info</b>
@@ -194,6 +193,7 @@ const NewAdvertisementForm = () => {
                     name="info"
                     cols="30"
                     rows="10"
+                    maxLength="500"
                     value={info}
                     onChange={(e) => setInfo(e.target.value)}
                 />

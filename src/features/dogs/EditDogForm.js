@@ -33,7 +33,7 @@ const EditDogForm = ({ dog }) => {
 
     const [sterilized, setSterilized] = useState(dog?.sterilized)
 
-    const [death, setDeath] = useState(dog?.death?.length ? dog.death : '')
+    const [death, setDeath] = useState(dog?.death?.length && dog?.death !== 'none ' ? dog.death : '')
 
     const [name, setName] = useState(dog?.name)
 
@@ -125,9 +125,11 @@ const EditDogForm = ({ dog }) => {
             updatedChipnumber = 'none '
         }
 
+        let finalDeath = death !== '' ? new Date(death.getTime()).toDateString() : 'none '
+
         // PATCH the dog
-        await updateDog({ id: dog.id, 
-            country, region: updatedRegion, death, sterilized, passport, microchipped, 
+        await updateDog({ id: dog.id, name,
+            country, region: updatedRegion, death: finalDeath, sterilized, passport, microchipped, 
             chipnumber: updatedChipnumber, info: updatedInfo, heat, 
             instagram: updatedInstagram, facebook: updatedFacebook, 
             youtube: updatedYoutube, tiktok: updatedTiktok })
@@ -140,7 +142,7 @@ const EditDogForm = ({ dog }) => {
     }
 
     // Boolean to control the 'disabled' value of the SAVE button
-    let canSave = !isLoading
+    let canSave = !isLoading && NAME_REGEX.test(name)
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
@@ -152,6 +154,19 @@ const EditDogForm = ({ dog }) => {
                 <div>
                     <p className="edit-dog-page-title">Edit Dog</p>
                 </div>
+                <br />
+
+                <label htmlFor="name">
+                    <b>Dog's Name (Max. 30 Letters) - Required</b>
+                </label>
+                <br />
+                <input 
+                    name="name" 
+                    id="name"
+                    maxLength="30"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
                 <br />
 
                 <label htmlFor="country">
@@ -166,7 +181,6 @@ const EditDogForm = ({ dog }) => {
                 >
                     {Countries}
                 </select>
-                <br />
                 <br />
 
                 <label htmlFor="region">
@@ -184,23 +198,6 @@ const EditDogForm = ({ dog }) => {
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
-                <br />
-
-                <label htmlFor="death">
-                    <b>Date of Death</b>
-                </label>
-                <br />
-                <Calendar minDate={new Date(dog?.birth) || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
-                <button 
-                    className="black-button"
-                    style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
-                    disabled={death === ''}
-                    onClick={() => setDeath('')}
-                >
-                    Clear date
-                </button>
-                <br />
-                <br />
 
                 <label htmlFor="passport" className="switch">
                     <b>Passport</b>
@@ -213,7 +210,6 @@ const EditDogForm = ({ dog }) => {
                     checked={passport}
                     onChange={handlePassportChanged}
                 />
-                <br />
                 <br />
 
                 {dog?.female === false
@@ -229,7 +225,6 @@ const EditDogForm = ({ dog }) => {
                             checked={heat}
                             onChange={handleHeatChanged}
                         />
-                        <br />
                         <br /></>
                 }
 
@@ -246,7 +241,6 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleSterilizedChanged}
                 />
                 <br />
-                <br />
 
                 <label htmlFor="microchipped">
                     <b>Microchipped</b>
@@ -259,7 +253,6 @@ const EditDogForm = ({ dog }) => {
                     checked={microchipped}
                     onChange={handleMicrochippedChanged}
                 />
-                <br />
                 <br />
 
                 <label htmlFor="chipnumber">
@@ -275,7 +268,6 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleChipnumberChanged}
                 />
                 <br />
-                <br />
                 
                 <label htmlFor="instagram">
                     <b>Instagram Username</b>
@@ -288,7 +280,6 @@ const EditDogForm = ({ dog }) => {
                     value={instagram}
                     onChange={handleInstagramChanged}
                 />
-                <br />
                 <br />
                 
                 <label htmlFor="facebook">
@@ -303,7 +294,6 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleFacebookChanged}
                 />
                 <br />
-                <br />
                 
                 <label htmlFor="youtube">
                     <b>YouTube Username</b>
@@ -317,7 +307,6 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleYoutubeChanged}
                 />
                 <br />
-                <br />
                 
                 <label htmlFor="tiktok">
                     <b>TikTok Username</b>
@@ -330,6 +319,22 @@ const EditDogForm = ({ dog }) => {
                     value={tiktok}
                     onChange={handleTiktokChanged}
                 />
+                <br />
+                <br />
+
+                <label htmlFor="death">
+                    <b>Date of Death</b>
+                </label>
+                <br />
+                <Calendar minDate={new Date(dog?.birth) || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
+                <button 
+                    className="black-button"
+                    style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+                    disabled={death === ''}
+                    onClick={() => setDeath('')}
+                >
+                    Clear date
+                </button>
                 <br />
                 <br />
 
@@ -354,6 +359,7 @@ const EditDogForm = ({ dog }) => {
                         title="Save"
                         onClick={handleSaveDogClicked}
                         disabled={!canSave}
+                        style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                     >
                         Save
                     </button>

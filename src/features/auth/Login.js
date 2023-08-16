@@ -90,7 +90,6 @@ const Login = () => {
             required
           />
           <br />
-          <br />
 
           <label htmlFor="password">
             <b>Password</b>

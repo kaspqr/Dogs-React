@@ -8,8 +8,8 @@ import { Regions } from "../../config/regions"
 
 const NewUserForm = () => {
 
-    const USERNAME_REGEX = /^[A-z]{6,20}$/
-    const NAME_REGEX = /^[A-z ]{2,20}$/
+    const USERNAME_REGEX = /^[A-z0-9]{6,20}$/
+    const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
     const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
@@ -111,9 +111,12 @@ const NewUserForm = () => {
                 <div>
                     <p className="register-page-title">Register New Account</p>
                 </div>
+
+                <p>Fields marked with <b>*</b> are required</p>
+                <br />
                 
                 <label htmlFor="username">
-                    <b>Username (6-20 letters)</b>
+                    <b>Username (6-20 Letters and/or Numbers)*</b>
                 </label>
                 <br />
                 <input 
@@ -128,7 +131,7 @@ const NewUserForm = () => {
                 <br />
 
                 <label htmlFor="password">
-                    <b>Password (8-20 characters, including !@#%)</b>
+                    <b>Password (8-20 Characters, Optionally Including !@#%)*</b>
                 </label>
                 <br />
                 <input 
@@ -142,7 +145,7 @@ const NewUserForm = () => {
                 <br />
 
                 <label htmlFor="confirm-password">
-                    <b>Confirm Password</b>
+                    <b>Confirm Password*</b>
                 </label>
                 <br />
                 <input 
@@ -156,7 +159,7 @@ const NewUserForm = () => {
                 <br />
 
                 <label htmlFor="email">
-                    <b>Email</b>
+                    <b>Email*</b>
                 </label>
                 <br />
                 <input 
@@ -170,7 +173,7 @@ const NewUserForm = () => {
                 <br />
 
                 <label htmlFor="name">
-                    <b>Name</b>
+                    <b>Name*</b>
                 </label>
                 <br />
                 <input 
@@ -184,7 +187,7 @@ const NewUserForm = () => {
                 <br />
 
                 <label htmlFor="country">
-                    <b>Country</b>
+                    <b>Country*</b>
                 </label>
                 <br />
                 <select 
@@ -199,25 +202,22 @@ const NewUserForm = () => {
                 <br />
                 <br />
 
-                {bigCountries?.includes(country) 
-                    ? <><label htmlFor="region">
-                                <b>Region</b>
-                            </label>
-                            <br />
-                            <select 
-                                name="region" 
-                                id="region"
-                                value={region}
-                                onChange={(e) => setRegion(e.target.value)}
-                            >
-                                <option value="none ">Region (optional)</option>
-                                {bigCountries?.includes(country) ? Regions[country] : null}
-                            </select>
-                            <br />
-                            <br />
-                        </>
-                    : null
-                }
+                <label htmlFor="region">
+                    <b>Region</b>
+                </label>
+                <br />
+                <select 
+                    disabled={!bigCountries?.includes(country)}
+                    name="region" 
+                    id="region"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                >
+                    <option value="none ">Region (optional)</option>
+                    {bigCountries?.includes(country) ? Regions[country] : null}
+                </select>
+                <br />
+                <br />
 
                 <div className="register-page-button-div">
                     <button

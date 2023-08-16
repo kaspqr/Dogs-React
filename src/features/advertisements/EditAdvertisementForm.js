@@ -79,10 +79,10 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     type="text" 
                     id="title"
                     name="title"
+                    maxLength="50"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
-                <br />
                 <br />
 
                 {advertisement?.type !== 'Found' && advertisement?.type !== 'Lost'
@@ -102,7 +102,6 @@ const EditAdvertisementForm = ({ advertisement }) => {
                                 }
                             }}
                         />
-                        <br />
                         <br />
 
                         <label htmlFor="currency">

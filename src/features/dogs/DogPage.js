@@ -266,7 +266,7 @@ const DogPage = () => {
             <p><b>Good {dog?.female === true ? 'Girl' : 'Boy'}</b></p>
             <p><b>{dog?.breed}</b></p>
             <p><b>Born </b> {dog?.birth?.split(' ').slice(1, 4).join(' ')}</p>
-            {dog?.death?.length ? <p><b>Entered Dog Heaven on </b>{dog?.death?.split(' ').slice(1, 4).join(' ')}</p> : null}
+            {dog?.death?.length && dog?.death !== 'none ' ? <p><b>Entered Dog Heaven on </b>{dog?.death?.split(' ').slice(1, 4).join(' ')}</p> : null}
             <p><b>From </b>{dog?.region?.length && dog?.region !== 'none ' ? <>{dog?.region}, </> : null}{dog?.country?.length ? <>{dog?.country}</> : null}</p>
             <br />
             <p><b>{dog?.passport === true ? 'Has a Passport' : 'Does Not Have a Passport'}</b></p>

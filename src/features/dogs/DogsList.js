@@ -337,6 +337,7 @@ const DogsList = () => {
           
           <p><b>Region</b></p>
           <select 
+            disabled={!bigCountries?.includes(country)}
             value={region}
             name="dog-region" 
             id="dog-region"
