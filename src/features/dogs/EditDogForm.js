@@ -27,12 +27,15 @@ const EditDogForm = ({ dog }) => {
 
     const navigate = useNavigate()
 
+    const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
 
     const [heat, setHeat] = useState(typeof dog?.heat === 'boolean' ? dog.heat : false)
 
     const [sterilized, setSterilized] = useState(dog?.sterilized)
 
     const [death, setDeath] = useState(dog?.death?.length ? dog.death : '')
+
+    const [name, setName] = useState(dog?.name)
 
     const [microchipped, setMicrochipped] = useState(typeof dog?.microchipped === 'boolean' ? dog.microchipped : false)
 

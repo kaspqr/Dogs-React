@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { useGetUsersQuery, useUpdateUserMutation } from "./usersApiSlice"
-import { useGetDogsQuery } from "../dogs/dogsApiSlice"
+import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
 import { useGetConversationsQuery, useAddNewConversationMutation } from "../conversations/conversationsApiSlice"
 import { useGetDogProposesQuery, useAddNewDogProposeMutation, useDeleteDogProposeMutation } from "../dogs/proposeDogApiSlice"
 import { useState, useEffect } from "react"
@@ -14,6 +14,7 @@ const UserPage = () => {
     const { userId, isAdmin, isSuperAdmin } = useAuth()
 
     const [selectedProposeDog, setSelectedProposeDog] = useState('')
+    const [selectedAcceptDog, setSelectedAcceptDog] = useState('')
 
     // User whose page we're on
     const { id } = useParams()
@@ -71,6 +72,14 @@ const UserPage = () => {
         error: updateError
     }] = useUpdateUserMutation()
 
+    // PATCH function for updating a dog
+    const [updateDog, {
+        isLoading: isUpdateDogLoading,
+        isSuccess: isUpdateDogSuccess,
+        isError: isUpdateDogError,
+        error: updateDogError
+    }] = useUpdateDogMutation()
+
     // GET all conversations
     const {
         data: conversations,
@@ -101,6 +110,8 @@ const UserPage = () => {
     let dogContent
 
     let proposeDogContent
+
+    let myProposalsContent
 
     // Variable to store the ID of the conversation between the two users
     let filteredConversation
@@ -143,41 +154,71 @@ const UserPage = () => {
         setSelectedProposeDog('')
     }
 
+    const handleAcceptDog = async () => {
+        await updateDog({ "id": selectedAcceptDog, "user": userId })
+        setSelectedAcceptDog('')
+    }
+
     // Variable for storing all dogs that belong to the user
     let filteredDogs
 
     // Variable for storing all dogs that belong to the logged in user
-    let filteredProposeDogs
+    let filteredProposeDogs = []
 
     // Variable for storing all proposals for dogs that were made to the user whose page we're on
     let filteredProposedDogs
+
+    let myProposals = []
     
     if (isSuccess && isDogProposeSuccess) {
         const { ids, entities } = dogs
 
         const { ids: proposeIds, entities: proposeEntities } = dogproposes
 
+        // All IDs of Dog Proposes that were made to the user whose page we're on
         const filteredProposeIds = proposeIds?.filter(proposeId => proposeEntities[proposeId]?.user === user?.id)
+
+        // All IDs of Dog Proposes that were made to the user that's logged in
+        const filteredMyProposeIds = userId !== user?.id 
+            ? proposeIds?.filter(proposeId => proposeEntities[proposeId]?.user === userId)
+            : null
+        
+        // All IDs of dogs that are owned by the user whose page we're on
         const filteredIds = ids?.filter(dogId => entities[dogId]?.user === user?.id)
 
+        // All Dog Objects of the user that's logged in AND is not the user whose page we're on
+        // To eliminate the possibility of proposing your own dogs to yourself
         const filteredProposeDogIds = userId?.length && user?.id !== userId
             ? ids?.filter(dogId => entities[dogId]?.user === userId)
             : null
 
+        // Assign filteredDogs an array of Dog Objects that the user whose page we're on, owns
         if (filteredIds?.length) {
             filteredDogs = filteredIds.map(dogId => entities[dogId])
         }
 
+        // If there are Dog Proposes made to the user that's logged in
+        // And there are Dogs that the user whose page we're on, owns
+        // Fill myProposals array with dogs 
+        filteredMyProposeIds?.forEach(proposal => { // For each proposal made to the user that's logged in
+            if (filteredIds?.includes(proposeEntities[proposal]?.dog)) { // If the user whose page we're on has a dog whose ID matches with the proposals dog
+                myProposals.push(entities[proposeEntities[proposal]?.dog])
+            }
+        })
+
+        // If dogs were proposed to the user whose page we're on, fill filteredProposedDogs array with said dog objects
         if (filteredProposeIds?.length) {
             filteredProposedDogs = filteredProposeIds.map(proposeId => proposeEntities[proposeId]?.dog)
         }
-        
-        if (filteredProposeDogIds?.length) {
-            filteredProposeDogs = filteredProposeDogIds.map(dogId => {
-                if (!filteredProposedDogs?.includes(dogId)) return entities[dogId]
-                return null
-            })
-        }
+
+        // For each dog's id that's owned by the logged in user
+        // Check that said dog is not included in the DogProposes that have been made to the user whose page we're on
+        // Add those dogs to filteredProposeDogs array
+        filteredProposeDogIds?.forEach(dogId => {
+            if (!filteredProposedDogs?.includes(dogId)) {
+                filteredProposeDogs.push(entities[dogId])
+            }
+        })
 
         // Variable to contain '<tr>' rows for each dog the user administrates
         let tableContent
@@ -193,30 +234,55 @@ const UserPage = () => {
         }
 
         if (filteredProposeDogs?.length) {
-            let proposeDogs = filteredProposeDogs?.map(dog => {
-                if (dog?.id) return <option value={dog?.id} key={dog?.id}>{dog?.name}</option>
-                return null
-            })
+            const proposeDogs = filteredProposeDogs?.map(dog => <option value={dog?.id} key={dog?.id}>{dog?.name}</option>)
 
-            proposeDogContent = <>
-                <p><b>Transfer Dog to {user?.username}</b></p>
-                <select value={selectedProposeDog} onChange={(e) => setSelectedProposeDog(e.target.value)}>
-                    <option value="">--</option>
-                    {proposeDogs}
-                </select>
-                <br />
-                <br />
-                <button
-                    className="black-button"
-                    disabled={!selectedProposeDog?.length}
-                    style={!selectedProposeDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
-                    onClick={handleProposeDog}
-                >
-                    Propose Transfer
-                </button>
-                <br />
-                <br />
-            </>
+            proposeDogContent = proposeDogs?.length
+                ? <>
+                    <p><b>Transfer Dog to {user?.username}</b></p>
+                    <select value={selectedProposeDog} onChange={(e) => setSelectedProposeDog(e.target.value)}>
+                        <option value="">--</option>
+                        {proposeDogs}
+                    </select>
+                    <br />
+                    <br />
+                    <button
+                        className="black-button"
+                        disabled={!selectedProposeDog?.length}
+                        style={!selectedProposeDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                        onClick={handleProposeDog}
+                    >
+                        Propose Transfer
+                    </button>
+                    <br />
+                    <br />
+                </>
+                : null
+        }
+
+        if (myProposals?.length) {
+            const acceptDogs = myProposals?.map(dog => <option value={dog?.id} key={dog?.id}>{dog?.name}</option>)
+
+            myProposalsContent = acceptDogs?.length 
+                ? <>
+                    <p><b>Accept Dog{myProposals?.length > 1 ? 's' : null} Offered by {user?.username}</b></p>
+                    <select value={selectedAcceptDog} onChange={(e) => setSelectedAcceptDog(e.target.value)}>
+                        <option value="">--</option>
+                        {acceptDogs}
+                    </select>
+                    <br />
+                    <br />
+                    <button
+                        className="black-button"
+                        disabled={!selectedAcceptDog?.length}
+                        style={!selectedAcceptDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                        onClick={handleAcceptDog}
+                    >
+                        Accept Dog
+                    </button>
+                    <br />
+                    <br />
+                </>
+                : null
         }
       
         dogContent = <>
@@ -267,7 +333,7 @@ const UserPage = () => {
     const content = (
         <>
             <p className="user-page-username">
-                {user.username}
+                {user?.username}
                 {userId === id 
                     ? <button
                         className="user-page-edit-button black-button"
@@ -287,13 +353,14 @@ const UserPage = () => {
                     : null
                 }
             </p>
-            <p><b>{user.name}</b></p>
+            <p><b>{user?.name}</b></p>
             <br />
             <p><b>From </b>{user?.region && user?.region !== 'none ' ? `${user?.region}, ` : null}{user?.country}</p>
             <br />
             {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p><br /></> : null}
             {filteredDogs?.length ? <><p><b>Dogs Administered</b></p><br />{dogContent}<br /></> : null}
             {proposeDogContent}
+            {myProposalsContent}
             {userId?.length && id !== userId
                 ? <button 
                     className="black-button"
