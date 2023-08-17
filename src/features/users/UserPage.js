@@ -504,6 +504,8 @@ const UserPage = () => {
         </>
     )
 
+    if (!isAdmin && !isSuperAdmin && user?.active === false) return <p>This user is banned</p>
+
     return content
 }
 

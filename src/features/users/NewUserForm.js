@@ -128,7 +128,6 @@ const NewUserForm = () => {
                     onChange={handleUsernameChanged}
                 />
                 <br />
-                <br />
 
                 <label htmlFor="password">
                     <b>Password (8-20 Characters, Optionally Including !@#%)*</b>
@@ -141,7 +140,6 @@ const NewUserForm = () => {
                     value={password}
                     onChange={handlePasswordChanged}
                 />
-                <br />
                 <br />
 
                 <label htmlFor="confirm-password">
@@ -156,7 +154,6 @@ const NewUserForm = () => {
                     onChange={handleConfirmPasswordChanged}
                 />
                 <br />
-                <br />
 
                 <label htmlFor="email">
                     <b>Email*</b>
@@ -170,7 +167,6 @@ const NewUserForm = () => {
                     onChange={handleEmailChanged}
                 />
                 <br />
-                <br />
 
                 <label htmlFor="name">
                     <b>Name*</b>
@@ -183,7 +179,6 @@ const NewUserForm = () => {
                     value={name}
                     onChange={handleNameChanged}
                 />
-                <br />
                 <br />
 
                 <label htmlFor="country">
@@ -199,7 +194,6 @@ const NewUserForm = () => {
                 >
                     {Countries}
                 </select>
-                <br />
                 <br />
 
                 <label htmlFor="region">

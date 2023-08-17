@@ -6,6 +6,8 @@ import '../../styles/customCalendar.css'
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons"
 
 const EditDogForm = ({ dog }) => {
 
@@ -200,59 +202,31 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <label htmlFor="passport" className="switch">
-                    <b>Passport</b>
+                    <b>Passport </b>
+                    <FontAwesomeIcon onClick={handlePassportChanged} size="xl" icon={passport ? faToggleOn : faToggleOff} color={passport ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
-                <input 
-                    className="checkbox-to-the-right"
-                    type="checkbox" 
-                    id="passport"
-                    name="passport"
-                    checked={passport}
-                    onChange={handlePassportChanged}
-                />
                 <br />
 
                 {dog?.female === false
                     ? null
                     : <><label htmlFor="heat">
-                            <b>Heat</b>
+                            <b>Heat </b>
+                            <FontAwesomeIcon onClick={handleHeatChanged} size="xl" icon={heat ? faToggleOn : faToggleOff} color={heat ? 'rgb(23, 152, 207)' : 'grey'} />
                         </label>
-                        <input 
-                            className="checkbox-to-the-right"
-                            type="checkbox" 
-                            id="heat"
-                            name="heat"
-                            checked={heat}
-                            onChange={handleHeatChanged}
-                        />
                         <br /></>
                 }
 
 
                 <label htmlFor="sterilized">
-                    <b>{dog?.female === true ? 'Sterilized' : 'Castrated'}</b>
+                    <b>{dog?.female === true ? 'Sterilized ' : 'Castrated '}</b>
+                    <FontAwesomeIcon onClick={handleSterilizedChanged} size="xl" icon={sterilized ? faToggleOn : faToggleOff} color={sterilized ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
-                <input 
-                    className="checkbox-to-the-right"
-                    type="checkbox" 
-                    id="sterilized"
-                    name="sterilized"
-                    checked={sterilized}
-                    onChange={handleSterilizedChanged}
-                />
                 <br />
 
                 <label htmlFor="microchipped">
-                    <b>Microchipped</b>
+                    <b>Microchipped </b>
+                    <FontAwesomeIcon onClick={handleMicrochippedChanged} size="xl" icon={microchipped ? faToggleOn : faToggleOff} color={microchipped ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
-                <input 
-                    className="checkbox-to-the-right"
-                    type="checkbox" 
-                    id="microchipped"
-                    name="microchipped"
-                    checked={microchipped}
-                    onChange={handleMicrochippedChanged}
-                />
                 <br />
 
                 <label htmlFor="chipnumber">

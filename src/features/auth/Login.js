@@ -5,6 +5,8 @@ import { setCredentials } from "./authSlice"
 import { useLoginMutation } from "./authApiSlice"
 import usePersist from "../../hooks/usePersist"
 import useAuth from "../../hooks/useAuth"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons"
 
 const Login = () => {
 
@@ -106,14 +108,8 @@ const Login = () => {
           <br />
 
           <label htmlFor="persist">
-            <b>Trust This Device</b>
-            <input 
-              className="checkbox-to-the-right"
-              type="checkbox" 
-              id="persist"
-              onChange={handleToggle}
-              checked={persist}
-            />
+            <b>Trust This Device </b>
+            <FontAwesomeIcon onClick={handleToggle} size="xl" icon={persist ? faToggleOn : faToggleOff} color={persist ? 'rgb(23, 152, 207)' : 'grey'} />
           </label>
           <br />
           <br />
