@@ -4,6 +4,8 @@ import { useGetUsersQuery, useUpdateUserMutation } from "./usersApiSlice"
 import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
 import { useGetConversationsQuery, useAddNewConversationMutation } from "../conversations/conversationsApiSlice"
 import { useGetDogProposesQuery, useAddNewDogProposeMutation, useDeleteDogProposeMutation } from "../dogs/proposeDogApiSlice"
+import { useGetFatherProposesQuery, useDeleteFatherProposeMutation } from "../litters/fatherProposesApiSlice"
+import { useGetPuppyProposesQuery, useDeletePuppyProposeMutation } from "../litters/puppyProposesApiSlice"
 import { useState, useEffect } from "react"
 
 const UserPage = () => {
@@ -57,6 +59,22 @@ const UserPage = () => {
         error: errorDeleteDogPropose
     }] = useDeleteDogProposeMutation()
 
+    // DELETE method for /fatherproposes
+    const [deleteFatherPropose, {
+        isLoading: isLoadingDeleteFatherPropose,
+        isSuccess: isSuccessDeleteFatherPropose,
+        isError: isErrorDeleteFatherPropose,
+        error: errorDeleteFatherPropose
+    }] = useDeleteFatherProposeMutation()
+
+    // DELETE method for /puppyproposes
+    const [deletePuppyPropose, {
+        isLoading: isLoadingDeletePuppyPropose,
+        isSuccess: isSuccessDeletePuppyPropose,
+        isError: isErrorDeletePuppyPropose,
+        error: errorDeletePuppyPropose
+    }] = useDeletePuppyProposeMutation()
+
     // GET the user whose page we're on with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
         selectFromResult: ({ data }) => ({
@@ -101,6 +119,32 @@ const UserPage = () => {
         isError: isDogProposeError,
         error: dogProposeError
     } = useGetDogProposesQuery('dogProposesList', {
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
+
+    // GET all litter father proposals
+    const {
+        data: fatherproposes,
+        isLoading: isFatherProposeLoading,
+        isSuccess: isFatherProposeSuccess,
+        isError: isFatherProposeError,
+        error: fatherProposeError
+    } = useGetFatherProposesQuery('fatherProposesList', {
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
+
+    // GET all litter puppy proposals
+    const {
+        data: puppyproposes,
+        isLoading: isPuppyProposeLoading,
+        isSuccess: isPuppyProposeSuccess,
+        isError: isPuppyProposeError,
+        error: puppyProposeError
+    } = useGetPuppyProposesQuery('puppyProposesList', {
         pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
@@ -169,11 +213,15 @@ const UserPage = () => {
     let filteredProposedDogs
 
     let myProposals = []
+
+    let deleteProposalsContent
     
-    if (isSuccess && isDogProposeSuccess) {
+    if (isSuccess && isDogProposeSuccess && isFatherProposeSuccess && isPuppyProposeSuccess) {
         const { ids, entities } = dogs
 
         const { ids: proposeIds, entities: proposeEntities } = dogproposes
+        const { ids: fatherProposeIds, entities: fatherProposeEntities } = fatherproposes
+        const { ids: puppyProposeIds, entities: puppyProposeEntities } = puppyproposes
 
         // All IDs of Dog Proposes that were made to the user whose page we're on
         const filteredProposeIds = proposeIds?.filter(proposeId => proposeEntities[proposeId]?.user === user?.id)
@@ -185,6 +233,82 @@ const UserPage = () => {
         
         // All IDs of dogs that are owned by the user whose page we're on
         const filteredIds = ids?.filter(dogId => entities[dogId]?.user === user?.id)
+
+        // All IDs of dogproposes, fatherproposes and puppyproposes that match the dogs 
+        // Owned by the user whose page we're on and who is also logged in
+        const filteredMadeDogProposes = user?.id === userId
+            ? proposeIds?.filter(proposeId => filteredIds?.includes(proposeEntities[proposeId]?.dog))
+            : null
+
+        const filteredMadeFatherProposes = user?.id === userId
+            ? fatherProposeIds?.filter(proposeId => filteredIds?.includes(fatherProposeEntities[proposeId]?.father))
+            : null
+
+        const filteredMadePuppyProposes = user?.id === userId
+            ? puppyProposeIds?.filter(proposeId => filteredIds?.includes(puppyProposeEntities[proposeId]?.puppy))
+            : null
+
+        async function handleDeleteDogProposal(proposal) {
+            await deleteDogPropose({ "id": proposal })
+        }
+
+        async function handleDeleteFatherProposal(proposal) {
+            await deleteFatherPropose({ "id": proposal })
+        }
+
+        async function handleDeletePuppyProposal(proposal) {
+            await deletePuppyPropose({ "id": proposal })
+        }
+
+        if (filteredMadeDogProposes?.length || filteredMadeFatherProposes?.length || filteredMadePuppyProposes?.length) {
+            const madeDogProposesContent = filteredMadeDogProposes?.length
+                ? <><button 
+                    className="black-button" 
+                    onClick={() => filteredMadeDogProposes?.forEach((proposal) => {
+                        handleDeleteDogProposal(proposal)
+                    })}
+                >
+                    Delete Dog Proposals Made by Me
+                </button>
+                <br />
+                <br />
+                </>
+                : null
+
+            const madeFatherProposesContent = filteredMadeFatherProposes?.length
+                ? <><button 
+                    className="black-button" 
+                    onClick={() => filteredMadeFatherProposes?.forEach((proposal) => {
+                        handleDeleteFatherProposal(proposal)
+                    })}
+                >
+                    Delete Father Proposals Made by Me
+                </button>
+                <br />
+                <br />
+                </>
+                : null
+
+            const madePuppyProposesContent = filteredMadePuppyProposes?.length
+                ? <><button 
+                    className="black-button" 
+                    onClick={() => filteredMadePuppyProposes?.forEach((proposal) => {
+                        handleDeletePuppyProposal(proposal)
+                    })}
+                >
+                    Delete Puppy Proposals Made by Me
+                </button>
+                <br />
+                <br />
+                </>
+                : null
+
+            deleteProposalsContent = <>
+                {madeDogProposesContent}
+                {madeFatherProposesContent}
+                {madePuppyProposesContent}
+            </>
+        }
 
         // All Dog Objects of the user that's logged in AND is not the user whose page we're on
         // To eliminate the possibility of proposing your own dogs to yourself
@@ -361,6 +485,7 @@ const UserPage = () => {
             {filteredDogs?.length ? <><p><b>Dogs Administered</b></p><br />{dogContent}<br /></> : null}
             {proposeDogContent}
             {myProposalsContent}
+            {deleteProposalsContent}
             {userId?.length && id !== userId
                 ? <button 
                     className="black-button"

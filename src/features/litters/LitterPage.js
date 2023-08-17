@@ -1,6 +1,6 @@
 import { useGetLittersQuery, useUpdateLitterMutation, useDeleteLitterMutation } from "./littersApiSlice"
-import { useGetFatherProposesQuery, useAddNewFatherProposeMutation, useDeleteFatherProposeMutation } from "./fatherProposesApiSlice"
-import { useGetPuppyProposesQuery, useAddNewPuppyProposeMutation, useDeletePuppyProposeMutation } from "./puppyProposesApiSlice"
+import { useGetFatherProposesQuery, useAddNewFatherProposeMutation } from "./fatherProposesApiSlice"
+import { useGetPuppyProposesQuery, useAddNewPuppyProposeMutation } from "./puppyProposesApiSlice"
 import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
