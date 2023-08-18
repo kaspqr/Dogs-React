@@ -32,8 +32,11 @@ const MessageReportPage = () => {
 
     const handleReportClicked = async () => {
         await addNewMessageReport({ "message": messageid, "reporter": userId, "text": report })
-        navigate('/conversations')
     }
+
+    if (isLoading) return <p>Loading...</p>
+    if (isSuccess) navigate('/conversations')
+    if (isError) return <p>{error?.data?.message}</p>
 
     return (
         <>

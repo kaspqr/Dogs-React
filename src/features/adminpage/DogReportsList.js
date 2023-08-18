@@ -33,8 +33,8 @@ const DogReportsList = () => {
       ? ids.map(dogReportId => <DogReport key={dogReportId} dogReportId={dogReportId} />)
       : null
 
-    content = (
-      <>
+    content = ids?.length 
+      ? <>
         <table id="dog-report-table" className="content-table">
           <thead>
             <tr>
@@ -47,7 +47,7 @@ const DogReportsList = () => {
           </tbody>
         </table>
       </>
-    )
+      : <p>There are no dog reports</p>
   }
 
   return content

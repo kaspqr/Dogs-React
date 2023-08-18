@@ -48,8 +48,10 @@ const ReportedAdvertisementPage = () => {
 
     const handleDelete = async () => {
         await deleteAdvertisementReport({ id: advertisementReport?.id })
-        navigate('/advertisementreports')
     }
+
+    if (isDelSuccess) navigate('/advertisementreports')
+    if (isDelError) return <p>{delerror?.data?.message}</p>
 
     return (
         <>

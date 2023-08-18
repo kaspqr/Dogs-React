@@ -33,8 +33,8 @@ const AdvertisementReportsList = () => {
       ? ids.map(advertisementReportId => <AdvertisementReport key={advertisementReportId} advertisementReportId={advertisementReportId} />)
       : null
 
-    content = (
-      <>
+    content = ids?.length 
+      ? <>
         <table id="advertisement-report-table" className="content-table">
           <thead>
             <tr>
@@ -47,7 +47,7 @@ const AdvertisementReportsList = () => {
           </tbody>
         </table>
       </>
-    )
+      : <p>There are no advertisement reports</p>
   }
 
   return content

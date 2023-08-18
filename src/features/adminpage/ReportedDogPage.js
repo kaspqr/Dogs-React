@@ -48,8 +48,10 @@ const ReportedDogPage = () => {
 
     const handleDelete = async () => {
         await deleteDogReport({ id: dogReport?.id })
-        navigate('/dogreports')
     }
+
+    if (isDelSuccess) navigate('/dogreports')
+    if (isDelError) return <p>{delerror?.data?.message}</p>
 
     return (
         <>

@@ -40,13 +40,6 @@ const ReportedMessagePage = () => {
         }),
     })
 
-    // GET the user who is the poster of the message report with all of it's .values
-    const { user } = useGetUsersQuery("usersList", {
-        selectFromResult: ({ data }) => ({
-            user: data?.entities[messageReport?.reporter]
-        }),
-    })
-
     if (!isAdmin && !isSuperAdmin) return <p>You are not logged in as an admin.</p>
 
     if (!messageReport) {
@@ -55,8 +48,10 @@ const ReportedMessagePage = () => {
 
     const handleDelete = async () => {
         await deleteMessageReport({ id: messageReport?.id })
-        navigate('/messagereports')
     }
+
+    if (isDelSuccess) navigate('/messagereports')
+    if (isDelError) return <p>{delerror?.data?.message}</p>
 
     return (
         <>

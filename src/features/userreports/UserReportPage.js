@@ -32,8 +32,11 @@ const UserReportPage = () => {
 
     const handleReportClicked = async () => {
         await addNewUserReport({ "reportee": userid, "reporter": userId, "text": report })
-        navigate('/')
     }
+
+    if (isLoading) return <p>Loading...</p>
+    if (isSuccess) navigate('/')
+    if (isError) return <p>{error?.data?.message}</p>
 
     return (
         <>

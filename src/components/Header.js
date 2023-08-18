@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
+
 import useAuth from "../hooks/useAuth"
+
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faComments, faUser, faDoorOpen, faHouseChimney, faFlag, faClipboardUser, faBars } from "@fortawesome/free-solid-svg-icons"
 
@@ -11,14 +14,18 @@ const Header = () => {
 
   const navigate = useNavigate()
 
+  // State for displaying Mobile screen menu instead of desktop one
   const [dropdownVisible, setDropdownVisible] = useState(false)
 
+  // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  // Function for handling the resizing of screen
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
   }
 
+  // Always check if a window is being resized
   useEffect(() => {
     window.addEventListener('resize', handleResize);
 
@@ -27,6 +34,7 @@ const Header = () => {
     }
   }, [])
 
+  // Function for displaying dropdown menu
   const onBarsClicked = () => {
     {dropdownVisible === false 
       ? document.getElementById('content').style.display = 'none' 
@@ -35,6 +43,7 @@ const Header = () => {
     setDropdownVisible(dropdownVisible === false ? true : false)
   }
 
+  // Remove the mobile screen's dropdown menu once the user has clicked on a link in the menu
   const onMobileLinkClicked = () => {
     document.getElementById('content').style.display = 'grid'
     setDropdownVisible(false)
@@ -70,7 +79,9 @@ const Header = () => {
   // Variable for content varying on whether the user is logged in or not, for screens narrower than 600px
   let dropdown
 
+  // If logged in
   if (userId) {
+    // Contents of desktop menu
     navRight = <>
         <span 
           className="nav-right header-link header-hover" 
@@ -106,6 +117,7 @@ const Header = () => {
         }
       </>
     
+    // Contents of mobile menu
     dropdown = <>
         <span onClick={onBarsClicked} className="nav-right header-link header-hover">
           <FontAwesomeIcon icon={faBars} className="menu-icons" />
@@ -148,7 +160,8 @@ const Header = () => {
 
         </div>
       </>
-  } else {
+  } else { // If not logged in
+    // Contents of desktop menu
     navRight = <>
       <Link className="nav-right header-link header-hover" to={'/register'}>
         <FontAwesomeIcon icon={faClipboardUser} />
@@ -159,6 +172,7 @@ const Header = () => {
       </Link>
     </>
 
+    // Contents of mobile menu
     dropdown = <>
         <span 
           onClick={onBarsClicked} 
@@ -188,6 +202,7 @@ const Header = () => {
       </>
   }
 
+  // Final content to be returned
   const content = (
     <header style={dropdownVisible === true ? {position: "fixed", width: "100%"} : null} id="layout-header"> 
       <nav>

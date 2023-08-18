@@ -8,6 +8,7 @@ import { useGetUserReportsQuery } from "../userreports/userReportsApiSlice"
 
 const AdminPage = () => {
 
+    // Check if the logged in user is an admin
     const { isAdmin, isSuperAdmin } = useAuth()
 
     // GET all the advertisement reports
@@ -91,6 +92,13 @@ const AdminPage = () => {
     }
 
     if (!isAdmin && !isSuperAdmin) return <p>You're not logged in as an admin</p>
+
+    if (isLoading || isMsgLoading || isDogLoading || isUserLoading) return <p>Loading...</p>
+
+    if (isError) return <p>{error?.data?.message}</p>
+    if (isMsgError) return <p>{msgError?.data?.message}</p>
+    if (isDogError) return <p>{dogError?.data?.message}</p>
+    if (isUserError) return <p>{userError?.data?.message}</p>
 
     return (
         <> 

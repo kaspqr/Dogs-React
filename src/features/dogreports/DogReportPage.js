@@ -32,8 +32,11 @@ const DogReportPage = () => {
 
     const handleReportClicked = async () => {
         await addNewDogReport({ "dog": dogid, "reporter": userId, "text": report })
-        navigate('/dogs')
     }
+
+    if (isLoading) return <p>Loading...</p>
+    if (isSuccess) navigate('/dogs')
+    if (isError) return <p>{error?.data?.message}</p>
 
     return (
         <>

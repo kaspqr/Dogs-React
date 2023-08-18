@@ -33,8 +33,8 @@ const MessageReportsList = () => {
       ? ids.map(messageReportId => <MessageReport key={messageReportId} messageReportId={messageReportId} />)
       : null
 
-    content = (
-      <>
+    content = ids?.length 
+      ? <>
         <table id="message-report-table" className="content-table">
           <thead>
             <tr>
@@ -47,7 +47,7 @@ const MessageReportsList = () => {
           </tbody>
         </table>
       </>
-    )
+    : <p>There are no message reports</p>
   }
 
   return content

@@ -40,8 +40,10 @@ const ReportedUserPage = () => {
 
     const handleDelete = async () => {
         await deleteUserReport({ id: userReport?.id })
-        navigate('/userreports')
     }
+
+    if (isDelSuccess) navigate('/userreports')
+    if (isDelError) return <p>{delerror?.data?.message}</p>
 
     return (
         <>

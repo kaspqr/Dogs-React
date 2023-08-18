@@ -33,8 +33,8 @@ const UserReportsList = () => {
       ? ids.map(userReportId => <UserReport key={userReportId} userReportId={userReportId} />)
       : null
 
-    content = (
-      <>
+    content = ids?.length 
+      ? <>
         <table id="user-report-table" className="content-table">
           <thead>
             <tr>
@@ -47,7 +47,7 @@ const UserReportsList = () => {
           </tbody>
         </table>
       </>
-    )
+    : <p>There are no user reports</p>
   }
 
   return content
