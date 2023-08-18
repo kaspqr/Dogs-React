@@ -12,7 +12,6 @@ const User = ({ userId }) => {
     })
 
     if (user) {
-
         return (
             <tr>
                 <td><Link className="orange-link" to={`/users/${userId}`}><b>{user?.username}</b></Link></td>

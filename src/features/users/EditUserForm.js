@@ -39,19 +39,13 @@ const EditUserForm = ({ user }) => {
     const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/
 
     const [password, setPassword] = useState('')
-
     const [confirmPassword, setConfirmPassword] = useState('')
-
     const [currentPassword, setCurrentPassword] = useState('')
-
     const [name, setName] = useState(user.name)
-
     const [email, setEmail] = useState(user.email)
-
+    const [bio, setBio] = useState(user.bio !== 'none ' ? user.bio : '')
     const [country, setCountry] = useState(user.country)
-
     const [region, setRegion] = useState(user.region?.length ? user.region : '')
-
     const [changePasswordError, setChangePasswordError] = useState('')
 
     // Clear the inputs if the user has been updated or deleted successfully
@@ -63,6 +57,7 @@ const EditUserForm = ({ user }) => {
             setEmail('')
             setCountry('')
             setRegion('')
+            setBio('')
             navigate('/users')
         }
     }, [isSuccess, isDelSuccess, navigate])
@@ -72,6 +67,7 @@ const EditUserForm = ({ user }) => {
     const handleCurrentPasswordChanged = e => setCurrentPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
+    const handleBioChanged = e => setBio(e.target.value)
 
     const handleCountryChanged = e => {
         setRegion('none ')
@@ -81,13 +77,16 @@ const EditUserForm = ({ user }) => {
     // PATCH the user
     const handleSaveUserClicked = async () => {
         setChangePasswordError('')
+
+        const finalBio = bio?.length ? bio : 'none '
+
         if (password?.length) {
             if (password !== confirmPassword) {
                 setChangePasswordError(<>New Password doesn't match with Confirm Password</>)
             }
-            await updateUser({ id: user.id, password, name, email, country, region, currentPassword })
+            await updateUser({ id: user.id, password, name, email, country, region, currentPassword, bio: finalBio })
         } else {
-            await updateUser({ id: user.id, name, email, country, region, currentPassword })
+            await updateUser({ id: user.id, name, email, country, region, currentPassword, bio: finalBio })
         }
     }
 
@@ -226,6 +225,22 @@ const EditUserForm = ({ user }) => {
                 </select>
                 <br />
                 <br />
+
+                <label htmlFor="bio">
+                    <b>Bio</b>
+                </label>
+                <br />
+                <textarea 
+                    cols="30"
+                    rows="10"
+                    maxLength="500"
+                    name="bio" 
+                    id="bio"
+                    value={bio}
+                    onChange={handleBioChanged}
+                />
+                <br />
+                <br />
                 
                 <div className="edit-profile-buttons-div">
                     <button
@@ -255,4 +270,3 @@ const EditUserForm = ({ user }) => {
 }
 
 export default EditUserForm
-

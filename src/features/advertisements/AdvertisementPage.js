@@ -12,12 +12,15 @@ const AdvertisementPage = () => {
 
     const { advertisementid } = useParams()
 
+    // State for checking how wide is the user's screen
     const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+    // Function for handling the resizing of screen
     const handleResize = () => {
         setWindowWidth(window.innerWidth)
     }
 
+    // Always check if a window is being resized
     useEffect(() => {
         window.addEventListener('resize', handleResize);
 
@@ -42,6 +45,7 @@ const AdvertisementPage = () => {
 
     // DELETE method to delete the advertisement
     const [deleteAdvertisement, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
@@ -49,12 +53,15 @@ const AdvertisementPage = () => {
 
     const handleAdminDelete = async () => {
         await deleteAdvertisement({ id: advertisement?.id })
-        navigate('/')
     }
 
     if (!advertisement) {
-        return null
+        return <p>Advertisement doesn't exist</p>
     }
+
+    if (isDelLoading) return <p>Loading...</p>
+    if (isDelError) return <p>{delerror?.data?.message}</p>
+    if (isDelSuccess) navigate('/')
 
     return (
         <>

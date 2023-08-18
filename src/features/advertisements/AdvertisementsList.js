@@ -18,33 +18,27 @@ const AdvertisementsList = () => {
   const PRICE_REGEX = /^[1-9]\d{0,11}$/
 
   const [title, setTitle] = useState('')
-
   const [type, setType] = useState('')
-
   const [country, setCountry] = useState('')
-
   const [region, setRegion] = useState('')
-
   const [currency, setCurrency] = useState('')
-
   const [lowestPrice, setLowestPrice] = useState('')
-
   const [highestPrice, setHighestPrice] = useState('')
-
   const [filteredIds, setFilteredIds] = useState([])
-
   const [currentPage, setCurrentPage] = useState(1)
-
   const [newPage, setNewPage] = useState('')
 
   const currencyDisabled = type === 'Found' || type === 'Lost' || type === ''
 
+  // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  // Function for handling the resizing of screen
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
   }
 
+  // Always check if a window is being resized
   useEffect(() => {
     window.addEventListener('resize', handleResize);
 
@@ -61,18 +55,19 @@ const AdvertisementsList = () => {
     isError,
     error
   } = useGetAdvertisementsQuery('advertisementsList', {
-    pollingInterval: 15000,
+    pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })
   
   const handleCountryChanged = (e) => {
+    // New country doesn't have the regions of the old one, so reset the region first
     setRegion('')
     setCountry(e.target.value)
   }
 
   const handleCurrencyChanged = (e) => {
-    if (e.target.value === '') {
+    if (e.target.value === '') { // Cannot have a price without currency
       setLowestPrice('')
       setHighestPrice('')
     }
@@ -81,7 +76,10 @@ const AdvertisementsList = () => {
 
   const handleTypeChanged = (e) => {
     if (e.target.value === '' || e.target.value === 'Found' || e.target.value === 'Lost') {
+      // Cannot have a currency nor price with above types
       setCurrency('')
+      setLowestPrice('')
+      setHighestPrice('')
     }
     setType(e.target.value)
   }
@@ -103,6 +101,7 @@ const AdvertisementsList = () => {
 
     setCurrentPage(1)
   
+    // Go through each filter
     const filteredAdsTitle = Object.values(advertisements?.entities)?.filter((ad) => {
       return ad.title?.includes(title)
     })
@@ -148,6 +147,7 @@ const AdvertisementsList = () => {
 
     if (!finalFilteredAds?.length) alert("Unfortunately, no matching advertisement has been found")
 
+    // Reverse in order to get newest ads first
     const filteredIds = finalFilteredAds?.reverse().map((ad) => {
       return ad._id
     })
@@ -166,6 +166,7 @@ const AdvertisementsList = () => {
 
   if (isSuccess) {
 
+    // Reverse initial ads (without filters) in order to display the newest ones first
     const reversedNewIds = Object.values(advertisements?.entities)?.reverse().map((ad) => {
       return ad._id
     })
@@ -177,6 +178,7 @@ const AdvertisementsList = () => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
 
+    // What to display on the current page
     const advertisementsToDisplay = filteredIds?.length
       ? filteredIds.slice(startIndex, endIndex)
       : reversedNewIds.slice(startIndex, endIndex)

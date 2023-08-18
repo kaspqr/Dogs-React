@@ -1,7 +1,6 @@
 import NewLitterForm from './NewLitterForm'
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
-import { PulseLoader } from "react-spinners"
 
 const NewLitter = () => {
 
@@ -19,11 +18,9 @@ const NewLitter = () => {
     }),
   })
 
-  if (!users?.length || !dogs?.length) return <PulseLoader color='#000' />
+  if (!users?.length || !dogs?.length) return <p>Loading...</p>
 
-  const content = <NewLitterForm users={users} dogs={dogs} />
-
-  return content
+  return <NewLitterForm users={users} dogs={dogs} />
 }
 
 export default NewLitter

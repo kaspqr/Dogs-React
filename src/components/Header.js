@@ -14,7 +14,7 @@ const Header = () => {
 
   const navigate = useNavigate()
 
-  // State for displaying Mobile screen menu instead of desktop one
+  // State for switching between desktop and mobile content
   const [dropdownVisible, setDropdownVisible] = useState(false)
 
   // State for checking how wide is the user's screen

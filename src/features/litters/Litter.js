@@ -19,23 +19,17 @@ const Litter = ({ litterId }) => {
         }),
     })
 
-    if (!litter) {
+    if (!litter || !mother) {
         return null
     }
 
-    if (!mother) {
-        return null
-    }
-
-    if (litter && mother) {
-        return (
-            <tr>
-                <td><Link className="orange-link" to={`/litters/${litterId}`}><b>View Litter</b></Link></td>
-                <td><Link className="orange-link" to={`/dogs/${mother?.id}`}><b>{mother?.name}</b></Link></td>
-                <td>{litter?.born?.split(' ').slice(1, 4).join(' ')}</td>
-            </tr>
-        )
-    } else return null
+    return (
+        <tr>
+            <td><Link className="orange-link" to={`/litters/${litterId}`}><b>View Litter</b></Link></td>
+            <td><Link className="orange-link" to={`/dogs/${mother?.id}`}><b>{mother?.name}</b></Link></td>
+            <td>{litter?.born?.split(' ').slice(1, 4).join(' ')}</td>
+        </tr>
+    )
 }
 
 const memoizedLitter = memo(Litter)

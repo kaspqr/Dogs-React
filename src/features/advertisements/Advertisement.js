@@ -5,12 +5,15 @@ import { memo, useState, useEffect } from "react"
 
 const Advertisement = ({ advertisementId }) => {
 
+    // State for checking how wide is the user's screen
     const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+    // Function for handling the resizing of screen
     const handleResize = () => {
         setWindowWidth(window.innerWidth)
     }
 
+    // Always check if a window is being resized
     useEffect(() => {
         window.addEventListener('resize', handleResize);
 

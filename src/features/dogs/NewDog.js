@@ -1,6 +1,5 @@
 import NewDogForm from './NewDogForm'
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { PulseLoader } from "react-spinners"
 
 const NewDog = () => {
 
@@ -11,11 +10,9 @@ const NewDog = () => {
     }),
   })
 
-  if (!users?.length) return <PulseLoader color='#000' />
+  if (!users?.length) return <p>Loading...</p>
 
-  const content = <NewDogForm users={users} />
-
-  return content
+  return <NewDogForm users={users} />
 }
 
 export default NewDog

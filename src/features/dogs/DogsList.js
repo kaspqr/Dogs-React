@@ -17,41 +17,35 @@ const DogsList = () => {
   const { userId } = useAuth()
 
   const [name, setName] = useState('')
-
   const [country, setCountry] = useState('')
-
   const [region, setRegion] = useState('')
-
   const [breed, setBreed] = useState('')
-
   const [chipnumber, setChipnumber] = useState('')
-
   const [gender, setGender] = useState('')
-
   const [heat, setHeat] = useState('')
-
   const [chipped, setChipped] = useState('')
-
   const [passport, setPassport] = useState('')
-
   const [fixed, setFixed] = useState('')
-
   const [bornEarliest, setBornEarliest] = useState('')
-
   const [bornLatest, setBornLatest] = useState('')
-
   const [filteredIds, setFilteredIds] = useState([])
-
   const [currentPage, setCurrentPage] = useState(1)
-
   const [newPage, setNewPage] = useState('')
 
+  const breeds = [ ...Object.values(Breeds) ]
+  const breedOptions = breeds.map(breed => (
+      <option key={breed} value={breed}>{breed}</option>
+  ))
+
+  // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  // Function for handling the resizing of screen
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
   }
 
+  // Always check if a window is being resized
   useEffect(() => {
     window.addEventListener('resize', handleResize);
 
@@ -59,11 +53,6 @@ const DogsList = () => {
       window.removeEventListener('resize', handleResize)
     }
   }, [])
-
-  const breeds = [ ...Object.values(Breeds) ]
-  const breedOptions = breeds.map(breed => (
-      <option key={breed} value={breed}>{breed}</option>
-  ))
 
   // GET all the dogs
   const {
@@ -79,7 +68,6 @@ const DogsList = () => {
   })
 
   const handleBornEarliestChanged = date => setBornEarliest(date)
-
   const handleBornLatestChanged = date => setBornLatest(date)
 
   const handleCountryChanged = (e) => {
@@ -88,18 +76,14 @@ const DogsList = () => {
   }
 
   const handleChippedChanged = (e) => {
-    if (e.target.value !== 'Yes') {
-      setChipnumber('')
-    }
-
+    // Clear chipnumber if dog is not chipped, as the input will be disabled
+    if (e.target.value !== 'Yes') setChipnumber('')
     setChipped(e.target.value)
   }
 
   const handleGenderChanged = (e) => {
-    if (e.target.value !== 'female') {
-      setHeat('')
-    }
-
+    // Clear heat if dog is not female, as the input will be disabled
+    if (e.target.value !== 'female') setHeat('')
     setGender(e.target.value)
   }
 
@@ -116,6 +100,7 @@ const DogsList = () => {
 
     setCurrentPage(1)
 
+    // Go through all filters
     const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
 
     const filteredDogsBornEarliest = finalBornEarliest !== ''
@@ -232,11 +217,12 @@ const DogsList = () => {
   if (isLoading) content = <p>Loading...</p>
 
   if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>
+    content = <p>{error?.data?.message}</p>
   }
 
   if (isSuccess) {
 
+    // Newest dogs first
     const reversedNewIds = Object.values(dogs?.entities)?.reverse().map((ad) => {
       return ad._id
     })
@@ -248,6 +234,7 @@ const DogsList = () => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
 
+    // Which dogs to display on current page
     const dogsToDisplay = filteredIds?.length
       ? filteredIds.slice(startIndex, endIndex)
       : reversedNewIds.slice(startIndex, endIndex)

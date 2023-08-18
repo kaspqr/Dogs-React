@@ -11,57 +11,24 @@ import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons"
 
 const EditDogForm = ({ dog }) => {
 
-    // PATCH function for updating THE dog
-    const [updateDog, {
-        isLoading,
-        isSuccess,
-        isError,
-        error
-    }] = useUpdateDogMutation()
-
-    // DELETE function for THE dog
-    const [deleteDog, {
-        isSuccess: isDelSuccess,
-        isError: isDelError,
-        error: delerror
-    }] = useDeleteDogMutation()
-
-
     const navigate = useNavigate()
 
     const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
 
     const [heat, setHeat] = useState(typeof dog?.heat === 'boolean' ? dog.heat : false)
-
     const [sterilized, setSterilized] = useState(dog?.sterilized)
-
     const [death, setDeath] = useState(dog?.death?.length && dog?.death !== 'none ' ? dog.death : '')
-
     const [name, setName] = useState(dog?.name)
-
     const [microchipped, setMicrochipped] = useState(typeof dog?.microchipped === 'boolean' ? dog.microchipped : false)
-
-    const [chipnumber, setChipnumber] = useState(dog?.chipnumber?.length ? dog.chipnumber : '')
-
+    const [chipnumber, setChipnumber] = useState(dog?.chipnumber?.length && dog?.chipnumber !== 'none ' ? dog.chipnumber : '')
     const [passport, setPassport] = useState(typeof dog?.passport === 'boolean' ? dog.passport : false)
-
     const [info, setInfo] = useState(dog?.info?.length ? dog.info : '')
-
     const [country, setCountry] = useState(dog?.country?.length ? dog.country : 'Argentina')
-
     const [region, setRegion] = useState(dog?.region?.length ? dog.region : 'none ')
-
     const [instagram, setInstagram] = useState(dog?.instagram?.length && dog?.instagram !== 'none ' ? dog.instagram : '')
     const [facebook, setFacebook] = useState(dog?.facebook?.length && dog?.facebook !== 'none ' ? dog.facebook : '')
     const [youtube, setYoutube] = useState(dog?.youtube?.length && dog?.youtube !== 'none ' ? dog.youtube : '')
     const [tiktok, setTiktok] = useState(dog?.tiktok?.length && dog?.tiktok !== 'none ' ? dog.tiktok : '')
-
-
-    useEffect(() => {
-        if (isSuccess) {
-            navigate(`/dogs/${dog?.id}`)
-        }
-    }, [isSuccess, navigate])
 
     // Clear the region each time the country is changed to avoid having a region from another country
     const handleCountryChanged = (e) => {
@@ -81,9 +48,34 @@ const EditDogForm = ({ dog }) => {
     const handleSterilizedChanged = () => setSterilized(prev => !prev)
     const handlePassportChanged = () => setPassport(prev => !prev)
 
+    // PATCH function for updating THE dog
+    const [updateDog, {
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    }] = useUpdateDogMutation()
+
+    // DELETE function for THE dog
+    const [deleteDog, {
+        isLoading: isDelLoading,
+        isSuccess: isDelSuccess,
+        isError: isDelError,
+        error: delerror
+    }] = useDeleteDogMutation()
+
+    useEffect(() => {
+        if (isSuccess) navigate(`/dogs/${dog?.id}`)
+    }, [isSuccess, navigate])
+
     const handleMicrochippedChanged = () => {
         if (microchipped === true) setChipnumber('')
         setMicrochipped(prev => !prev)
+    }
+
+    // DELETE the dog
+    const handleDeleteDogClicked = async () => {
+        await deleteDog({ id: dog.id })
     }
 
     const handleSaveDogClicked = async () => {
@@ -137,20 +129,17 @@ const EditDogForm = ({ dog }) => {
             youtube: updatedYoutube, tiktok: updatedTiktok })
     }
 
-    // DELETE the dog
-    const handleDeleteDogClicked = async () => {
-        await deleteDog({ id: dog.id })
-        navigate('/dogs')
-    }
+    if (isDelSuccess) navigate('/dogs')
+    if (isLoading || isDelLoading) return <p>Loading...</p>
 
     // Boolean to control the 'disabled' value of the SAVE button
-    let canSave = !isLoading && NAME_REGEX.test(name)
+    const canSave = !isLoading && NAME_REGEX.test(name)
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
     const content = (
         <>
-            <p>{errContent}</p>
+            {isError || isDelError ? <p>{errContent}</p> : null} 
 
             <form onSubmit={e => e.preventDefault()}>
                 <div>

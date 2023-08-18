@@ -19,9 +19,7 @@ const LitterDog = ({ dogId }) => {
         }),
     })
 
-    if (!dog) {
-        return null
-    }
+    if (!dog) return null
 
     return (
         <tr>

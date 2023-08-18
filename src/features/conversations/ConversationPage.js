@@ -9,9 +9,7 @@ import { useState, useEffect, useRef } from "react"
 const ConversationPage = () => {
 
     const { userId } = useAuth()
-
     const { conversationid } = useParams()
-
     const [newMessage, setNewMessage] = useState('')
 
     // POST method for a new message
@@ -27,7 +25,6 @@ const ConversationPage = () => {
         if (newMessage?.trim().length) {
             // POST the new message
             await addNewMessage({ sender: userId, conversation: conversationid, text: newMessage })
-            setNewMessage('')
         }
     }
 
@@ -85,14 +82,8 @@ const ConversationPage = () => {
     let messageContent
     
     if (isLoading || isMessageLoading) messageContent = <p>Loading...</p>
-    
-    if (isError) {
-        messageContent = <p className="errmsg">{error?.data?.message}</p>
-    }
-    
-    if (isMessageError) {
-        messageContent = <p className="errmsg">{messageError?.data?.message}</p>
-    }
+    if (isError) messageContent = <p>{error?.data?.message}</p>
+    if (isMessageError) messageContent = <p>{messageError?.data?.message}</p>
     
     if (isSuccess) {
         const { ids, entities } = messages
@@ -144,14 +135,10 @@ const ConversationPage = () => {
         )
     }
 
-    if (!conversation || !sender || !receiver) {
-        return null
-    }
+    if (!conversation || !sender || !receiver) return null
 
     // Check that the logged in user is a participant of said conversation
-    if (userId !== conversation?.sender && userId !== conversation?.receiver) {
-        return null
-    }
+    if (userId !== conversation?.sender && userId !== conversation?.receiver) return null
 
     return (
         <>

@@ -12,7 +12,6 @@ const NewAdvertisementForm = () => {
 
     const { userId } = useAuth()
 
-
     // POST method for a new advertisement
     const [addNewAdvertisement, {
         isLoading: isAdvertisementLoading,
@@ -20,7 +19,6 @@ const NewAdvertisementForm = () => {
         isError: isAdvertisementError,
         error: advertisementError
     }] = useAddNewAdvertisementMutation()
-
 
     const navigate = useNavigate()
 
@@ -56,10 +54,9 @@ const NewAdvertisementForm = () => {
 
     if (isAdvertisementError) return <p>{advertisementError}</p>
 
-
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = title?.length && type?.length && info?.length && (type === 'Found' || type === 'Lost' || (price?.length && currency?.length)) && !isAdvertisementLoading
-
+    const canSave = title?.length && type?.length && info?.length && !isAdvertisementLoading
+        && (type === 'Found' || type === 'Lost' || (price?.length && currency?.length)) 
 
     const handleSaveAdvertisementClicked = async (e) => {
         e.preventDefault()
@@ -77,10 +74,10 @@ const NewAdvertisementForm = () => {
 
     const handleTypeChanged = (e) => {
         if (e.target.value === 'Lost' || e.target.value === 'Found') {
+            // Price nor currency is allowed with above types
             setPrice('')
             setCurrency('')
         }
-
         setType(e.target.value)
     }
 

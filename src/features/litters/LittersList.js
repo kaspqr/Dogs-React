@@ -15,25 +15,22 @@ const LittersList = () => {
   const PUPPIES_AMOUNT_REGEX = /^[1-9]\d{0,1}$/
 
   const [bornEarliest, setBornEarliest] = useState('')
-
   const [bornLatest, setBornLatest] = useState('')
-
   const [lowestPuppies, setLowestPuppies] = useState('')
-
   const [highestPuppies, setHighestPuppies] = useState('')
-
   const [filteredIds, setFilteredIds] = useState([])
-
   const [currentPage, setCurrentPage] = useState(1)
-
   const [newPage, setNewPage] = useState('')
 
+  // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  // Function for handling the resizing of screen
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
   }
 
+  // Always check if a window is being resized
   useEffect(() => {
     window.addEventListener('resize', handleResize);
 
@@ -56,7 +53,6 @@ const LittersList = () => {
   })
 
   const handleBornEarliestChanged = date => setBornEarliest(date)
-
   const handleBornLatestChanged = date => setBornLatest(date)
 
   const handleToggleFilterView = () => {
@@ -69,7 +65,6 @@ const LittersList = () => {
   }
 
   const handleSearchClicked = () => {
-
     if (lowestPuppies?.length && highestPuppies?.length && highestPuppies < lowestPuppies) {
       return alert("Highest amount of puppies cannot be lower than lowest amount of puppies")
     }
@@ -78,6 +73,7 @@ const LittersList = () => {
 
     const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
 
+    // Go through all the filters
     const filteredLittersBornEarliest = finalBornEarliest !== ''
       ? Object.values(litters?.entities)?.filter((litter) => {
         return new Date(litter.born) >= finalBornEarliest
@@ -108,6 +104,7 @@ const LittersList = () => {
 
     if (!finalFilteredLitters?.length) alert("Unfortunately, no matching litter has been found")
 
+    // Reverse to get newest to oldest
     const filteredIds = finalFilteredLitters?.reverse().map((litter) => {
       return litter._id
     })
@@ -120,12 +117,10 @@ const LittersList = () => {
   let content
 
   if (isLoading) content = <p>Loading...</p>
-
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>
-  }
+  if (isError) content = <p>{error?.data?.message}</p>
 
   if (isSuccess) {
+    // Reverse original ids (without filters) to have newest come first
     const reversedNewIds = Object.values(litters?.entities)?.reverse().map((litter) => {
       return litter._id
     })
@@ -137,6 +132,7 @@ const LittersList = () => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
 
+    // Litters to display on the current page
     const littersToDisplay = filteredIds?.length
       ? filteredIds.slice(startIndex, endIndex)
       : reversedNewIds.slice(startIndex, endIndex)

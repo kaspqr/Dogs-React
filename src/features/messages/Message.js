@@ -26,9 +26,7 @@ const Message = ({ messageId }) => {
         }),
     })
 
-    if (!message || !sender) {
-        return null
-    }
+    if (!message || !sender) return null
 
     const timeId = `time-${message?.id}`
     const msgId = `message-${message?.id}`

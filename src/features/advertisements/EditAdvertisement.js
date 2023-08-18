@@ -3,7 +3,6 @@ import EditAdvertisementForm from './EditAdvertisementForm'
 import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import useAuth from '../../hooks/useAuth'
-import { PulseLoader } from "react-spinners"
 
 const EditAdvertisement = () => {
 
@@ -25,20 +24,12 @@ const EditAdvertisement = () => {
     }),
   })
 
-  if (!advertisement) console.log('no advertisement')
-
-  if (!users?.length) console.log('no users length')
-
-  if (!advertisement || !users?.length) return <PulseLoader color={'#000'} />
+  if (!advertisement || !users?.length) return <p>Loading...</p>
 
   // If the user is not the poster, they are unauthorized to edit it
-  if (advertisement.poster !== userId) { 
-    return <p>No access</p>
-  }
+  if (advertisement.poster !== userId) return <p>This is not your advertisement</p>
 
-  const content = <EditAdvertisementForm advertisement={advertisement} users={users} />
-
-  return content
+  return <EditAdvertisementForm advertisement={advertisement} users={users} />
 }
 
 export default EditAdvertisement

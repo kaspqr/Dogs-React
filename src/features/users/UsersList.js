@@ -10,23 +10,29 @@ import { Regions } from "../../config/regions"
 const UsersList = () => {
 
   const [username, setUsername] = useState('')
-
   const [country, setCountry] = useState('')
-
   const [region, setRegion] = useState('')
-
   const [filteredIds, setFilteredIds] = useState([])
-
   const [currentPage, setCurrentPage] = useState(1)
-
   const [newPage, setNewPage] = useState('')
 
+  // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  // Function for handling the resizing of screen
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
   }
 
+  // Always check if a window is being resized
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+  
   const handleCountryChanged = (e) => {
     setRegion('')
     setCountry(e.target.value)
@@ -40,14 +46,6 @@ const UsersList = () => {
       filterDiv.style.display = 'none'
     }
   }
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
 
   // GET all the users
   const {
@@ -66,6 +64,7 @@ const UsersList = () => {
 
     setCurrentPage(1)
 
+    // Go through all the filters
     const filteredUsers = username?.length
       ? Object.values(users?.entities)?.filter((user) => {
         return user.username.includes(username)
@@ -99,12 +98,11 @@ const UsersList = () => {
 
   if (isLoading) content = <p>Loading...</p>
 
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>
-  }
+  if (isError) content = <p>{error?.data?.message}</p>
 
   if (isSuccess) {
 
+    // Newer users first
     const reversedNewIds = Object.values(users?.entities)?.reverse().map((user) => {
       return user._id
     })
@@ -116,6 +114,7 @@ const UsersList = () => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
 
+    // Users to display on current page
     const usersToDisplay = filteredIds?.length
       ? filteredIds.slice(startIndex, endIndex)
       : reversedNewIds.slice(startIndex, endIndex)

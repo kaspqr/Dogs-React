@@ -12,6 +12,15 @@ const NewLitterForm = () => {
 
     const PUPPIES_REGEX = /^[1-9]\d{0,1}$/
 
+    const navigate = useNavigate()
+
+    const [mother, setMother] = useState('')
+    const [born, setBorn] = useState('')
+    const [breed, setBreed] = useState('')
+    const [children, setChildren] = useState('')
+    const [validMother, setValidMother] = useState(false)
+    const [breedOptions, setBreedOptions] = useState(null)
+
     // POST function for adding a new litter
     const [addNewLitter, {
         isLoading: isLitterLoading,
@@ -19,21 +28,6 @@ const NewLitterForm = () => {
         isError: isLitterError,
         error: litterError
     }] = useAddNewLitterMutation()
-
-
-    const navigate = useNavigate()
-
-    const [mother, setMother] = useState('')
-
-    const [born, setBorn] = useState('')
-
-    const [breed, setBreed] = useState('')
-
-    const [children, setChildren] = useState('')
-
-    const [validMother, setValidMother] = useState(false)
-
-    const [breedOptions, setBreedOptions] = useState(null)
 
     // Clear the inputs if the litter has been successfully posted
     useEffect(() => {
@@ -91,7 +85,6 @@ const NewLitterForm = () => {
             console.log(litterError)
         }
     }
-
 
     // GET all the dogs
     const {

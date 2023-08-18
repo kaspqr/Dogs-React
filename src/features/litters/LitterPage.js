@@ -133,37 +133,14 @@ const LitterPage = () => {
     if (isLoading || isUpdateLoading || isLitterLoading || isAllFatherProposesLoading 
         || isAllPuppyProposesLoading) dogContent = <p>Loading...</p>
     
-    if (isError) {
-        dogContent = <p className="errmsg">{error?.data?.message}</p>
-    }
-    
-    if (isUpdateError) {
-        dogContent = <p className="errmsg">{updateError?.data?.message}</p>
-    }
-    
-    if (isDelError) {
-        dogContent = <p className="errmsg">{delError?.data?.message}</p>
-    }
-    
-    if (isLitterError) {
-        dogContent = <p className="errmsg">{litterError?.data?.message}</p>
-    }
-    
-    if (isAllFatherProposesError) {
-        dogContent = <p className="errmsg">{allFatherProposesError?.data?.message}</p>
-    }
-    
-    if (isAllPuppyProposesError) {
-        dogContent = <p className="errmsg">{allPuppyProposesError?.data?.message}</p>
-    }
-    
-    if (isAddFatherProposeError) {
-        dogContent = <p className="errmsg">{addFatherProposeError?.data?.message}</p>
-    }
-    
-    if (isAddPuppyProposeError) {
-        dogContent = <p className="errmsg">{addPuppyProposeError?.data?.message}</p>
-    }
+    if (isError) dogContent = <p>{error?.data?.message}</p>
+    if (isUpdateError) dogContent = <p>{updateError?.data?.message}</p>
+    if (isDelError) dogContent = <p>{delError?.data?.message}</p>
+    if (isLitterError) dogContent = <p>{litterError?.data?.message}</p>
+    if (isAllFatherProposesError) dogContent = <p>{allFatherProposesError?.data?.message}</p>
+    if (isAllPuppyProposesError) dogContent = <p>{allPuppyProposesError?.data?.message}</p>
+    if (isAddFatherProposeError) dogContent = <p>{addFatherProposeError?.data?.message}</p>
+    if (isAddPuppyProposeError) dogContent = <p>{addPuppyProposeError?.data?.message}</p>
 
     let filteredFathers
     let proposedFatherContent
@@ -232,17 +209,9 @@ const LitterPage = () => {
                 && !filteredIds.includes(entities[dogId].id))
 
         // Convert IDs to objects with .values
-        if (filteredIds?.length) {
-            filteredDogs = filteredIds.map(dogId => entities[dogId])
-        }
-
-        if (filteredFatherIds?.length) {
-            filteredFathers = filteredFatherIds.map(dogId => entities[dogId])
-        }
-
-        if (filteredUserIds?.length) {
-            filteredUserDogs = filteredUserIds.map(dogId => entities[dogId])
-        }
+        if (filteredIds?.length) filteredDogs = filteredIds.map(dogId => entities[dogId])
+        if (filteredFatherIds?.length) filteredFathers = filteredFatherIds.map(dogId => entities[dogId])
+        if (filteredUserIds?.length) filteredUserDogs = filteredUserIds.map(dogId => entities[dogId])
 
         if (userId === mother?.user) {
             proposedFatherContent = filteredFatherProposals?.map(proposal => {
@@ -276,7 +245,6 @@ const LitterPage = () => {
                <option value={dog.id} key={dog.id}>{dog.name}</option>
             ))
         }
-
       
         dogContent = (
             <table className="content-table">
@@ -294,13 +262,7 @@ const LitterPage = () => {
         )
     }
 
-    if (!litter) {
-        return null
-    }
-
-    if (!mother) {
-        return null
-    }
+    if (!litter || !mother) return null
 
     let content = null
 
@@ -323,7 +285,6 @@ const LitterPage = () => {
             </>
         )
     }
-
 
     // Add litter to the user's dog
     async function addToLitter() {
@@ -368,7 +329,6 @@ const LitterPage = () => {
     // Boolean to control the style and 'disabled' value of the ADD FATHER button
     const canSaveFather = selectedFather?.length && !isLoading
     const fatherButtonStyle = !canSaveFather ? {backgroundColor: "grey", cursor: "default"} : null
-    
 
     const fatherContent = father?.id?.length || !filteredFathers?.length
         ? null

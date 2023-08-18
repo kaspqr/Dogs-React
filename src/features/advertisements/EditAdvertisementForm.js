@@ -15,6 +15,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
     // DELETE method to delete the advertisement
     const [deleteAdvertisement, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
@@ -61,12 +62,12 @@ const EditAdvertisementForm = ({ advertisement }) => {
     // Boolean to control the style and 'disabled' of the SAVE button
     let canSave = title?.length && info?.length && (validPrice || advertisement?.type === 'Found' || advertisement?.type === 'Lost') && !isLoading
 
-    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
+    if (isLoading || isDelLoading) return <p>Loading...</p>
+    if (isError) return <p>{error?.data?.message}</p>
+    if (isDelError) return <p>{delerror?.data?.message}</p>
 
     const content = (
         <>
-            <p>{errContent}</p>
-
             <form onSubmit={e => e.preventDefault()}>
                 <div>
                     <p className="advertisement-edit-page-title">Edit Advertisement</p>

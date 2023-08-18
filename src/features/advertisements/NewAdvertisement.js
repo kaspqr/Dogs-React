@@ -1,6 +1,5 @@
 import NewAdvertisementForm from './NewAdvertisementForm'
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { PulseLoader } from "react-spinners"
 
 const NewAdvertisement = () => {
 
@@ -11,11 +10,9 @@ const NewAdvertisement = () => {
     }),
   })
 
-  if (!users?.length) return <PulseLoader color='#000' />
+  if (!users?.length) return <p>Loading...</p>
 
-  const content = <NewAdvertisementForm users={users} />
-
-  return content
+  return <NewAdvertisementForm users={users} />
 }
 
 export default NewAdvertisement

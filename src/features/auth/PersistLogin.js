@@ -26,10 +26,9 @@ const PersistLogin = () => {
         if (effectRan.current === true || process.env.NODE_ENV !== 'development') { // React 18 StrictMode
             const verifyRefreshToken = async () => {
                 console.log('verifying refresh token')
+
                 try {
-                    // const response =
                     await refresh()
-                    // const { accessToken } = response.data
                     setTrueSuccess(true)
                 } catch (err) {
                     console.error(err)
@@ -52,6 +51,7 @@ const PersistLogin = () => {
         return <p>Loading...</p>
     } else if (isError) { // persist: yes, token: no
         console.log('You are not logged in')
+        console.log(error?.data?.message)
         return <Outlet />
     } else if (isSuccess && trueSuccess) { // persist: yes, token: yes
         console.log('success')

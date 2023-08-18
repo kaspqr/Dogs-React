@@ -30,6 +30,7 @@ const Login = () => {
   }, [])
 
   useEffect(() => {
+    // Clear the error message if the username or password has changed
     setErrMsg('')
   }, [username, password])
 
@@ -60,8 +61,6 @@ const Login = () => {
   const handlePwdInput = (e) => setPassword(e.target.value)
   const handleToggle = () => setPersist(prev => !prev)
 
-  const errClass = errMsg ? "errmsg" : "offscreen"
-
   if (isLoading) return <p>Loading...</p>
 
   if (auth?.username?.length) {
@@ -75,13 +74,14 @@ const Login = () => {
       </header>
 
       <main>
-        <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p>
+        <p ref={errRef} aria-live="assertive">{errMsg}</p>
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="username">
             <b>Username</b>
           </label>
           <br />
+
           <input 
             type="text" 
             id="username"

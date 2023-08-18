@@ -12,15 +12,25 @@ const DogPage = () => {
     const navigate = useNavigate()
 
     const { userId, isAdmin, isSuperAdmin } = useAuth()
-
     const { dogid } = useParams()
 
+    let filteredLitters
+    let childrenLitterIds
+    let allChildren
+    let siblings
+    let filteredParents
+    let parentDogs
+    let littersContent
+
+    // State for checking how wide is the user's screen
     const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+    // Function for handling the resizing of screen
     const handleResize = () => {
         setWindowWidth(window.innerWidth)
     }
 
+    // Always check if a window is being resized
     useEffect(() => {
         window.addEventListener('resize', handleResize);
 
@@ -38,15 +48,11 @@ const DogPage = () => {
 
     // DELETE method to delete the dog
     const [deleteDog, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
     }] = useDeleteDogMutation()
-
-    const handleAdminDelete = async () => {
-        await deleteDog({ id: dog?.id })
-        navigate('/dogs')
-    }
 
     // GET the user who administrates the dog with all of it's .values
     const { user } = useGetUsersQuery("usersList", {
@@ -62,10 +68,6 @@ const DogPage = () => {
         }),
     })
 
-    let filteredLitters
-    let childrenLitterIds
-    let allChildren
-
     // GET all the litters
     const {
         data: litters,
@@ -78,15 +80,33 @@ const DogPage = () => {
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
-   
-    // Variable to display errors or content for litters
-    let littersContent
 
-    if (isLoading) littersContent = <p>Loading...</p>
+    // GET all the dogs
+    const {
+        data: dogs,
+        isLoading: isDogsLoading,
+        isSuccess: isDogsSuccess,
+        isError: isDogsError,
+        error: dogsError
+    } = useGetDogsQuery('dogsList', {
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
 
-    if (isError) {
-        littersContent = <p className="errmsg">{error?.data?.message}</p>
-    }
+    // GET the mother dog of the dog's litter
+    const { mother } = useGetDogsQuery("dogsList", {
+        selectFromResult: ({ data }) => ({
+            mother: data?.entities[parentLitter?.mother]
+        }),
+    })
+
+    // GET the father dog of the dog's litter
+    const { father } = useGetDogsQuery("dogsList", {
+        selectFromResult: ({ data }) => ({
+            father: data?.entities[parentLitter?.father]
+        }),
+    })
     
     if (isSuccess) {
         const { ids, entities } = litters
@@ -103,27 +123,6 @@ const DogPage = () => {
             childrenLitterIds = filteredIds
         }
     }
-
-    // GET all the dogs
-    const {
-        data: dogs,
-        isLoading: isDogsLoading,
-        isSuccess: isDogsSuccess,
-        isError: isDogsError,
-        error: dogsError
-    } = useGetDogsQuery('dogsList', {
-        pollingInterval: 15000,
-        refetchOnFocus: true,
-        refetchOnMountOrArgChange: true
-    })
-
-    if (isDogsLoading) littersContent = <p>Loading...</p>
-
-    if (isDogsError) {
-        littersContent = <p className="errmsg">{dogsError?.data?.message}</p>
-    }
-
-    let siblings
 
     if (isDogsSuccess) {
         const { ids, entities } = dogs
@@ -142,10 +141,7 @@ const DogPage = () => {
         }
     }
 
-    let filteredParents
-    let parentDogs
-
-    if (isSuccess) {
+    if (isSuccess && isDogsSuccess) {
 
         const { entities } = dogs
 
@@ -180,41 +176,20 @@ const DogPage = () => {
         )
     }
 
-    // GET the mother dog of the dog's litter
-    const { mother } = useGetDogsQuery("dogsList", {
-        selectFromResult: ({ data }) => ({
-            mother: data?.entities[parentLitter?.mother]
-        }),
-    })
+    if (!dog) return null
 
-    // GET the father dog of the dog's litter
-    const { father } = useGetDogsQuery("dogsList", {
-        selectFromResult: ({ data }) => ({
-            father: data?.entities[parentLitter?.father]
-        }),
-    })
-
-    if (!dog) {
-        return null
-    }
-
-    // Variable for an EDIT button in case the logged in user is the administrative user of THE dog
-    let content = null
-
-    if (userId === dog?.user) {
-        content = (
-            <>
-                <button
-                    className="black-button"
-                    onClick={() => navigate(`/dogs/edit/${dog?.id}`)}
-                >
-                    Edit
-                </button>
-                <br />
-                <br />
-            </>
-        )
-    }
+    const content = userId === dog?.user 
+        ? <>
+            <button
+                className="black-button"
+                onClick={() => navigate(`/dogs/edit/${dog?.id}`)}
+            >
+                Edit
+            </button>
+            <br />
+            <br />
+        </>
+        : null
 
     const fatherContent = father
         ? <p><b>Father <Link className="orange-link" to={`/dogs/${father?.id}`}>{father?.name}</Link></b></p>
@@ -227,23 +202,30 @@ const DogPage = () => {
         </>
         : <p>{dog?.name} is not added to any litter and therefore has no parents in the database</p>
 
-
-    let siblingsContent = null
-
-    if (siblings?.length) {
-        // <p> for each sibling
-        siblingsContent = <>{siblings.map(sibling => <p><b>{sibling?.female === true ? <>Sister </> : <>Brother </>}</b><Link className="orange-link" to={`/dogs/${sibling?.id}`}><b>{sibling?.name}</b></Link></p>)}<br /></>
-    } else {
-        if (parentLitter) {
-            // THE dog is added to a litter, but has no siblings
-            siblingsContent = <><p>{dog?.name} is not connected to any siblings through it's litter in the database</p><br /></>
-        }
-    }
+    const siblingsContent = siblings?.length 
+        ? <>{siblings.map(sibling => <p><b>{sibling?.female === true 
+            ? <>Sister </> 
+            : <>Brother </>}</b><Link className="orange-link" to={`/dogs/${sibling?.id}`}><b>{sibling?.name}</b></Link></p>)}<br />
+        </>
+        : parentLitter 
+            ? <><p>{dog?.name} is not connected to any siblings through it's litter in the database</p><br /></>
+            : null
 
     const instagramUrl = dog?.instagram?.length && dog?.instagram !== 'none ' ? `https://instagram.com/${dog?.instagram}` : null
     const facebookUrl = dog?.facebook?.length && dog?.facebook !== 'none ' ? `https://facebook.com/${dog?.facebook}` : null
     const youtubeUrl = dog?.youtube?.length && dog?.youtube !== 'none ' ? `https://youtube.com/@${dog?.youtube}` : null
     const tiktokUrl = dog?.tiktok?.length && dog?.tiktok !== 'none ' ? `https://tiktok.com/@${dog?.tiktok}` : null
+
+    const handleAdminDelete = async () => {
+        await deleteDog({ id: dog?.id })
+    }
+
+    if (isLoading || isDelLoading || isDogsLoading) return <p>Loading...</p>
+    if (isError) littersContent = <p>{error?.data?.message}</p>
+    if (isDelError) return <p>{delerror?.data?.message}</p>
+    if (isDogsError) return <p>{dogsError?.data?.message}</p>
+
+    if (isDelSuccess) navigate('/dogs')
 
     return (
         <>

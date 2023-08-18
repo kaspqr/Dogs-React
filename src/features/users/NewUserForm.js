@@ -23,28 +23,20 @@ const NewUserForm = () => {
         error
     }] = useAddNewUserMutation()
 
-
     const navigate = useNavigate()
-
 
     const [username, setUsername] = useState('')
     const [validUsername, setValidUsername] = useState(false)
-
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
-
     const [confirmPassword, setConfirmPassword] = useState('')
-
     const [name, setName] = useState('')
     const [validName, setValidName] = useState(false)
-
     const [email, setEmail] = useState('')
     const [validEmail, setValidEmail] = useState(false)
-
     const [country, setCountry] = useState('Argentina')
-
     const [region, setRegion] = useState('')
-
+    const [bio, setBio] = useState('')
 
     useEffect(() => {
         setValidUsername(USERNAME_REGEX.test(username))
@@ -72,16 +64,17 @@ const NewUserForm = () => {
             setEmail('')
             setCountry('')
             setRegion('')
+            setBio('')
             navigate('/users')
         }
     }, [isSuccess, navigate])
-
 
     const handleUsernameChanged = e => setUsername(e.target.value)
     const handlePasswordChanged = e => setPassword(e.target.value)
     const handleConfirmPasswordChanged = e => setConfirmPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
+    const handleBioChanged = e => setBio(e.target.value)
 
     const handleCountryChanged = (e) => {
         setRegion('')
@@ -95,7 +88,7 @@ const NewUserForm = () => {
         e.preventDefault()
         if (canSave) {
             // POST the user
-            await addNewUser({ username, password, name, email, country, region })
+            await addNewUser({ username, password, name, email, country, region, bio })
         }
     }
 
@@ -105,7 +98,7 @@ const NewUserForm = () => {
 
     const content = (
         <>
-            <p>{error?.data?.message}</p>
+            {isError ? <p>{error?.data?.message}</p> : null}
 
             <form onSubmit={handleSaveUserClicked}>
                 <div>
@@ -210,6 +203,22 @@ const NewUserForm = () => {
                     <option value="none ">Region (optional)</option>
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
+                <br />
+                <br />
+
+                <label htmlFor="bio">
+                    <b>Bio</b>
+                </label>
+                <br />
+                <textarea 
+                    cols="30"
+                    rows="10"
+                    maxLength="500"
+                    name="bio" 
+                    id="bio"
+                    value={bio}
+                    onChange={handleBioChanged}
+                />
                 <br />
                 <br />
 

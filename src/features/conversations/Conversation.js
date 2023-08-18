@@ -44,20 +44,8 @@ const Conversation = ({ conversationId }) => {
     })
 
     if (isLoading) return <p>Loading...</p>
-
-    if (isError) return <p>Error: {error}</p>
-
-    if (!conversation) {
-        return null
-    }
-
-    if (!receiver) {
-        return null
-    }
-
-    if (!sender) {
-        return null
-    }
+    if (isError) return <p>{error?.data?.message}</p>
+    if (!conversation || !receiver || !sender) return null
 
     if (isSuccess) {
         const { entities } = messages
@@ -75,14 +63,8 @@ const Conversation = ({ conversationId }) => {
         // Variable for the other user who you're having a conversation with
         let otherUser
 
-        if (receiver?.id === userId) {
-            otherUser = sender
-        }
-
-        if (sender?.id === userId) {
-            otherUser = receiver
-        }
-
+        if (receiver?.id === userId) otherUser = sender
+        if (sender?.id === userId) otherUser = receiver
 
         return (
             <tr>

@@ -21,12 +21,15 @@ const UserPage = () => {
     // User whose page we're on
     const { id } = useParams()
 
+    // State for checking how wide is the user's screen
     const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+    // Function for handling the resizing of screen
     const handleResize = () => {
         setWindowWidth(window.innerWidth)
     }
 
+    // Always check if a window is being resized
     useEffect(() => {
         window.addEventListener('resize', handleResize);
 
@@ -38,7 +41,6 @@ const UserPage = () => {
     // POST method for /conversations
     const [addNewConversation, {
         isLoading: isLoadingNewConversation,
-        isSuccess: isSuccessNewConversation,
         isError: isErrorNewConversation,
         error: errorNewConversation
     }] = useAddNewConversationMutation()
@@ -46,7 +48,6 @@ const UserPage = () => {
     // POST method for /dogproposes
     const [addNewDogPropose, {
         isLoading: isLoadingNewDogPropose,
-        isSuccess: isSuccessNewDogPropose,
         isError: isErrorNewDogPropose,
         error: errorNewDogPropose
     }] = useAddNewDogProposeMutation()
@@ -54,7 +55,6 @@ const UserPage = () => {
     // DELETE method for /dogproposes
     const [deleteDogPropose, {
         isLoading: isLoadingDeleteDogPropose,
-        isSuccess: isSuccessDeleteDogPropose,
         isError: isErrorDeleteDogPropose,
         error: errorDeleteDogPropose
     }] = useDeleteDogProposeMutation()
@@ -62,7 +62,6 @@ const UserPage = () => {
     // DELETE method for /fatherproposes
     const [deleteFatherPropose, {
         isLoading: isLoadingDeleteFatherPropose,
-        isSuccess: isSuccessDeleteFatherPropose,
         isError: isErrorDeleteFatherPropose,
         error: errorDeleteFatherPropose
     }] = useDeleteFatherProposeMutation()
@@ -70,7 +69,6 @@ const UserPage = () => {
     // DELETE method for /puppyproposes
     const [deletePuppyPropose, {
         isLoading: isLoadingDeletePuppyPropose,
-        isSuccess: isSuccessDeletePuppyPropose,
         isError: isErrorDeletePuppyPropose,
         error: errorDeletePuppyPropose
     }] = useDeletePuppyProposeMutation()
@@ -85,7 +83,6 @@ const UserPage = () => {
     // PATCH function for updating the user
     const [updateUser, {
         isLoading: isUpdateLoading,
-        isSuccess: isUpdateSuccess,
         isError: isUpdateError,
         error: updateError
     }] = useUpdateUserMutation()
@@ -93,7 +90,6 @@ const UserPage = () => {
     // PATCH function for updating a dog
     const [updateDog, {
         isLoading: isUpdateDogLoading,
-        isSuccess: isUpdateDogSuccess,
         isError: isUpdateDogError,
         error: updateDogError
     }] = useUpdateDogMutation()
@@ -152,9 +148,7 @@ const UserPage = () => {
 
     // Variable for either an error or content after fetching the user's dogs
     let dogContent
-
     let proposeDogContent
-
     let myProposalsContent
 
     // Variable to store the ID of the conversation between the two users
@@ -173,7 +167,6 @@ const UserPage = () => {
         }
     }
 
-
     // GET all dogs
     const {
         data: dogs,
@@ -187,11 +180,23 @@ const UserPage = () => {
         refetchOnMountOrArgChange: true
     })
     
-    if (isLoading || isConversationLoading) dogContent = <p>Loading...</p>
+    if (isLoading || isConversationLoading || isDogProposeLoading || isPuppyProposeLoading 
+        || isFatherProposeLoading || isUpdateDogLoading || isUpdateLoading || isLoadingDeleteDogPropose 
+        || isLoadingDeleteFatherPropose || isLoadingDeletePuppyPropose || isLoadingNewConversation 
+        || isLoadingNewDogPropose) dogContent = <p>Loading...</p>
     
-    if (isError) {
-        dogContent = <p className="errmsg">{error?.data?.message}</p>
-    }
+    if (isError) dogContent = <p>{error?.data?.message}</p>
+    if (isPuppyProposeError) dogContent = <p>{puppyProposeError?.data?.message}</p>
+    if (isFatherProposeError) dogContent = <p>{fatherProposeError?.data?.message}</p>
+    if (isConversationError) dogContent = <p>{conversationError?.data?.message}</p>
+    if (isDogProposeError) dogContent = <p>{dogProposeError?.data?.message}</p>
+    if (isUpdateDogError) dogContent = <p>{updateDogError?.data?.message}</p>
+    if (isUpdateError) dogContent = <p>{updateError?.data?.message}</p>
+    if (isErrorDeleteDogPropose) dogContent = <p>{errorDeleteDogPropose?.data?.message}</p>
+    if (isErrorDeletePuppyPropose) dogContent = <p>{errorDeletePuppyPropose?.data?.message}</p>
+    if (isErrorDeleteFatherPropose) dogContent = <p>{errorDeleteFatherPropose?.data?.message}</p>
+    if (isErrorNewDogPropose) dogContent = <p>{errorNewDogPropose?.data?.message}</p>
+    if (isErrorNewConversation) dogContent = <p>{errorNewConversation?.data?.message}</p>
 
     const handleProposeDog = async () => {
         await addNewDogPropose({ "dog": selectedProposeDog, "user": user?.id })

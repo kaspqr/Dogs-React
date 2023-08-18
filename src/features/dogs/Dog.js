@@ -5,12 +5,15 @@ import { memo, useEffect, useState } from "react"
 
 const Dog = ({ dogId }) => {
 
+    // State for checking how wide is the user's screen
     const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+    // Function for handling the resizing of screen
     const handleResize = () => {
         setWindowWidth(window.innerWidth)
     }
 
+    // Always check if a window is being resized
     useEffect(() => {
         window.addEventListener('resize', handleResize);
     
@@ -33,9 +36,7 @@ const Dog = ({ dogId }) => {
         }),
     })
 
-    if (!dog) {
-        return null
-    }
+    if (!dog) return null
 
     return (
         <tr>

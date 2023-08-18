@@ -38,13 +38,9 @@ const ConversationsList = () => {
 
   if (isLoading || isMsgLoading) content = <p>Loading...</p>
 
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>
-  }
+  if (isError) content = <p>{error?.data?.message}</p>
 
-  if (isMsgError) {
-    content = <p className="errmsg">{msgError?.data?.message}</p>
-  }
+  if (isMsgError) content = <p>{msgError?.data?.message}</p>
 
   if (isSuccess && isMsgSuccess) {
     const { ids, entities } = conversations
@@ -63,13 +59,14 @@ const ConversationsList = () => {
 
       filteredIds?.map(conversationId => {
 
-        const allConvoMessages = Object.values(msgEntities)?.filter(msg => {
-          return msg.conversation === conversationId
-        })
+        // All the messages belonging to current conversation
+        const allConvoMessages = Object.values(msgEntities)?.filter(msg => msg.conversation === conversationId)
 
+        // Last message of current conversation
         lastMessages.push(allConvoMessages[allConvoMessages.length - 1])
       })
 
+      // Sort the collection of last messages from each convo by time, newest first
       lastMessages?.sort((a, b) => {
         return new Date(b.time) - new Date(a.time)
       })
@@ -80,7 +77,7 @@ const ConversationsList = () => {
         })
       })
     } else {
-      console.log('filtered convos has no length')
+      console.log('Filtered conversations has no length')
     }
 
     content = !filteredIds?.length ? <p>You have no messages</p> : (

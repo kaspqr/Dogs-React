@@ -3,7 +3,6 @@ import EditDogForm from './EditDogForm'
 import { useGetDogsQuery } from "./dogsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import useAuth from '../../hooks/useAuth'
-import { PulseLoader } from "react-spinners"
 
 const EditDog = () => {
   const { id } = useParams()
@@ -25,19 +24,13 @@ const EditDog = () => {
   })
 
   if (!dog) console.log('no dog')
-
   if (!users?.length) console.log('no users length')
-
-  if (!dog || !users?.length) return <PulseLoader color={'#000'} />
+  if (!dog || !users?.length) return <p>Loading...</p>
 
   // Allow access to only the person who is the dog's administrative user
-  if (dog.user !== userId) { 
-    return <p>No access</p>
-  }
+  if (dog.user !== userId) return <p>This is not your dog</p>
 
-  const content = <EditDogForm dog={dog} users={users} />
-
-  return content
+  return <EditDogForm dog={dog} users={users} />
 }
 
 export default EditDog

@@ -17,6 +17,53 @@ const NewDogForm = () => {
 
     const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
 
+    const navigate = useNavigate()
+
+    const [name, setName] = useState('')
+    const [heat, setHeat] = useState(false)
+    const [sterilized, setSterilized] = useState(false)
+    const [birth, setBirth] = useState('')
+    const [death, setDeath] = useState('')
+    const [breed, setBreed] = useState('')
+    const [female, setFemale] = useState(true)
+    const [microchipped, setMicrochipped] = useState(false)
+    const [chipnumber, setChipnumber] = useState('')
+    const [passport, setPassport] = useState(false)
+    const [info, setInfo] = useState('')
+    const [country, setCountry] = useState('Argentina')
+    const [region, setRegion] = useState('none ')
+
+    const breeds = [ ...Object.values(Breeds) ]
+    const breedOptions = breeds.map(breed => (
+        <option key={breed} value={breed}>{breed}</option>
+    ))
+
+    const handleBreedChanged = e => setBreed(e.target.value)
+    const handleInfoChanged = e => setInfo(e.target.value)
+    const handleChipnumberChanged = e => setChipnumber(e.target.value)
+    const handleBirthChanged = date => setBirth(date)
+    const handleDeathChanged = date => setDeath(date)
+
+    const handleHeatChanged = () => setHeat(prev => !prev)
+    const handleSterilizedChanged = () => setSterilized(prev => !prev)
+    const handlePassportChanged = () => setPassport(prev => !prev)
+
+    const handleMicrochippedChanged = () => {
+        setChipnumber('')
+        setMicrochipped(prev => !prev)
+    }
+
+    const handleFemaleChanged = e => {
+        if (e.target.value === 'male') setHeat(false)
+        setFemale(e.target.value === "female" ? true : false)
+    }
+
+    // Clear the region each time the country is changed in order to avoid having a region from the wrong country
+    const handleCountryChanged = (e) => {
+        setRegion('')
+        setCountry(e.target.value)
+    }
+
     // POST function to add a new dog
     const [addNewDog, {
         isLoading,
@@ -24,40 +71,6 @@ const NewDogForm = () => {
         isError,
         error
     }] = useAddNewDogMutation()
-
-
-    const navigate = useNavigate()
-
-    const [name, setName] = useState('')
-
-    const [heat, setHeat] = useState(false)
-
-    const [sterilized, setSterilized] = useState(false)
-
-    const [birth, setBirth] = useState('')
-
-    const [death, setDeath] = useState('')
-
-    const [breed, setBreed] = useState('')
-
-    const [female, setFemale] = useState(true)
-
-    const [microchipped, setMicrochipped] = useState(false)
-
-    const [chipnumber, setChipnumber] = useState('')
-
-    const [passport, setPassport] = useState(false)
-
-    const [info, setInfo] = useState('')
-
-    const [country, setCountry] = useState('Argentina')
-
-    const [region, setRegion] = useState('none ')
-
-    const breeds = [ ...Object.values(Breeds) ]
-    const breedOptions = breeds.map(breed => (
-        <option key={breed} value={breed}>{breed}</option>
-    ))
 
     // Reset all inputs once a dog has been POSTed
     useEffect(() => {
@@ -79,34 +92,6 @@ const NewDogForm = () => {
         }
     }, [isSuccess, navigate])
 
-
-    const handleBreedChanged = e => setBreed(e.target.value)
-    const handleChipnumberChanged = e => setChipnumber(e.target.value)
-    const handleBirthChanged = date => setBirth(date)
-    const handleDeathChanged = date => setDeath(date)
-
-    const handleHeatChanged = () => setHeat(prev => !prev)
-    const handleSterilizedChanged = () => setSterilized(prev => !prev)
-    const handlePassportChanged = () => setPassport(prev => !prev)
-    const handleMicrochippedChanged = () => {
-        setChipnumber('')
-        setMicrochipped(prev => !prev)
-    }
-
-    const handleInfoChanged = e => setInfo(e.target.value)
-    const handleFemaleChanged = e => {
-        if (e.target.value === 'male') {
-            setHeat(false)
-        }
-        setFemale(e.target.value === "female" ? true : false)
-    }
-
-    // Clear the region each time the country is changed in order to avoid having a region from the wrong country
-    const handleCountryChanged = (e) => {
-        setRegion('')
-        setCountry(e.target.value)
-    }
-
     // Boolean to control the style and 'disabled' value of the SAVE button
     const canSave = NAME_REGEX.test(name) && !isLoading && breed.length && typeof birth === 'object' && birth !== '' 
         && ((typeof death === 'object' && death.getTime() >= birth.getTime()) || death === '')
@@ -127,7 +112,7 @@ const NewDogForm = () => {
 
     const content = (
         <>
-            <p>{error?.data?.message}</p>
+            {isError ? <p>{error?.data?.message}</p> : null}
 
             <form onSubmit={handleSaveDogClicked}>
                 <div>
