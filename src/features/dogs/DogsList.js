@@ -246,6 +246,13 @@ const DogsList = () => {
       <Dog key={dogId} dogId={dogId} />
     ))
 
+    if (!reversedNewIds?.length) {
+      return <>
+        {userId?.length ? <><Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link><br /><br /></> : null}
+        <p>There are currently no dogs in the database</p>
+      </>
+    }
+
     content = (
       <>
         {userId?.length ? <><Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link><br /><br /></> : null}
@@ -284,7 +291,7 @@ const DogsList = () => {
           <br />
 
           <p><b>Born at Earliest</b></p>
-          <Calendar maxDate={new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
+          <Calendar maxDate={bornLatest || new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
           <button 
             className="black-button"
             disabled={bornEarliest === ''}
@@ -298,7 +305,7 @@ const DogsList = () => {
           <br />
 
           <p><b>Born at Latest</b></p>
-          <Calendar maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
+          <Calendar minDate={bornEarliest || null} maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
           <button 
             className="black-button"
             disabled={bornLatest === ''}

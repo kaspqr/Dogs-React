@@ -78,6 +78,10 @@ const EditDogForm = ({ dog }) => {
         await deleteDog({ id: dog.id })
     }
 
+    const handleRemoveLitter = async () => {
+        await updateDog({ id: dog.id, litter: 'none ' })
+    }
+
     const handleSaveDogClicked = async () => {
         let updatedInstagram = instagram
         let updatedFacebook = facebook
@@ -136,6 +140,18 @@ const EditDogForm = ({ dog }) => {
     const canSave = !isLoading && NAME_REGEX.test(name)
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
+
+    const removeLitterContent = dog?.litter?.length && dog?.litter !== 'none '
+        ? <>
+            <button
+                className="edit-dog-delete-button black-button"
+                title="Remove Litter"
+                onClick={handleRemoveLitter}
+            >
+                Remove Litter
+            </button>
+        </>
+        : null
 
     const content = (
         <>
@@ -326,12 +342,13 @@ const EditDogForm = ({ dog }) => {
                     >
                         Save
                     </button>
+                    {removeLitterContent}
                     <button
                         className="edit-dog-delete-button black-button"
                         title="Delete"
                         onClick={handleDeleteDogClicked}
                     >
-                        Delete
+                        Delete Dog
                     </button>
                 </div>
             </form>

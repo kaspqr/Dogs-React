@@ -57,6 +57,8 @@ const LitterPage = () => {
 
     const { litterid } = useParams()
 
+    const day = 1000 * 60 * 60 * 24
+
     // GET the litter with all of it's .values
     const { litter } = useGetLittersQuery("littersList", {
         selectFromResult: ({ data }) => ({
@@ -183,11 +185,14 @@ const LitterPage = () => {
         // AND is neither the mother or the father of THE litter
         // AND either matches the breed or is 'Mixed breed' if the parents of THE litter are different breeds
         // AND is not already added to this litter
+        // AND was born at earliest on the day of the litter, and at latest, 7 days after that
         // These dogs are the ones the logged in user is able to add to the litter
         const filteredUserIds = ids.filter(dogId => entities[dogId].user === userId 
                 && entities[dogId].id !== mother?.id
                 && entities[dogId].id !== father?.id
                 && entities[dogId].breed === litter?.breed
+                && new Date(entities[dogId].birth).getTime() >= new Date(litter?.born).getTime() 
+                && new Date(entities[dogId].birth).getTime() <= new Date(new Date(litter?.born).getTime() + 7 * day).getTime()
                 && !filteredPuppyProposals?.includes(entities[dogId].id)
                 && !filteredFatherProposals?.includes(entities[dogId].id)
                 && !filteredIds.includes(entities[dogId].id))
@@ -196,11 +201,13 @@ const LitterPage = () => {
         // Filter the dogs whose administrative user is the logged in user
         // AND is neither the father or the mother of the litter
         // AND is not already added to the litter
+        // AND was born more than 30 days before the litter
         // AND is a male dog
         // These are the dogs that the user is able to add as the father of the litter
         const filteredFatherIds = ids.filter(dogId => entities[dogId].user === userId 
                 && entities[dogId].id !== father?.id
                 && entities[dogId].female === false
+                && new Date(entities[dogId].birth).getTime() < new Date(new Date(litter?.born).getTime() - 30 * day)
                 && !filteredFatherProposals?.includes(entities[dogId].id)
                 && !filteredPuppyProposals?.includes(entities[dogId].id)
                 && ((entities[dogId].breed !== 'Mixed breed' && entities[dogId].breed !== mother?.breed && litter?.breed === 'Mixed breed') 
@@ -439,7 +446,7 @@ const LitterPage = () => {
             </p>
             <p><b>Puppies' Breed </b>{litter?.breed}</p>
             <p><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
-            <p><b>{litter?.children} Puppies</b></p>
+            <p><b>{litter?.children} {litter?.children === 1 ? 'Puppy' : 'Puppies'}</b></p>
             <br />
             {deleteFatherContent}
             {fatherContent}

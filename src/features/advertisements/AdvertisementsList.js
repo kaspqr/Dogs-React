@@ -194,256 +194,260 @@ const AdvertisementsList = () => {
       <>
         {userId?.length ? <><Link to={'/advertisements/new'}><button className="black-button">Post an Advertisement</button></Link><br /><br /></> : null}
 
-        <button
-          className="black-button"
-          onClick={handleToggleFilterView}
-        >
-          Toggle Search View
-        </button>
+        {!reversedNewIds?.length 
+          ? <p>There are currently no advertisements</p>
+          : <>
+              <button
+                className="black-button"
+                onClick={handleToggleFilterView}
+              >
+                Toggle Search View
+              </button>
 
-        <br />
-        <br />
+              <br />
+              <br />
 
-        <div id="ad-filter-div" style={{display: "none"}}>
-          <p><b>Title</b></p>
-          <input 
-            value={title}
-            name="advertisement-title-search-input" 
-            id="advertisement-title-search-input" 
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          
-          <p><b>Type</b></p>
-          <select 
-            value={type}
-            name="advertisement-type" 
-            id="advertisement-type"
-            onChange={handleTypeChanged}
-          >
-            <option value="">--</option>
-            {AdvertisementTypes}
-          </select>
-          
-          <p><b>Country</b></p>
-          <select 
-            value={country}
-            name="advertisement-country" 
-            id="advertisement-country"
-            onChange={handleCountryChanged}
-          >
-            <option value="">--</option>
-            {Countries}
-          </select>
-          
-          <p><b>Region</b></p>
-          <select 
-            disabled={!bigCountries.includes(country)}
-            value={region}
-            name="advertisement-region" 
-            id="advertisement-region"
-            onChange={(e) => setRegion(e.target.value)}
-          >
-            <option value="">--</option>
-            {bigCountries?.includes(country)
-              ? Regions[country]
-              : null
-            }
-          </select>
+              <div id="ad-filter-div" style={{display: "none"}}>
+                <p><b>Title</b></p>
+                <input 
+                  value={title}
+                  name="advertisement-title-search-input" 
+                  id="advertisement-title-search-input" 
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                
+                <p><b>Type</b></p>
+                <select 
+                  value={type}
+                  name="advertisement-type" 
+                  id="advertisement-type"
+                  onChange={handleTypeChanged}
+                >
+                  <option value="">--</option>
+                  {AdvertisementTypes}
+                </select>
+                
+                <p><b>Country</b></p>
+                <select 
+                  value={country}
+                  name="advertisement-country" 
+                  id="advertisement-country"
+                  onChange={handleCountryChanged}
+                >
+                  <option value="">--</option>
+                  {Countries}
+                </select>
+                
+                <p><b>Region</b></p>
+                <select 
+                  disabled={!bigCountries.includes(country)}
+                  value={region}
+                  name="advertisement-region" 
+                  id="advertisement-region"
+                  onChange={(e) => setRegion(e.target.value)}
+                >
+                  <option value="">--</option>
+                  {bigCountries?.includes(country)
+                    ? Regions[country]
+                    : null
+                  }
+                </select>
 
-          <p><b>Currency</b></p>
-          <select 
-            value={currency}
-            name="advertisement-currency" 
-            id="advertisement-currency"
-            onChange={handleCurrencyChanged}
-            disabled={currencyDisabled}
-          >
-            <option value="">--</option>
-            {Currencies}
-          </select>
+                <p><b>Currency</b></p>
+                <select 
+                  value={currency}
+                  name="advertisement-currency" 
+                  id="advertisement-currency"
+                  onChange={handleCurrencyChanged}
+                  disabled={currencyDisabled}
+                >
+                  <option value="">--</option>
+                  {Currencies}
+                </select>
 
-          <br />
+                <br />
 
-          <p><b>Lowest Price</b></p>
-          <input 
-            type="text"
-            value={lowestPrice}
-            name="advertisement-lowest-price" 
-            id="advertisement-lowest-price"
-            onChange={(e) => {
-              if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
-                setLowestPrice(e.target.value)}
-              }
-            }
-            disabled={!currency?.length}
-          />
+                <p><b>Lowest Price</b></p>
+                <input 
+                  type="text"
+                  value={lowestPrice}
+                  name="advertisement-lowest-price" 
+                  id="advertisement-lowest-price"
+                  onChange={(e) => {
+                    if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
+                      setLowestPrice(e.target.value)}
+                    }
+                  }
+                  disabled={!currency?.length}
+                />
 
-          <br />
+                <br />
 
-          <p><b>Highest Price</b></p>
-          <input 
-            type="text"
-            value={highestPrice}
-            name="advertisement-highest-price" 
-            id="advertisement-highest-price"
-            onChange={(e) => {
-              if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
-                setHighestPrice(e.target.value)}
-              }
-            }
-            disabled={!currency?.length}
-          />
+                <p><b>Highest Price</b></p>
+                <input 
+                  type="text"
+                  value={highestPrice}
+                  name="advertisement-highest-price" 
+                  id="advertisement-highest-price"
+                  onChange={(e) => {
+                    if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
+                      setHighestPrice(e.target.value)}
+                    }
+                  }
+                  disabled={!currency?.length}
+                />
 
-          <br />
-          <br />
+                <br />
+                <br />
 
-          <button 
-            onClick={handleSearchClicked}
-            className="black-button search-button"
-          >
-            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
-          </button>
+                <button 
+                  onClick={handleSearchClicked}
+                  className="black-button search-button"
+                >
+                  Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+                </button>
 
-          <br />
-          <br />
-        </div>
+                <br />
+                <br />
+              </div>
+            <p>
+              <button 
+                style={currentPage === 1 ? {display: "none"} : null}
+                disabled={currentPage === 1}
+                className="pagination-button"
+                onClick={() => {
+                  setCurrentPage(currentPage - 1)
+                }}
+              >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+              </button>
 
-        <p>
-          <button 
-            style={currentPage === 1 ? {display: "none"} : null}
-            disabled={currentPage === 1}
-            className="pagination-button"
-            onClick={() => {
-              setCurrentPage(currentPage - 1)
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
-          </button>
+              {` Page ${currentPage} of ${maxPage} `}
 
-          {` Page ${currentPage} of ${maxPage} `}
+              <button 
+                className="pagination-button"
+                style={currentPage === maxPage ? {display: "none"} : null}
+                disabled={currentPage === maxPage}
+                onClick={() => {
+                  setCurrentPage(currentPage + 1)
+                }}
+              >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+              </button>
 
-          <button 
-            className="pagination-button"
-            style={currentPage === maxPage ? {display: "none"} : null}
-            disabled={currentPage === maxPage}
-            onClick={() => {
-              setCurrentPage(currentPage + 1)
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
-          </button>
+              {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
 
-          {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
-
-          <span 
-            className="new-page-input-span"
-            style={maxPage === 1 
-              ? {display: "none"}
-              : windowWidth > 600 
-                ? null 
-                : {float: "none"}
-            }
-          >
-            <input 
-              onChange={(e) => setNewPage(e.target.value)} 
-              value={newPage} 
-              type="number" 
-              className="new-page-input"
-              placeholder="Page no."
-            />
-            <button
-              style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
-              disabled={goToPageButtonDisabled}
-              onClick={() => {
-                if (newPage >= 1 && newPage <= maxPage) {
-                  setCurrentPage(parseInt(newPage))
+              <span 
+                className="new-page-input-span"
+                style={maxPage === 1 
+                  ? {display: "none"}
+                  : windowWidth > 600 
+                    ? null 
+                    : {float: "none"}
                 }
-              }}
-              className="black-button"
-            >
-              Go to Page
-            </button>
-          </span>
+              >
+                <input 
+                  onChange={(e) => setNewPage(e.target.value)} 
+                  value={newPage} 
+                  type="number" 
+                  className="new-page-input"
+                  placeholder="Page no."
+                />
+                <button
+                  style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+                  disabled={goToPageButtonDisabled}
+                  onClick={() => {
+                    if (newPage >= 1 && newPage <= maxPage) {
+                      setCurrentPage(parseInt(newPage))
+                    }
+                  }}
+                  className="black-button"
+                >
+                  Go to Page
+                </button>
+              </span>
 
-        </p>
+            </p>
 
-        <br />
+            <br />
 
-        <table id="advertisement-table" className="content-table">
-          <thead>
-            <tr>
-              <th className="first-th">Title</th>
-              {windowWidth > 600
-                ? <><th>Poster</th>
-                  <th>Type</th></>
-                : null
-              }
-              <th className="last-th">Price</th>
-            </tr>
-          </thead>
-            <tbody>{tableContent}</tbody>
-        </table>
+            <table id="advertisement-table" className="content-table">
+              <thead>
+                <tr>
+                  <th className="first-th">Title</th>
+                  {windowWidth > 600
+                    ? <><th>Poster</th>
+                      <th>Type</th></>
+                    : null
+                  }
+                  <th className="last-th">Price</th>
+                </tr>
+              </thead>
+                <tbody>{tableContent}</tbody>
+            </table>
 
-        <br />
+            <br />
 
-        <p>
-          <button 
-            style={currentPage === 1 ? {display: "none"} : null}
-            disabled={currentPage === 1}
-            className="pagination-button"
-            onClick={() => {
-              setCurrentPage(currentPage - 1)
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
-          </button>
+            <p>
+              <button 
+                style={currentPage === 1 ? {display: "none"} : null}
+                disabled={currentPage === 1}
+                className="pagination-button"
+                onClick={() => {
+                  setCurrentPage(currentPage - 1)
+                }}
+              >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+              </button>
 
-          {` Page ${currentPage} of ${maxPage} `}
+              {` Page ${currentPage} of ${maxPage} `}
 
-          <button 
-            className="pagination-button"
-            style={currentPage === maxPage ? {display: "none"} : null}
-            disabled={currentPage === maxPage}
-            onClick={() => {
-              setCurrentPage(currentPage + 1)
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
-          </button>
+              <button 
+                className="pagination-button"
+                style={currentPage === maxPage ? {display: "none"} : null}
+                disabled={currentPage === maxPage}
+                onClick={() => {
+                  setCurrentPage(currentPage + 1)
+                }}
+              >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+              </button>
 
-          {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
+              {windowWidth > 600 || maxPage === 1 ? null : <><br /><br /></>}
 
-          <span 
-            className="new-page-input-span"
-            style={maxPage === 1 
-              ? {display: "none"}
-              : windowWidth > 600 
-                ? null 
-                : {float: "none"}
-            }
-          >
-            <input 
-              onChange={(e) => setNewPage(e.target.value)} 
-              value={newPage} 
-              type="number" 
-              className="new-page-input"
-              placeholder="Page no."
-            />
-            <button
-              style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
-              disabled={goToPageButtonDisabled}
-              onClick={() => {
-                if (newPage >= 1 && newPage <= maxPage) {
-                  setCurrentPage(parseInt(newPage))
+              <span 
+                className="new-page-input-span"
+                style={maxPage === 1 
+                  ? {display: "none"}
+                  : windowWidth > 600 
+                    ? null 
+                    : {float: "none"}
                 }
-              }}
-              className="black-button"
-            >
-              Go to Page
-            </button>
-          </span>
+              >
+                <input 
+                  onChange={(e) => setNewPage(e.target.value)} 
+                  value={newPage} 
+                  type="number" 
+                  className="new-page-input"
+                  placeholder="Page no."
+                />
+                <button
+                  style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+                  disabled={goToPageButtonDisabled}
+                  onClick={() => {
+                    if (newPage >= 1 && newPage <= maxPage) {
+                      setCurrentPage(parseInt(newPage))
+                    }
+                  }}
+                  className="black-button"
+                >
+                  Go to Page
+                </button>
+              </span>
 
-        </p>
+            </p>
+          </>
+        }
       </>
     )
   }

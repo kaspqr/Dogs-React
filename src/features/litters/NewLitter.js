@@ -18,7 +18,7 @@ const NewLitter = () => {
     }),
   })
 
-  if (!users?.length || !dogs?.length) return <p>Loading...</p>
+  if (!users?.length) return <p>Loading...</p>
 
   return <NewLitterForm users={users} dogs={dogs} />
 }

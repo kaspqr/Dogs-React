@@ -144,6 +144,13 @@ const LittersList = () => {
       <Litter key={litterId} litterId={litterId} />
     ))
 
+    if (!reversedNewIds?.length) {
+      return <>
+        {userId?.length ? <><Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link><br /><br /></> : null}
+        <p>There are currently no litters in the database</p>
+      </>
+    }
+
     content = (
       <>
         {userId?.length ? <><Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link><br /><br /></> : null}
@@ -160,7 +167,7 @@ const LittersList = () => {
 
         <div id="litter-filter-div" style={{display: "none"}}>
           <p><b>Born at Earliest</b></p>
-          <Calendar maxDate={new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
+          <Calendar maxDate={bornLatest || new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
           <button 
             className="black-button"
             disabled={bornEarliest === ''}
@@ -174,7 +181,7 @@ const LittersList = () => {
           <br />
 
           <p><b>Born at Latest</b></p>
-          <Calendar maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
+          <Calendar minDate={bornEarliest || null} maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
           <button 
             className="black-button"
             disabled={bornLatest === ''}
@@ -221,6 +228,10 @@ const LittersList = () => {
           <button 
             onClick={handleSearchClicked}
             className="black-button search-button"
+            disabled={lowestPuppies?.length && highestPuppies?.length && lowestPuppies > highestPuppies}
+            style={lowestPuppies?.length && highestPuppies?.length 
+              && lowestPuppies > highestPuppies ? {backgroundColor: "grey", cursor: "default"} : null
+            }
           >
             Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
           </button>

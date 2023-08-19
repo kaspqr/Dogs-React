@@ -119,7 +119,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                         </select>
                         <br />
                         <br /></>
-                    : null
+                    : <br />
                 }
 
                 <label htmlFor="info">

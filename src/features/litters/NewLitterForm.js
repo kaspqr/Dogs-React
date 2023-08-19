@@ -135,7 +135,7 @@ const NewLitterForm = () => {
     }
 
     // Boolean to control the style and 'disabled' value of the SAVE button
-    const canSave = validMother && born !== '' && !isLoading && children > 0 && children < 31 && breed !== ''
+    const canSave = validMother && born !== '' && !isLoading && children > 0 && children < 31 && breed !== '' && new Date(born) >= new Date(dogs?.entities[mother]?.birth)
 
     if (!dogs) return null
 
@@ -213,7 +213,7 @@ const NewLitterForm = () => {
                     <b>Born</b>
                 </label>
                 <br />
-                <Calendar maxDate={new Date()} onChange={handleBornChanged} value={born} />
+                <Calendar minDate={mother?.length ? new Date(dogs?.entities[mother]?.birth) : null} maxDate={new Date()} onChange={handleBornChanged} value={born} />
                 <br />
                 
                 <button

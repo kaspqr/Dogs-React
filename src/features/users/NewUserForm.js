@@ -65,7 +65,7 @@ const NewUserForm = () => {
             setCountry('')
             setRegion('')
             setBio('')
-            navigate('/users')
+            navigate('/login')
         }
     }, [isSuccess, navigate])
 
@@ -95,6 +95,8 @@ const NewUserForm = () => {
     if (auth?.username?.length) {
         return <p>You are currently logged in. Please logout before registering a new user.</p>
     }
+
+    if (isLoading) return <p>Loading...</p>
 
     const content = (
         <>

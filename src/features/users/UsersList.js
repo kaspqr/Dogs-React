@@ -126,6 +126,8 @@ const UsersList = () => {
       <User key={userId} userId={userId} />
     ))
 
+    if (!reversedNewIds?.length) return <p>There are currently no active users</p>
+
     content = (
       <>
         <button
