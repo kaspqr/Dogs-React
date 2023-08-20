@@ -11,7 +11,7 @@ const DogReportsList = () => {
     isError,
     error
   } = useGetDogReportsQuery('dogReportsList', {
-    pollingInterval: 15000,
+    pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })

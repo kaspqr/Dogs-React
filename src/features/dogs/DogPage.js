@@ -76,7 +76,7 @@ const DogPage = () => {
         isError,
         error
     } = useGetLittersQuery('littersList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -89,7 +89,7 @@ const DogPage = () => {
         isError: isDogsError,
         error: dogsError
     } = useGetDogsQuery('dogsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -243,6 +243,7 @@ const DogPage = () => {
                 {dog?.tiktok?.length && dog?.tiktok !== 'none ' ? <a href={tiktokUrl} rel="noreferrer" target="_blank"><svg className="tiktok-icon" xmlns="http://www.w3.org/2000/svg" height="1.2em" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/></svg></a> : null}
             </p>
             <br />
+            {dog?.image?.length ? <><p><img width="300" height="300" className="dog-profile-picture" src={dog?.image} alt="Dog" /></p><br /></> : null}
             <p className="main-dog-info-title"><b>Main Info</b></p>
             <br />
             <p><b>Good {dog?.female === true ? 'Girl' : 'Boy'}</b></p>

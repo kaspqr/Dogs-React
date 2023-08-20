@@ -166,6 +166,23 @@ input {
   font-weight: bold;
 }
 
+.dog-profile-picture {
+  border-radius: 50%;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.label-file-input {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.upload-message {
+  font-size: 12px;
+}
+
 .advertisement-edit-page-title, 
 .advertisement-post-page-title,
 .user-page-username,

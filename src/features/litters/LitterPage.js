@@ -88,7 +88,7 @@ const LitterPage = () => {
         isError,
         error
     } = useGetDogsQuery('dogsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -101,7 +101,7 @@ const LitterPage = () => {
         isError: isAllFatherProposesError,
         error: allFatherProposesError
     } = useGetFatherProposesQuery('fatherProposesList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -114,7 +114,7 @@ const LitterPage = () => {
         isError: isAllPuppyProposesError,
         error: allPuppyProposesError
     } = useGetPuppyProposesQuery('puppyProposesList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })

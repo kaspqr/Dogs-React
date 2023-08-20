@@ -57,7 +57,7 @@ const ConversationPage = () => {
         isError,
         error
     } = useGetMessagesQuery('messagesList', {
-        pollingInterval: 30000,
+        pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })

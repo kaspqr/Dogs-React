@@ -11,7 +11,7 @@ const MessageReportsList = () => {
     isError,
     error
   } = useGetMessageReportsQuery('messageReportsList', {
-    pollingInterval: 15000,
+    pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })

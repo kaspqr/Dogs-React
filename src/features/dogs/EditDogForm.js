@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useUpdateDogMutation, useDeleteDogMutation } from "./dogsApiSlice"
 import { useNavigate } from "react-router-dom"
 import Calendar from "react-calendar"
@@ -7,7 +7,7 @@ import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons"
+import { faToggleOff, faToggleOn, faUpload } from "@fortawesome/free-solid-svg-icons"
 
 const EditDogForm = ({ dog }) => {
 
@@ -29,6 +29,10 @@ const EditDogForm = ({ dog }) => {
     const [facebook, setFacebook] = useState(dog?.facebook?.length && dog?.facebook !== 'none ' ? dog.facebook : '')
     const [youtube, setYoutube] = useState(dog?.youtube?.length && dog?.youtube !== 'none ' ? dog.youtube : '')
     const [tiktok, setTiktok] = useState(dog?.tiktok?.length && dog?.tiktok !== 'none ' ? dog.tiktok : '')
+    const [previewSource, setPreviewSource] = useState()
+    const [uploadMessage, setUploadMessage] = useState('')
+    const [uploadLoading, setUploadLoading] = useState(false)
+    const fileInputRef = useRef(null)
 
     // Clear the region each time the country is changed to avoid having a region from another country
     const handleCountryChanged = (e) => {
@@ -66,7 +70,7 @@ const EditDogForm = ({ dog }) => {
 
     useEffect(() => {
         if (isSuccess) navigate(`/dogs/${dog?.id}`)
-    }, [isSuccess, navigate])
+    }, [isSuccess, navigate, dog?.id])
 
     const handleMicrochippedChanged = () => {
         if (microchipped === true) setChipnumber('')
@@ -128,9 +132,57 @@ const EditDogForm = ({ dog }) => {
         // PATCH the dog
         await updateDog({ id: dog.id, name,
             country, region: updatedRegion, death: finalDeath, sterilized, passport, microchipped, 
-            chipnumber: updatedChipnumber, info: updatedInfo, heat, 
+            chipnumber: updatedChipnumber, info: updatedInfo, heat,
             instagram: updatedInstagram, facebook: updatedFacebook, 
-            youtube: updatedYoutube, tiktok: updatedTiktok })
+            youtube: updatedYoutube, tiktok: updatedTiktok 
+        })
+    }
+
+    const previewFile = (file) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onloadend = () => {
+            setPreviewSource(reader.result)
+        }
+    }
+
+    const handleFileChanged = (e) => {
+        const file = e.target.files[0]
+        previewFile(file)
+    }
+
+    const uploadImage = async (base64EncodedImage) => {
+        setUploadLoading(true)
+
+        try {
+            setUploadMessage('')
+            await fetch('http://localhost:3500/dogimages', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    data: base64EncodedImage,
+                    dog_id: `${dog?.id}`
+                }),
+                headers: {'Content-type': 'application/json'}
+            })
+
+            setPreviewSource(null)
+            setUploadMessage('Profile Picture Updated!')
+        } catch (error) {
+            console.error(error)
+            setUploadMessage('Something went wrong')
+        }
+
+        setUploadLoading(false)
+    }
+
+    const handleSubmitFile = (e) => {
+        if (!previewSource) return
+        uploadImage(previewSource)
+    }
+
+    const handleFileClicked = () => {
+        // Programmatically trigger the click event on the file input
+        fileInputRef.current.click();
     }
 
     if (isDelSuccess) navigate('/dogs')
@@ -175,6 +227,40 @@ const EditDogForm = ({ dog }) => {
                     onChange={(e) => setName(e.target.value)}
                 />
                 <br />
+                <br />
+
+                <span className="label-file-input" onClick={handleFileClicked} htmlFor="dog-image">
+                    <b>Browse Profile Picture</b> <FontAwesomeIcon icon={faUpload} />
+                    <input
+                        id="file"
+                        type="file"
+                        name="dog-image"
+                        ref={fileInputRef}
+                        onChange={handleFileChanged}
+                        style={{ display: "none" }}
+                    />
+                </span>
+                <br />
+
+                <button 
+                    className="black-button" 
+                    onClick={handleSubmitFile}
+                    disabled={!previewSource || uploadLoading === true}
+                    style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
+                >
+                    Update
+                </button>
+                <br />
+
+                {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
+                {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
+
+                <br />
+
+                {previewSource && <>
+                    <img className="dog-profile-picture" height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <br />
+                </>}
 
                 <label htmlFor="country">
                     <b>Country</b>

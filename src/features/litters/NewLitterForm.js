@@ -94,7 +94,7 @@ const NewLitterForm = () => {
         isError,
         error
     } = useGetDogsQuery('dogsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })

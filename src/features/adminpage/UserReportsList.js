@@ -11,7 +11,7 @@ const UserReportsList = () => {
     isError,
     error
   } = useGetUserReportsQuery('userReportsList', {
-    pollingInterval: 15000,
+    pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })

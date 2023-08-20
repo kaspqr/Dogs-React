@@ -19,7 +19,7 @@ const AdminPage = () => {
         isError,
         error
     } = useGetAdvertisementReportsQuery('advertisementReportsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -39,7 +39,7 @@ const AdminPage = () => {
         isError: isMsgError,
         error: msgError
     } = useGetMessageReportsQuery('messageReportsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -59,7 +59,7 @@ const AdminPage = () => {
         isError: isDogError,
         error: dogError
     } = useGetDogReportsQuery('dogReportsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -79,7 +79,7 @@ const AdminPage = () => {
         isError: isUserError,
         error: userError
     } = useGetUserReportsQuery('userReportsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })

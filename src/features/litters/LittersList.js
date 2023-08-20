@@ -47,7 +47,7 @@ const LittersList = () => {
     isError,
     error
   } = useGetLittersQuery('littersList', {
-    pollingInterval: 15000,
+    pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })

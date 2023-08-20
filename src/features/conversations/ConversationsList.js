@@ -15,7 +15,7 @@ const ConversationsList = () => {
     isError,
     error
   } = useGetConversationsQuery('conversationsList', {
-    pollingInterval: 60000,
+    pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })
@@ -28,7 +28,7 @@ const ConversationsList = () => {
     isError: isMsgError,
     error: msgError
   } = useGetMessagesQuery('messagesList', {
-    pollingInterval: 120000,
+    pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
   })

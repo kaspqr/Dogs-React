@@ -38,7 +38,7 @@ const Conversation = ({ conversationId }) => {
         isError,
         error
     } = useGetMessagesQuery('messagesList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })

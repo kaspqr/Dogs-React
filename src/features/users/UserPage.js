@@ -102,7 +102,7 @@ const UserPage = () => {
         isError: isConversationError,
         error: conversationError
     } = useGetConversationsQuery('conversationsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -115,7 +115,7 @@ const UserPage = () => {
         isError: isDogProposeError,
         error: dogProposeError
     } = useGetDogProposesQuery('dogProposesList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -128,7 +128,7 @@ const UserPage = () => {
         isError: isFatherProposeError,
         error: fatherProposeError
     } = useGetFatherProposesQuery('fatherProposesList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -141,7 +141,7 @@ const UserPage = () => {
         isError: isPuppyProposeError,
         error: puppyProposeError
     } = useGetPuppyProposesQuery('puppyProposesList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -175,7 +175,7 @@ const UserPage = () => {
         isError,
         error
     } = useGetDogsQuery('dogsList', {
-        pollingInterval: 15000,
+        pollingInterval: 75000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -459,6 +459,14 @@ const UserPage = () => {
         await updateUser({ id: user?.id, active: true })
     }
 
+    const handleMakeAdmin = async () => {
+        await updateUser({ id: user?.id, roles: user?.roles?.concat(["Admin"]) })
+    }
+
+    const handleRemoveAdmin = async () => {
+        await updateUser({ id: user?.id, roles: ["User"] })
+    }
+
     const content = (
         <>
             <p className="user-page-username">
@@ -504,6 +512,12 @@ const UserPage = () => {
                 ? user?.active
                     ? <><br /><br /><button className="black-button" onClick={handleBanUser}>Ban User</button></>
                     : <><br /><br /><button className="black-button" onClick={handleUnbanUser}>Unban User</button></>
+                : null
+            }
+            {isSuperAdmin && !user?.roles?.includes("SuperAdmin") && id !== userId
+                ? !user?.roles?.includes("Admin")
+                    ? <><br /><br /><button className="black-button" onClick={handleMakeAdmin}>Make Admin</button></>
+                    : <><br /><br /><button className="black-button" onClick={handleRemoveAdmin}>Remove Admin</button></>
                 : null
             }
         </>
