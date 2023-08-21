@@ -166,7 +166,8 @@ input {
   font-weight: bold;
 }
 
-.dog-profile-picture {
+.dog-profile-picture,
+.advertisement-picture {
   border-radius: 50%;
 }
 

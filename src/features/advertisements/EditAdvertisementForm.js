@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useUpdateAdvertisementMutation, useDeleteAdvertisementMutation } from "./advertisementsApiSlice"
 import { useNavigate } from "react-router-dom"
 import { Currencies } from "../../config/currencies"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faUpload } from "@fortawesome/free-solid-svg-icons"
 
 const EditAdvertisementForm = ({ advertisement }) => {
 
@@ -26,13 +28,14 @@ const EditAdvertisementForm = ({ advertisement }) => {
     const navigate = useNavigate()
 
     const [title, setTitle] = useState(advertisement?.title)
-
     const [price, setPrice] = useState(advertisement?.price)
     const [validPrice, setValidPrice] = useState(PRICE_REGEX.test(price))
-
     const [currency, setCurrency] = useState(advertisement?.currency)
-
     const [info, setInfo] = useState(advertisement?.info)
+    const [previewSource, setPreviewSource] = useState()
+    const [uploadMessage, setUploadMessage] = useState('')
+    const [uploadLoading, setUploadLoading] = useState(false)
+    const fileInputRef = useRef(null)
 
     useEffect(() => {
         setValidPrice(PRICE_REGEX.test(price))
@@ -57,6 +60,53 @@ const EditAdvertisementForm = ({ advertisement }) => {
     // DELETE function
     const handleDeleteAdvertisementClicked = async () => {
         await deleteAdvertisement({ id: advertisement.id })
+    }
+
+    const previewFile = (file) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onloadend = () => {
+            setPreviewSource(reader.result)
+        }
+    }
+
+    const handleFileChanged = (e) => {
+        const file = e.target.files[0]
+        previewFile(file)
+    }
+
+    const uploadImage = async (base64EncodedImage) => {
+        setUploadLoading(true)
+
+        try {
+            setUploadMessage('')
+            await fetch('http://localhost:3500/advertisementimages', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    data: base64EncodedImage,
+                    advertisement_id: `${advertisement?.id}`
+                }),
+                headers: {'Content-type': 'application/json'}
+            })
+
+            setPreviewSource(null)
+            setUploadMessage('Picture Updated!')
+        } catch (error) {
+            console.error(error)
+            setUploadMessage('Something went wrong')
+        }
+
+        setUploadLoading(false)
+    }
+
+    const handleSubmitFile = (e) => {
+        if (!previewSource) return
+        uploadImage(previewSource)
+    }
+
+    const handleFileClicked = () => {
+        // Programmatically trigger the click event on the file input
+        fileInputRef.current.click();
     }
 
     // Boolean to control the style and 'disabled' of the SAVE button
@@ -85,6 +135,41 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <br />
+                <br />
+
+                <span className="label-file-input" onClick={handleFileClicked} htmlFor="advertisement-image">
+                    <b>Browse Picture</b> <FontAwesomeIcon icon={faUpload} />
+                    <input
+                        id="file"
+                        type="file"
+                        name="advertisement-image"
+                        ref={fileInputRef}
+                        onChange={handleFileChanged}
+                        style={{ display: "none" }}
+                    />
+                </span>
+                <br />
+
+                <button 
+                    className="black-button" 
+                    onClick={handleSubmitFile}
+                    disabled={!previewSource || uploadLoading === true}
+                    style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
+                >
+                    Update
+                </button>
+                <br />
+
+                {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
+                {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
+
+                <br />
+
+                {previewSource && <>
+                    <img height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <br />
+                    <br />
+                </>}
 
                 {advertisement?.type !== 'Found' && advertisement?.type !== 'Lost'
                     ? <><label htmlFor="price">
