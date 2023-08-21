@@ -371,20 +371,7 @@ const AdvertisementsList = () => {
 
             <br />
 
-            <table id="advertisement-table" className="content-table">
-              <thead>
-                <tr>
-                  <th className="first-th">Title</th>
-                  {windowWidth > 600
-                    ? <><th>Poster</th>
-                      <th>Type</th></>
-                    : null
-                  }
-                  <th className="last-th">Price</th>
-                </tr>
-              </thead>
-                <tbody>{tableContent}</tbody>
-            </table>
+            {tableContent}
 
             <br />
 

@@ -488,23 +488,7 @@ const DogsList = () => {
 
         <br />
         
-        <table className="content-table">
-          <thead>
-            <tr>
-              <th className="first-th">Name</th>
-              {windowWidth > 600 
-                ? <><th>Breed</th>
-                  <th>Good</th>
-                  <th>Born</th></>
-                : null
-              }
-              <th className="last-th">Administered by</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
+        {tableContent}
 
         <br />
 

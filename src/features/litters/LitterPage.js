@@ -5,6 +5,7 @@ import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import LitterDog from '../dogs/LitterDog'
+import Dog from '../dogs/Dog'
 import { useState, useEffect } from "react"
 
 const LitterPage = () => {
@@ -235,7 +236,7 @@ const LitterPage = () => {
 
         if (filteredDogs?.length) {
             tableContent = filteredDogs.map(dog => (
-               <LitterDog key={dog.id} dogId={dog.id} />
+               <Dog key={dog.id} dogId={dog.id} />
             ))
         }
 
@@ -253,20 +254,8 @@ const LitterPage = () => {
             ))
         }
       
-        dogContent = (
-            <table className="content-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Good</th>
-                        <th>Administered by</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tableContent}
-                </tbody>
-            </table>
-        )
+        dogContent = tableContent
+
     }
 
     if (!litter || !mother) return null
@@ -287,7 +276,7 @@ const LitterPage = () => {
                     className="black-button"
                     onClick={() => handleDeleteLitter()}
                 >
-                    Delete
+                    Delete Litter
                 </button>
             </>
         )
@@ -437,13 +426,37 @@ const LitterPage = () => {
 
     return (
         <>
-            <p><b>Mother </b><Link className="orange-link" to={`/dogs/${mother.id}`}><b>{mother?.name} </b></Link>({mother?.breed})</p>
-            <p>
-                <b>Father </b> 
-                {father?.id?.length 
-                    ? <><Link className="orange-link" to={`/dogs/${father?.id}`}><b>{father?.name} </b></Link>({father?.breed})</>
-                    : 'Not Added'}
-            </p>
+            <div className="litter-parents-div">
+                <div className="litter-mother-div">
+                    {mother?.image?.length && mother?.image !== 'none ' 
+                        ? <img width="150px" height="150px" className="dog-profile-picture" src={mother?.image} alt="Mother" />
+                        : <img width="150px" height="150px" className="dog-profile-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692618076/dogimages/default_fpiv1s.jpg" alt="Mother" />
+                    }
+
+                    <br />
+
+                    <span className="litter-mother-span">Mother<br />
+                    <Link className="orange-link" to={`/dogs/${mother.id}`}><b>{mother?.name}</b></Link>
+                    <br /></span>
+                </div>
+
+                <div className="litter-father-div">
+                    {father?.image?.length && mother?.image !== 'none ' 
+                        ? <img width="150px" height="150px" className="dog-profile-picture" src={father?.image} alt="Mother" />
+                        : <img width="150px" height="150px" className="dog-profile-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692618076/dogimages/default_fpiv1s.jpg" alt="Mother" />
+                    }
+
+                    <br />
+
+                    <span className="litter-father-span">
+                    Father
+                    <br />
+                    {father?.id?.length 
+                        ? <Link className="orange-link" to={`/dogs/${father?.id}`}><b>{father?.name}</b></Link>
+                        : 'Not Added'}
+                    <br /></span>
+                </div>
+            </div>
             <p><b>Puppies' Breed </b>{litter?.breed}</p>
             <p><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
             <p><b>{litter?.children} {litter?.children === 1 ? 'Puppy' : 'Puppies'}</b></p>

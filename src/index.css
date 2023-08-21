@@ -84,10 +84,12 @@ input[type=number] {
   padding-top: 4px;
   padding-bottom: 6px;
   border-radius: 20px;
+  border: 2px solid transparent;
 }
 
 .orange-background:hover {
-  background-color: rgb(235, 155, 52);
+  border: 2px solid rgb(235, 155, 52);
+  color: rgb(235, 155, 52);
 }
 
 .content {
@@ -166,13 +168,70 @@ input {
   font-weight: bold;
 }
 
-.dog-profile-picture,
-.advertisement-picture {
+.dog-profile-picture {
   border-radius: 50%;
+}
+
+.advertisement-picture {
+  border-radius: 7px;
 }
 
 input[type="file"] {
   display: none;
+}
+
+.litter-parents-div {
+  display: grid;
+  grid-template-columns: 160px 150px auto;
+  padding-bottom: 10px;
+}
+
+.litter-mother-span {
+  width: 150px;
+  display: grid;
+  justify-content: center;
+  text-align: center;
+}
+
+.litter-father-span {
+  width: 150px;
+  display: grid;
+  justify-content: center;
+  text-align: center;
+}
+
+.dog-div, 
+.advertisement-div {
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 150px auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.dog-div:hover, 
+.advertisement-div:hover {
+  background-color: rgb(255, 248, 240);
+}
+
+.dog-div-image,
+.advertisement-div-image {
+  display: flex;
+  align-items: center;
+}
+
+.dog-div-info,
+.advertisement-div-info {
+  padding-left: 10px;
+  position: relative;
+}
+
+.dog-div-admin,
+.advertisement-div-admin {
+  position: absolute;
+  bottom: 0;
 }
 
 .label-file-input {

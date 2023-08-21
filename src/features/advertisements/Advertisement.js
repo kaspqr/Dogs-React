@@ -1,26 +1,9 @@
 import { Link } from "react-router-dom"
 import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
-import { memo, useState, useEffect } from "react"
+import { memo } from "react"
 
 const Advertisement = ({ advertisementId }) => {
-
-    // State for checking how wide is the user's screen
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-
-    // Function for handling the resizing of screen
-    const handleResize = () => {
-        setWindowWidth(window.innerWidth)
-    }
-
-    // Always check if a window is being resized
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-        window.removeEventListener('resize', handleResize)
-        }
-    }, [])
 
     // GET the advertisement in props with all of it's .values
     const { advertisement } = useGetAdvertisementsQuery("advertisementsList", {
@@ -41,15 +24,22 @@ const Advertisement = ({ advertisementId }) => {
     }
 
     return (
-        <tr>
-            <td className="first-td"><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></td>
-            {windowWidth > 600 
-                ? <><td><Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></td>
-                    <td>{advertisement?.type}</td></>
-                : null
-            }
-            <td className="last-td">{advertisement?.type !== 'Found' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</td>
-        </tr>
+        <div className="advertisement-div">
+            <div className="advertisement-div-image">
+                {advertisement?.image?.length 
+                    ? <img width="150px" height="150px" className="advertisement-picture" src={advertisement?.image} alt="Advertisement" />
+                    : <img width="150px" height="150px" className="advertisement-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692618076/dogimages/default_fpiv1s.jpg" alt="Dog" />
+                }
+            </div>
+            <div className="advertisement-div-info">
+                <p><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></p>
+                <br />
+                <p>{advertisement?.type}</p>
+                <p>{advertisement?.type !== 'Found' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</p>
+                <p>{advertisement?.region?.length && advertisement?.region !== 'none ' ? `${advertisement?.region}, ` : null}{advertisement?.country}</p>
+                <p className="advertisement-div-admin">Posted by <Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></p>
+            </div>
+        </div>
     )
 }
 

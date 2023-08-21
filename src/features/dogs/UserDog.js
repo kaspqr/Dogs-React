@@ -1,21 +1,13 @@
 import { Link } from "react-router-dom"
 import { useGetDogsQuery } from "./dogsApiSlice"
-import { useGetUsersQuery } from "../users/usersApiSlice"
 import { memo } from "react"
 
-const Dog = ({ dogId }) => {
+const UserDog = ({ dogId }) => {
 
     // GET the dog with all of it's .values
     const { dog } = useGetDogsQuery("dogsList", {
         selectFromResult: ({ data }) => ({
             dog: data?.entities[dogId]
-        }),
-    })
-
-    // GET the user who administrates the dog with all of it's .values
-    const { user } = useGetUsersQuery("usersList", {
-        selectFromResult: ({ data }) => ({
-            user: data?.entities[dog?.user]
         }),
     })
 
@@ -30,18 +22,16 @@ const Dog = ({ dogId }) => {
                 }
             </div>
             <div className="dog-div-info">
-                <p><Link className="orange-link" to={`/dogs/${dogId}`}><b>{dog.name}</b></Link></p>
+                <p><Link className="orange-link" to={`/dogs/${dog.id}`}><b>{dog.name}</b></Link></p>
                 <br />
                 <p>{dog.breed}</p>
                 <p>{dog.female === true ? 'Good Girl' : 'Good Boy'}</p>
-                <p>Born {dog.birth?.split(' ').slice(1, 4).join(' ')}</p>
-                <br />
-                <p className="dog-div-admin"><span>Administered by <Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></span></p>
+                <p>Born {dog.birth.split(' ').slice(1, 4).join(' ')}</p>
             </div>
         </div>
     )
 }
 
-const memoizedDog = memo(Dog)
+const memoizedUserDog = memo(UserDog)
 
-export default memoizedDog
+export default memoizedUserDog

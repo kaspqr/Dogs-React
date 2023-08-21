@@ -6,7 +6,8 @@ import { useGetConversationsQuery, useAddNewConversationMutation } from "../conv
 import { useGetDogProposesQuery, useAddNewDogProposeMutation, useDeleteDogProposeMutation } from "../dogs/proposeDogApiSlice"
 import { useGetFatherProposesQuery, useDeleteFatherProposeMutation } from "../litters/fatherProposesApiSlice"
 import { useGetPuppyProposesQuery, useDeletePuppyProposeMutation } from "../litters/puppyProposesApiSlice"
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import UserDog from "../dogs/UserDog"
 
 const UserPage = () => {
 
@@ -20,23 +21,6 @@ const UserPage = () => {
 
     // User whose page we're on
     const { id } = useParams()
-
-    // State for checking how wide is the user's screen
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-
-    // Function for handling the resizing of screen
-    const handleResize = () => {
-        setWindowWidth(window.innerWidth)
-    }
-
-    // Always check if a window is being resized
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-        window.removeEventListener('resize', handleResize)
-        }
-    }, [])
 
     // POST method for /conversations
     const [addNewConversation, {
@@ -349,16 +333,9 @@ const UserPage = () => {
             }
         })
 
-        // Variable to contain '<tr>' rows for each dog the user administrates
-        let tableContent
-
         if (filteredDogs?.length) {
-            tableContent = filteredDogs.map(dog => (
-                <tr key={dog.id}>
-                    <td><Link className="orange-link" to={`/dogs/${dog.id}`}><b>{dog.name}</b></Link></td>
-                    {windowWidth > 600 ? <><td>{dog.breed}</td><td>{dog.female === true ? 'Female' : 'Male'}</td></> : null}
-                    <td>{dog.birth.split(' ').slice(1, 4).join(' ')}</td>
-                </tr>
+            dogContent = filteredDogs.map(dog => (
+                <UserDog key={dog?.id} dogId={dog?.id} />
             ))
         }
 
@@ -413,22 +390,6 @@ const UserPage = () => {
                 </>
                 : null
         }
-      
-        dogContent = <>
-            <table className="content-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        {windowWidth > 600 ? <><th>Breed</th><th>Good</th></> : null}
-                        <th>Born</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tableContent}
-                </tbody>
-            </table>
-            <br />
-        </>
     }
 
     if (!user) return <p>User not found</p>
