@@ -67,15 +67,17 @@ const Conversation = ({ conversationId }) => {
         if (sender?.id === userId) otherUser = receiver
 
         return (
-            <tr>
-                <td><Link className="orange-link" to={`/conversations/${conversation.id}`}><b>{otherUser.username}</b></Link></td>
-                <td>{lastMessage?.sender ? 
-                    lastMessage?.text?.length > 12 
-                        ? `${lastMessage?.text?.slice(0, 12)}...` 
-                        : `${lastMessage?.text}`
-                    : null
-                }</td>
-            </tr>
+            <Link className="conversation-link" to={`/conversations/${conversation.id}`}>
+                <div className="conversation-div">
+                    <span><b>{otherUser.username}</b></span>
+                    <span className="conversation-message-span">{lastMessage?.sender ? 
+                        lastMessage?.text?.length > 12 
+                            ? `${lastMessage?.text?.slice(0, 12)}...` 
+                            : `${lastMessage?.text}`
+                        : null
+                    }</span>
+                </div>
+            </Link>
         )
     }
 }

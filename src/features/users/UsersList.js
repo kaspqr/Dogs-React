@@ -253,14 +253,7 @@ const UsersList = () => {
 
         <br />
 
-        <table className="content-table">
-          <thead>
-            <tr><th>Username</th><th>Location</th></tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
+        {tableContent}
 
         <br />
 

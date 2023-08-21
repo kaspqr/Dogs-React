@@ -168,7 +168,8 @@ input {
   font-weight: bold;
 }
 
-.dog-profile-picture {
+.dog-profile-picture,
+.user-profile-picture {
   border-radius: 50%;
 }
 
@@ -200,7 +201,52 @@ input[type="file"] {
   text-align: center;
 }
 
+.litter-div {
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: grid;
+  grid-template-columns: auto 100px;
+}
+
+.conversation-div {
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.user-location-span,
+.conversation-message-span {
+  float: right;
+}
+
+.conversation-link {
+  text-decoration: none;
+}
+
+.litter-link-span {
+  float: right;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.eye-view {
+  color: black;
+  text-decoration: none;
+}
+
+.eye-view:hover {
+  color: rgb(235, 155, 52);
+}
+
 .dog-div, 
+.user-div,
 .advertisement-div {
   border: 1px solid lightgrey;
   border-radius: 10px;
@@ -211,27 +257,35 @@ input[type="file"] {
   margin-bottom: 5px;
 }
 
+.user-div {
+  grid-template-columns: 75px auto;
+}
+
 .dog-div:hover, 
-.advertisement-div:hover {
+.advertisement-div:hover,
+.litter-div:hover,
+.conversation-div:hover,
+.user-div:hover {
   background-color: rgb(255, 248, 240);
 }
 
+.litter-div-info {
+  display: grid;
+  align-items: center;
+}
+
 .dog-div-image,
+.user-div-image,
 .advertisement-div-image {
   display: flex;
   align-items: center;
 }
 
 .dog-div-info,
+.user-div-info,
 .advertisement-div-info {
   padding-left: 10px;
   position: relative;
-}
-
-.dog-div-admin,
-.advertisement-div-admin {
-  position: absolute;
-  bottom: 0;
 }
 
 .label-file-input {

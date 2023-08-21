@@ -2,6 +2,8 @@ import { Link } from "react-router-dom"
 import { useGetLittersQuery } from "./littersApiSlice"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
 import { memo } from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faEye } from "@fortawesome/free-solid-svg-icons"
 
 const Litter = ({ litterId }) => {
 
@@ -19,16 +21,41 @@ const Litter = ({ litterId }) => {
         }),
     })
 
+    // GET the litter's father dog with all of it's .values
+    const { father } = useGetDogsQuery("dogsList", {
+        selectFromResult: ({ data }) => ({
+            father: data?.entities[litter?.father]
+        }),
+    })
+
     if (!litter || !mother) {
         return null
     }
 
     return (
-        <tr>
-            <td><Link className="orange-link" to={`/litters/${litterId}`}><b>View Litter</b></Link></td>
-            <td><Link className="orange-link" to={`/dogs/${mother?.id}`}><b>{mother?.name}</b></Link></td>
-            <td>{litter?.born?.split(' ').slice(1, 4).join(' ')}</td>
-        </tr>
+        <div className="litter-div">
+            <div className="litter-div-info">
+                <p>Mother <Link className="orange-link" to={`/dogs/${mother?.id}`}><b>{mother?.name}</b></Link></p>
+                {father 
+                    ? <p>Father <Link className="orange-link" to={`/dogs/${father?.id}`}><b>{father?.name}</b></Link></p>
+                    : <p>Father Not Added</p>
+                }
+                <p>Born {litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
+                <p>{litter?.region?.length ? `${litter?.region}, ` : null}{litter?.country}</p>
+                <p>{litter?.breed}</p>
+                <p>{litter?.children} {litter?.children === 1 ? 'Puppy' : 'Puppies'}</p>
+            </div>
+
+            <div className="litter-div-link">
+                <span className="litter-link-span">
+                    <p><Link className="eye-view" to={`/litters/${litterId}`}>
+                        <FontAwesomeIcon icon={faEye} size="xl"/>
+                        <br />
+                        <b>View Litter</b>
+                    </Link></p>
+                </span>
+            </div>
+        </div>
     )
 }
 

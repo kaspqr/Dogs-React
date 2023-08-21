@@ -80,21 +80,9 @@ const ConversationsList = () => {
       console.log('Filtered conversations has no length')
     }
 
-    content = !filteredIds?.length ? <p>You have no messages</p> : (
-      <>
-        <table className="content-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Last Message</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
-      </>
-    )
+    content = !filteredIds?.length 
+      ? <p>You have no messages</p> 
+      : tableContent
   }
 
   return content

@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
 import { useSendLogoutMutation } from "../auth/authApiSlice"
 import { useNavigate } from "react-router-dom"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faUpload } from "@fortawesome/free-solid-svg-icons"
 
 const EditUserForm = ({ user }) => {
 
@@ -47,6 +49,10 @@ const EditUserForm = ({ user }) => {
     const [country, setCountry] = useState(user.country)
     const [region, setRegion] = useState(user.region?.length ? user.region : '')
     const [changePasswordError, setChangePasswordError] = useState('')
+    const [previewSource, setPreviewSource] = useState()
+    const [uploadMessage, setUploadMessage] = useState('')
+    const [uploadLoading, setUploadLoading] = useState(false)
+    const fileInputRef = useRef(null)
 
     // Clear the inputs if the user has been updated or deleted successfully
     useEffect(() => {
@@ -99,6 +105,53 @@ const EditUserForm = ({ user }) => {
         }
     }
 
+    const previewFile = (file) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onloadend = () => {
+            setPreviewSource(reader.result)
+        }
+    }
+
+    const handleFileChanged = (e) => {
+        const file = e.target.files[0]
+        previewFile(file)
+    }
+
+    const uploadImage = async (base64EncodedImage) => {
+        setUploadLoading(true)
+
+        try {
+            setUploadMessage('')
+            await fetch('http://localhost:3500/userimages', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    data: base64EncodedImage,
+                    user_id: `${user?.id}`
+                }),
+                headers: {'Content-type': 'application/json'}
+            })
+
+            setPreviewSource(null)
+            setUploadMessage('Profile Picture Updated!')
+        } catch (error) {
+            console.error(error)
+            setUploadMessage('Something went wrong')
+        }
+
+        setUploadLoading(false)
+    }
+
+    const handleSubmitFile = (e) => {
+        if (!previewSource) return
+        uploadImage(previewSource)
+    }
+
+    const handleFileClicked = () => {
+        // Programmatically trigger the click event on the file input
+        fileInputRef.current.click();
+    }
+
     useEffect(() => {
         if (isLogoutSuccess) navigate('/')
     }, [isLogoutSuccess, navigate])
@@ -125,6 +178,40 @@ const EditUserForm = ({ user }) => {
                 <div>
                     <p className="edit-profile-page-title">Edit Profile</p>
                 </div>
+
+                <span className="label-file-input" onClick={handleFileClicked} htmlFor="user-image">
+                    <b>Browse Profile Picture</b> <FontAwesomeIcon icon={faUpload} />
+                    <input
+                        id="file"
+                        type="file"
+                        name="user-image"
+                        ref={fileInputRef}
+                        onChange={handleFileChanged}
+                        style={{ display: "none" }}
+                    />
+                </span>
+                <br />
+
+                <button 
+                    className="black-button" 
+                    onClick={handleSubmitFile}
+                    disabled={!previewSource || uploadLoading === true}
+                    style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
+                >
+                    Update
+                </button>
+                <br />
+
+                {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
+                {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
+
+                <br />
+
+                {previewSource && <>
+                    <img className="user-profile-picture" height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <br />
+                    <br />
+                </>}
 
                 <p>Fields marked with <b>*</b> are required</p>
                 <br />

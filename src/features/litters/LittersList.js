@@ -2,6 +2,10 @@ import { useGetLittersQuery } from "./littersApiSlice"
 import Litter from "./Litter"
 import useAuth from "../../hooks/useAuth"
 import { Link } from "react-router-dom"
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
+import { Breeds } from "../../config/breeds"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { useState, useEffect } from "react"
@@ -21,6 +25,14 @@ const LittersList = () => {
   const [filteredIds, setFilteredIds] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [newPage, setNewPage] = useState('')
+  const [country, setCountry] = useState('')
+  const [region, setRegion] = useState('')
+  const [breed, setBreed] = useState('')
+
+  const breeds = [ ...Object.values(Breeds) ]
+  const breedOptions = breeds.map(breed => (
+      <option key={breed} value={breed}>{breed}</option>
+  ))
 
   // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
@@ -55,6 +67,12 @@ const LittersList = () => {
   const handleBornEarliestChanged = date => setBornEarliest(date)
   const handleBornLatestChanged = date => setBornLatest(date)
 
+  const handleCountryChanged = (e) => {
+    // New country doesn't have the regions of the old one, so reset the region first
+    setRegion('')
+    setCountry(e.target.value)
+  }
+
   const handleToggleFilterView = () => {
     const filterDiv = document.getElementById('litter-filter-div')
     if (filterDiv?.style?.display === 'none') {
@@ -87,18 +105,36 @@ const LittersList = () => {
         return new Date(litter.born) <= finalBornLatest
       })
       : filteredLittersBornEarliest
-  
-    const filteredLittersLowestPuppies = lowestPuppies?.length
+
+    const filteredLittersRegion = region?.length
       ? filteredLittersBornLatest?.filter((litter) => {
-        return litter.children >= parseInt(lowestPuppies)
+        return litter.region === region
       })
       : filteredLittersBornLatest
   
-    const filteredLittersHighestPuppies = highestPuppies?.length
+    const filteredLittersCountry = country?.length
+      ? filteredLittersRegion?.filter((litter) => {
+        return litter.country === country
+      })
+      : filteredLittersRegion
+  
+    const filteredLittersLowestPuppies = lowestPuppies?.length
+      ? filteredLittersCountry?.filter((litter) => {
+        return litter.children >= parseInt(lowestPuppies)
+      })
+      : filteredLittersCountry
+
+    const filteredLittersBreed = breed?.length
       ? filteredLittersLowestPuppies?.filter((litter) => {
-        return litter.children <= parseInt(highestPuppies)
+        return litter.breed === breed
       })
       : filteredLittersLowestPuppies
+  
+    const filteredLittersHighestPuppies = highestPuppies?.length
+      ? filteredLittersBreed?.filter((litter) => {
+        return litter.children <= parseInt(highestPuppies)
+      })
+      : filteredLittersBreed
 
     const finalFilteredLitters = filteredLittersHighestPuppies
 
@@ -193,6 +229,45 @@ const LittersList = () => {
 
           <br />
           <br />
+
+          <p><b>Breed</b></p>
+          <select 
+            onChange={(e) => setBreed(e.target.value)}
+            value={breed}
+            name="dogs-filter-breed-select" 
+            id="dogs-filter-breed-select"
+          >
+            <option value="">--</option>
+            {breedOptions}
+          </select>
+
+          <br />
+
+          <p><b>Country</b></p>
+          <select 
+            value={country}
+            name="litter-country" 
+            id="litter-country"
+            onChange={handleCountryChanged}
+          >
+            <option value="">--</option>
+            {Countries}
+          </select>
+          
+          <p><b>Region</b></p>
+          <select 
+            disabled={!bigCountries.includes(country)}
+            value={region}
+            name="litter-region" 
+            id="litter-region"
+            onChange={(e) => setRegion(e.target.value)}
+          >
+            <option value="">--</option>
+            {bigCountries?.includes(country)
+              ? Regions[country]
+              : null
+            }
+          </select>
 
           <p><b>Lowest Amount of Puppies</b></p>
           <input 
@@ -300,18 +375,7 @@ const LittersList = () => {
 
         <br />
 
-        <table className="content-table">
-          <thead>
-            <tr>
-              <th>Link</th>
-              <th>Mother's Name</th>
-              <th>Born</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
+        {tableContent}
 
         <br />
 

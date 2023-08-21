@@ -2,6 +2,9 @@ import { useState, useEffect } from "react"
 import { useAddNewLitterMutation } from "./littersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { useGetDogsQuery } from "../dogs/dogsApiSlice"
+import { Countries } from "../../config/countries"
+import { bigCountries } from "../../config/bigCountries"
+import { Regions } from "../../config/regions"
 import useAuth from "../../hooks/useAuth"
 import Calendar from "react-calendar"
 import '../../styles/customCalendar.css'
@@ -20,6 +23,8 @@ const NewLitterForm = () => {
     const [children, setChildren] = useState('')
     const [validMother, setValidMother] = useState(false)
     const [breedOptions, setBreedOptions] = useState(null)
+    const [country, setCountry] = useState('Argentina')
+    const [region, setRegion] = useState('')
 
     // POST function for adding a new litter
     const [addNewLitter, {
@@ -35,6 +40,8 @@ const NewLitterForm = () => {
             setBorn('')
             setMother('')
             setChildren('')
+            setCountry('Argentina')
+            setRegion('')
         }
     }, [isLitterSuccess, navigate])
 
@@ -71,13 +78,19 @@ const NewLitterForm = () => {
         setMother(e.target.value)
     }
 
+    const handleCountryChanged = (e) => {
+        // New country doesn't have the regions of the old one, so reset the region first
+        setRegion('')
+        setCountry(e.target.value)
+      }
+
     const handleSaveLitterClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
             // Format the date
             let finalBorn = born !== '' ? new Date(born.getTime()).toDateString() : ''
             // POST the litter
-            await addNewLitter({ mother, born: finalBorn, children, breed })
+            await addNewLitter({ mother, born: finalBorn, children, breed, country, region })
             navigate('/litters')
         }
 
@@ -206,6 +219,36 @@ const NewLitterForm = () => {
                     maxLength="2"
                 />
 
+                <br />
+
+                <label htmlFor="country">
+                    <b>Country</b>
+                </label>
+                <br />
+                <select 
+                    name="country" 
+                    id="country"
+                    value={country}
+                    onChange={handleCountryChanged}
+                >
+                    {Countries}
+                </select>
+                <br />
+
+                <label htmlFor="region">
+                    <b>Region</b>
+                </label>
+                <br />
+                <select 
+                    disabled={!bigCountries?.includes(country)}
+                    name="region" 
+                    id="region"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                >
+                    <option value="">Region (optional)</option>
+                    {bigCountries?.includes(country) ? Regions[country] : null}
+                </select>
                 <br />
                 <br />
 

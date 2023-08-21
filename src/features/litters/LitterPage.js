@@ -459,6 +459,7 @@ const LitterPage = () => {
             </div>
             <p><b>Puppies' Breed </b>{litter?.breed}</p>
             <p><b>Born </b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</p>
+            <p><b>In </b>{litter?.region?.length && litter?.region !== 'none ' ? `${litter?.region}, ` : null}{litter?.country}</p>
             <p><b>{litter?.children} {litter?.children === 1 ? 'Puppy' : 'Puppies'}</b></p>
             <br />
             {deleteFatherContent}

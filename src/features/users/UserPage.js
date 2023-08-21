@@ -451,6 +451,10 @@ const UserPage = () => {
                     : null
                 }
             </p>
+            {user?.image?.length && user?.image !== 'none ' 
+                ? <><p><img width="300" height="300" className="user-profile-picture" src={user?.image} alt="User" /></p><br /></> 
+                : null
+            }
             <p><b>{user?.name}</b></p>
             <br />
             <p><b>From </b>{user?.region && user?.region !== 'none ' ? `${user?.region}, ` : null}{user?.country}</p>
