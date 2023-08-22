@@ -31,7 +31,7 @@ const PersistLogin = () => {
                     await refresh()
                     setTrueSuccess(true)
                 } catch (err) {
-                    console.error(err)
+                    console.log(err)
                 }
             }
 

@@ -34,19 +34,7 @@ const DogReportsList = () => {
       : null
 
     content = ids?.length 
-      ? <>
-        <table id="dog-report-table" className="content-table">
-          <thead>
-            <tr>
-              <th className="first-th">Dog Report</th>
-              <th>Reporter</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
-      </>
+      ? tableContent
       : <p>There are no dog reports</p>
   }
 

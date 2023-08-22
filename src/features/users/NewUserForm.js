@@ -65,7 +65,7 @@ const NewUserForm = () => {
             setCountry('')
             setRegion('')
             setBio('')
-            navigate('/login')
+            return <p>A verification link has been sent to your email. You will be able to log in once your account is verified.</p>
         }
     }, [isSuccess, navigate])
 

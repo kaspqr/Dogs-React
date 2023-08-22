@@ -247,7 +247,8 @@ input[type="file"] {
 
 .dog-div, 
 .user-div,
-.advertisement-div {
+.advertisement-div,
+.report-div {
   border: 1px solid lightgrey;
   border-radius: 10px;
   padding: 10px;
@@ -261,11 +262,20 @@ input[type="file"] {
   grid-template-columns: 75px auto;
 }
 
+.report-div {
+  grid-template-columns: auto auto;
+}
+
+.report-div-reporter {
+  text-align: right;
+}
+
 .dog-div:hover, 
 .advertisement-div:hover,
 .litter-div:hover,
 .conversation-div:hover,
-.user-div:hover {
+.user-div:hover,
+.report-div:hover {
   background-color: rgb(255, 248, 240);
 }
 

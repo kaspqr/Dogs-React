@@ -24,18 +24,19 @@ const DogReport = ({ dogReportId }) => {
     }
 
     return (
-        <tr>
-            <td className="first-td">
+        <div className="report-div">
+            <span>
                 <Link className="orange-link" to={`/dogreports/${dogReportId}`}>
                     <b>{dogReport?.id}</b>
                 </Link>
-            </td>
-            <td className="last-td">
+            </span>
+            <span className="report-div-reporter">
+                <span>by </span>
                 <Link className="orange-link" to={`/users/${user?.id}`}>
                     <b>{user?.username}</b>
                 </Link>
-            </td>
-        </tr>
+            </span>
+        </div>
     )
 }
 

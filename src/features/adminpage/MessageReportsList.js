@@ -34,19 +34,7 @@ const MessageReportsList = () => {
       : null
 
     content = ids?.length 
-      ? <>
-        <table id="message-report-table" className="content-table">
-          <thead>
-            <tr>
-              <th className="first-th">Message Report</th>
-              <th>Reporter</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
-      </>
+      ? tableContent
     : <p>There are no message reports</p>
   }
 

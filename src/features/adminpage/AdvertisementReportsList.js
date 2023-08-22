@@ -34,19 +34,7 @@ const AdvertisementReportsList = () => {
       : null
 
     content = ids?.length 
-      ? <>
-        <table id="advertisement-report-table" className="content-table">
-          <thead>
-            <tr>
-              <th className="first-th">Advertisement Report</th>
-              <th>Reporter</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
-      </>
+      ? tableContent
       : <p>There are no advertisement reports</p>
   }
 

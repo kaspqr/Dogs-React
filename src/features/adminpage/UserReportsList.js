@@ -34,19 +34,7 @@ const UserReportsList = () => {
       : null
 
     content = ids?.length 
-      ? <>
-        <table id="user-report-table" className="content-table">
-          <thead>
-            <tr>
-              <th className="first-th">User Report</th>
-              <th>Reporter</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableContent}
-          </tbody>
-        </table>
-      </>
+      ? tableContent
     : <p>There are no user reports</p>
   }
 

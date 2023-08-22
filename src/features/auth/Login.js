@@ -29,11 +29,6 @@ const Login = () => {
     userRef.current.focus()
   }, [])
 
-  useEffect(() => {
-    // Clear the error message if the username or password has changed
-    setErrMsg('')
-  }, [username, password])
-
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -44,14 +39,20 @@ const Login = () => {
       setPassword('')
       navigate('/')
     } catch (err) {
+      console.log(err)
       if (!err.status) {
         setErrMsg('No Server Response')
       } else if (err.status === 400) {
         setErrMsg('Missing Username or Password')
+      } else if (err.status === 403) {
+        setErrMsg('Account not verified. Please click the link in your email.')
       } else if (err.status === 401) {
         setErrMsg('Unauthorized')
       } else {
-        setErrMsg(err.data?.message)
+        setErrMsg("Login failed. Make sure you have clicked on the verification link on the email you've provided. "
+          + "If you haven't received the email, attempting to log in with an unverified account triggers a new "
+          + "verification email being sent to you in case you have waited at least 1 hour since the last try."
+        )
       }
       errRef.current.focus()
     }
@@ -74,7 +75,7 @@ const Login = () => {
       </header>
 
       <main>
-        <p ref={errRef} aria-live="assertive">{errMsg}</p>
+        {errMsg?.length ? <p ref={errRef} aria-live="assertive">{errMsg}</p> : null}
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="username">

@@ -48,6 +48,8 @@ import ReportedMessagePage from "./features/adminpage/ReportedMessagePage"
 import UserReportsList from "./features/adminpage/UserReportsList"
 import ReportedUserPage from "./features/adminpage/ReportedUserPage"
 
+import EmailVerify from "./features/auth/emailVerify"
+
 function App() {
 
   useTitle('Dogs App')
@@ -66,6 +68,7 @@ function App() {
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<NewUserForm />} />
+            <Route path="users/:id/verify/:token" element={<EmailVerify />} />
 
 
             <Route path="users">
