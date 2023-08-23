@@ -54,7 +54,7 @@ const Login = () => {
           + "verification email being sent to you in case you have waited at least 1 hour since the last try."
         )
       }
-      errRef.current.focus()
+      errRef?.current?.focus()
     }
   }
 
