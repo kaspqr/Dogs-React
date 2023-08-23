@@ -35,6 +35,8 @@ const EditAdvertisementForm = ({ advertisement }) => {
     const [previewSource, setPreviewSource] = useState()
     const [uploadMessage, setUploadMessage] = useState('')
     const [uploadLoading, setUploadLoading] = useState(false)
+    const [confirmDelete, setConfirmDelete] = useState('')
+    const [deletionVisible, setDeletionVisible] = useState(false)
     const fileInputRef = useRef(null)
 
     useEffect(() => {
@@ -234,10 +236,31 @@ const EditAdvertisementForm = ({ advertisement }) => {
                         <button
                             title="Delete"
                             className="edit-advertisement-delete-button black-button"
-                            onClick={handleDeleteAdvertisementClicked}
+                            onClick={() => setDeletionVisible(!deletionVisible)}
                         >
                             Delete
                         </button>
+                        {deletionVisible === false ? null 
+                            : <>
+                            <br />
+                            <br />
+                            <label htmlFor="confirm-delete">
+                                <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your advertisement from the database.</b>
+                            </label>
+                            <br />
+                            <input name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                            <br />
+                            <br />
+                            <button
+                                className="black-button"
+                                title="confirm-delete"
+                                disabled={confirmDelete !== 'confirmdelete'}
+                                style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
+                                onClick={handleDeleteAdvertisementClicked}
+                            >
+                                Confirm Deletion
+                            </button>
+                        </>}
                     </div>
             </form>
         </>

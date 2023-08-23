@@ -1,17 +1,16 @@
 import { useGetMessagesQuery } from "../messages/messagesApiSlice"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAddNewMessageReportMutation } from "./messageReportsApiSlice"
 
 const MessageReportPage = () => {
-
-    const navigate = useNavigate()
 
     const { userId } = useAuth()
     const { messageid } = useParams()
 
     const [report, setReport] = useState('')
+    const [successMsg, setSuccessMsg] = useState('')
 
     // GET the message with all of it's .values
     const { message } = useGetMessagesQuery("messagesList", {
@@ -28,6 +27,14 @@ const MessageReportPage = () => {
         error
     }] = useAddNewMessageReportMutation()
 
+    // Clear the inputs if a report was POSTed successfully
+    useEffect(() => {
+        if (isSuccess) {
+            setReport('')
+            setSuccessMsg('Thank You! We have received your report.')
+        }
+    }, [isSuccess])
+
     if (message?.poster === userId) return <p>You cannot report your own message.</p>
 
     const handleReportClicked = async () => {
@@ -35,37 +42,38 @@ const MessageReportPage = () => {
     }
 
     if (isLoading) return <p>Loading...</p>
-    if (isSuccess) navigate('/conversations')
     if (isError) return <p>{error?.data?.message}</p>
 
-    return (
-        <>
-            <label htmlFor="report">
-                <b>Reason for reporting message <span>"{message?.text}"</span></b>
-            </label>
-            <br />
-            <br />
-            <textarea 
-                value={report}
-                onChange={(e) => setReport(e.target.value)}
-                name="report" 
-                id="report" 
-                maxLength="900"
-                cols="30" 
-                rows="10"
-            />
-            <br />
-            <br />
-            <button
-                className="black-button"
-                onClick={handleReportClicked}
-                disabled={report?.length < 1}
-                style={report?.length < 1 ? {backgroundColor: "grey", cursor: "default"} : null}
-            >
-                Report
-            </button>
-        </>
-    )
+    const content = successMsg?.length ? <p>{successMsg}</p> :
+    <>
+        <label htmlFor="report">
+            <b>Reason for reporting message <span>"{message?.text}"</span></b>
+        </label>
+        <br />
+        <br />
+        <textarea 
+            value={report}
+            onChange={(e) => setReport(e.target.value)}
+            name="report" 
+            id="report" 
+            maxLength="900"
+            cols="30" 
+            rows="10"
+        />
+        <br />
+        <br />
+        <button
+            className="black-button"
+            onClick={handleReportClicked}
+            disabled={report?.length < 1}
+            style={report?.length < 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+        >
+            Report
+        </button>
+    </>
+    
+    return content
+    
 }
 
 export default MessageReportPage

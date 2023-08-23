@@ -4,9 +4,9 @@ import { useGetPuppyProposesQuery, useAddNewPuppyProposeMutation } from "./puppy
 import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import LitterDog from '../dogs/LitterDog'
 import Dog from '../dogs/Dog'
 import { useState, useEffect } from "react"
+import DogIcon from "../../config/images/DogIcon.jpg"
 
 const LitterPage = () => {
 
@@ -51,6 +51,8 @@ const LitterPage = () => {
     const [selectedFather, setSelectedFather] = useState('')
     const [selectedProposeFather, setSelectedProposeFather] = useState('')
     const [selectedProposePuppy, setSelectedProposePuppy] = useState('')
+    const [confirmDelete, setConfirmDelete] = useState('')
+    const [deletionVisible, setDeletionVisible] = useState(false)
 
     const navigate = useNavigate()
 
@@ -274,10 +276,31 @@ const LitterPage = () => {
                 <br />
                 <button
                     className="black-button"
-                    onClick={() => handleDeleteLitter()}
+                    onClick={() => setDeletionVisible(!deletionVisible)}
                 >
                     Delete Litter
                 </button>
+                {deletionVisible === false ? null 
+                    : <>
+                    <br />
+                    <br />
+                    <label htmlFor="confirm-delete">
+                        <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your dog's litter from the database.</b>
+                    </label>
+                    <br />
+                    <input type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                    <br />
+                    <br />
+                    <button
+                        className="black-button"
+                        title="confirm-delete"
+                        disabled={confirmDelete !== 'confirmdelete'}
+                        style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
+                        onClick={() => handleDeleteLitter()}
+                    >
+                        Confirm Deletion
+                    </button>
+                </>}
             </>
         )
     }
@@ -430,7 +453,7 @@ const LitterPage = () => {
                 <div className="litter-mother-div">
                     {mother?.image?.length && mother?.image !== 'none ' 
                         ? <img width="150px" height="150px" className="dog-profile-picture" src={mother?.image} alt="Mother" />
-                        : <img width="150px" height="150px" className="dog-profile-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692618076/dogimages/default_fpiv1s.jpg" alt="Mother" />
+                        : <img width="150px" height="150px" className="dog-profile-picture" src={DogIcon} alt="Mother" />
                     }
 
                     <br />
@@ -441,9 +464,9 @@ const LitterPage = () => {
                 </div>
 
                 <div className="litter-father-div">
-                    {father?.image?.length && mother?.image !== 'none ' 
-                        ? <img width="150px" height="150px" className="dog-profile-picture" src={father?.image} alt="Mother" />
-                        : <img width="150px" height="150px" className="dog-profile-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692618076/dogimages/default_fpiv1s.jpg" alt="Mother" />
+                    {father?.image?.length && father?.image !== 'none ' 
+                        ? <img width="150px" height="150px" className="dog-profile-picture" src={father?.image} alt="Father" />
+                        : <img width="150px" height="150px" className="dog-profile-picture" src={DogIcon} alt="Father" />
                     }
 
                     <br />

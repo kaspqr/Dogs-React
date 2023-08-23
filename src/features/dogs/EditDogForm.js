@@ -31,7 +31,9 @@ const EditDogForm = ({ dog }) => {
     const [tiktok, setTiktok] = useState(dog?.tiktok?.length && dog?.tiktok !== 'none ' ? dog.tiktok : '')
     const [previewSource, setPreviewSource] = useState()
     const [uploadMessage, setUploadMessage] = useState('')
+    const [confirmDelete, setConfirmDelete] = useState('')
     const [uploadLoading, setUploadLoading] = useState(false)
+    const [deletionVisible, setDeletionVisible] = useState(false)
     const fileInputRef = useRef(null)
 
     // Clear the region each time the country is changed to avoid having a region from another country
@@ -230,7 +232,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <span className="label-file-input" onClick={handleFileClicked} htmlFor="dog-image">
-                    <b>Browse Profile Picture</b> <FontAwesomeIcon icon={faUpload} />
+                    <b>Browse Profile Picture</b><label htmlFor="dog-image" className="off-screen">Browse Profile Picture</label> <FontAwesomeIcon icon={faUpload} />
                     <input
                         id="file"
                         type="file"
@@ -243,6 +245,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
 
                 <button 
+                    title="Update Dog Profile Picture"
                     className="black-button" 
                     onClick={handleSubmitFile}
                     disabled={!previewSource || uploadLoading === true}
@@ -294,7 +297,7 @@ const EditDogForm = ({ dog }) => {
 
                 <label htmlFor="passport" className="switch">
                     <b>Passport </b>
-                    <FontAwesomeIcon onClick={handlePassportChanged} size="xl" icon={passport ? faToggleOn : faToggleOff} color={passport ? 'rgb(23, 152, 207)' : 'grey'} />
+                    <FontAwesomeIcon name="passport" onClick={handlePassportChanged} size="xl" icon={passport ? faToggleOn : faToggleOff} color={passport ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
@@ -302,7 +305,7 @@ const EditDogForm = ({ dog }) => {
                     ? null
                     : <><label htmlFor="heat">
                             <b>Heat </b>
-                            <FontAwesomeIcon onClick={handleHeatChanged} size="xl" icon={heat ? faToggleOn : faToggleOff} color={heat ? 'rgb(23, 152, 207)' : 'grey'} />
+                            <FontAwesomeIcon name="heat" onClick={handleHeatChanged} size="xl" icon={heat ? faToggleOn : faToggleOff} color={heat ? 'rgb(23, 152, 207)' : 'grey'} />
                         </label>
                         <br /></>
                 }
@@ -310,13 +313,13 @@ const EditDogForm = ({ dog }) => {
 
                 <label htmlFor="sterilized">
                     <b>{dog?.female === true ? 'Sterilized ' : 'Castrated '}</b>
-                    <FontAwesomeIcon onClick={handleSterilizedChanged} size="xl" icon={sterilized ? faToggleOn : faToggleOff} color={sterilized ? 'rgb(23, 152, 207)' : 'grey'} />
+                    <FontAwesomeIcon name="sterilized" onClick={handleSterilizedChanged} size="xl" icon={sterilized ? faToggleOn : faToggleOff} color={sterilized ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
                 <label htmlFor="microchipped">
                     <b>Microchipped </b>
-                    <FontAwesomeIcon onClick={handleMicrochippedChanged} size="xl" icon={microchipped ? faToggleOn : faToggleOff} color={microchipped ? 'rgb(23, 152, 207)' : 'grey'} />
+                    <FontAwesomeIcon name="microchipped" onClick={handleMicrochippedChanged} size="xl" icon={microchipped ? faToggleOn : faToggleOff} color={microchipped ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
@@ -391,7 +394,7 @@ const EditDogForm = ({ dog }) => {
                     <b>Date of Death</b>
                 </label>
                 <br />
-                <Calendar minDate={new Date(dog?.birth) || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
+                <Calendar name="death" minDate={new Date(dog?.birth) || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
                 <button 
                     className="black-button"
                     style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
@@ -432,10 +435,31 @@ const EditDogForm = ({ dog }) => {
                     <button
                         className="edit-dog-delete-button black-button"
                         title="Delete"
-                        onClick={handleDeleteDogClicked}
+                        onClick={() => setDeletionVisible(!deletionVisible)}
                     >
                         Delete Dog
                     </button>
+                    {deletionVisible === false ? null 
+                        : <>
+                        <br />
+                        <br />
+                        <label htmlFor="confirm-delete">
+                            <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your dog from the database.</b>
+                        </label>
+                        <br />
+                        <input name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                        <br />
+                        <br />
+                        <button
+                            className="black-button"
+                            title="Confirm Delete Dog"
+                            disabled={confirmDelete !== 'confirmdelete'}
+                            style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
+                            onClick={handleDeleteDogClicked}
+                        >
+                            Confirm Deletion
+                        </button>
+                    </>}
                 </div>
             </form>
         </>

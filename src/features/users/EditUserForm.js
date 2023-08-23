@@ -52,6 +52,8 @@ const EditUserForm = ({ user }) => {
     const [previewSource, setPreviewSource] = useState()
     const [uploadMessage, setUploadMessage] = useState('')
     const [uploadLoading, setUploadLoading] = useState(false)
+    const [confirmDelete, setConfirmDelete] = useState('')
+    const [deletionVisible, setDeletionVisible] = useState(false)
     const fileInputRef = useRef(null)
 
     // Clear the inputs if the user has been updated or deleted successfully
@@ -180,7 +182,7 @@ const EditUserForm = ({ user }) => {
                 </div>
 
                 <span className="label-file-input" onClick={handleFileClicked} htmlFor="user-image">
-                    <b>Browse Profile Picture</b> <FontAwesomeIcon icon={faUpload} />
+                    <b>Browse Profile Picture</b><label htmlFor="user-image" className="off-screen">Browse Profile Picture</label> <FontAwesomeIcon icon={faUpload} />
                     <input
                         id="file"
                         type="file"
@@ -193,6 +195,7 @@ const EditUserForm = ({ user }) => {
                 <br />
 
                 <button 
+                    title="Update Profile Picture"
                     className="black-button" 
                     onClick={handleSubmitFile}
                     disabled={!previewSource || uploadLoading === true}
@@ -341,13 +344,34 @@ const EditUserForm = ({ user }) => {
                     </button>
                     <button
                         title="Delete"
-                        onClick={handleDeleteUserClicked}
                         disabled={!currentPassword?.length}
                         style={!currentPassword?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                        onClick={() => setDeletionVisible(!deletionVisible)}
                         className="edit-profile-delete-button black-button"
                     >
                         Delete Account
                     </button>
+                    {deletionVisible === false ? null 
+                        : <>
+                        <br />
+                        <br />
+                        <label htmlFor="confirm-delete">
+                            <b>Enter your current password on top of the page, type "confirmdelete" in the input below and click on the Confirm Deletion button to delete your account.</b>
+                        </label>
+                        <br />
+                        <input name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                        <br />
+                        <br />
+                        <button
+                            className="black-button"
+                            title="Confirm Deletion"
+                            disabled={confirmDelete !== 'confirmdelete' || !currentPassword?.length}
+                            style={confirmDelete !== 'confirmdelete' || !currentPassword?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                            onClick={handleDeleteUserClicked}
+                        >
+                            Confirm Deletion
+                        </button>
+                    </>}
                 </div>
             </form>
         </>

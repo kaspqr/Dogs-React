@@ -31,12 +31,34 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+/* Screenreader labels */
+.off-screen {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+#header-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .layout-nav-a {
   float: right;
   margin-left: 15px;
 }
 
-.nav-right,
+.nav-right {
+  float: right;
+}
+
+.nav-right-span {
+  margin-left: auto;
+}
+
 .new-page-input-span {
   float: right;
 }

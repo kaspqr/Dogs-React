@@ -197,25 +197,25 @@ const NewDogForm = () => {
 
                 <label htmlFor="passport">
                     <b>Passport </b>
-                    <FontAwesomeIcon onClick={handlePassportChanged} size="xl" icon={passport ? faToggleOn : faToggleOff} color={passport ? 'rgb(23, 152, 207)' : 'grey'} />
+                    <FontAwesomeIcon name="passport" onClick={handlePassportChanged} size="xl" icon={passport ? faToggleOn : faToggleOff} color={passport ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
                 <label htmlFor="heat">
                     <b>Heat </b>
-                    <FontAwesomeIcon onClick={female ? handleHeatChanged : null} size="xl" icon={heat ? faToggleOn : faToggleOff} color={heat ? 'rgb(23, 152, 207)' : 'grey'} />
+                    <FontAwesomeIcon name="heat" onClick={female ? handleHeatChanged : null} size="xl" icon={heat ? faToggleOn : faToggleOff} color={heat ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
                 <label htmlFor="sterilized">
                     <b>Fixed </b>
-                    <FontAwesomeIcon onClick={handleSterilizedChanged} size="xl" icon={sterilized ? faToggleOn : faToggleOff} color={sterilized ? 'rgb(23, 152, 207)' : 'grey'} />
+                    <FontAwesomeIcon name="sterilized" onClick={handleSterilizedChanged} size="xl" icon={sterilized ? faToggleOn : faToggleOff} color={sterilized ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
                 <label htmlFor="microchipped">
                     <b>Microchipped </b>
-                    <FontAwesomeIcon onClick={handleMicrochippedChanged} size="xl" icon={microchipped ? faToggleOn : faToggleOff} color={microchipped ? 'rgb(23, 152, 207)' : 'grey'} />
+                    <FontAwesomeIcon name="microchipped" onClick={handleMicrochippedChanged} size="xl" icon={microchipped ? faToggleOn : faToggleOff} color={microchipped ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
@@ -238,20 +238,21 @@ const NewDogForm = () => {
                     <b>Date of Birth*</b>
                 </label>
                 <br />
-                <Calendar maxDate={death || new Date()} onChange={handleBirthChanged} value={birth} />
+                <Calendar name="birth" maxDate={death || new Date()} onChange={handleBirthChanged} value={birth} />
                 <br />
 
                 <label htmlFor="death">
                     <b>Date of Death (If Not Alive)</b>
                 </label>
-                <Calendar minDate={birth || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
+                <Calendar name="death" minDate={birth || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
                 <button 
+                    title="Clear Date"
                     className="black-button"
                     style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
                     disabled={death === ''}
                     onClick={() => setDeath('')}
                 >
-                    Clear date
+                    Clear Date
                 </button>
                 <br />
                 <br />
@@ -270,6 +271,9 @@ const NewDogForm = () => {
                     onChange={handleInfoChanged}
                 />
                 <br />
+                <br />
+
+                <p>A picture can be added in the 'Edit' form once the dog has been successfully saved.</p>
                 <br />
 
                 <div>

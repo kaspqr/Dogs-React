@@ -1,6 +1,7 @@
 import { useGetUsersQuery } from "./usersApiSlice"
 import { memo } from "react"
 import { Link } from "react-router-dom"
+import UserIcon from "../../config/images/UserIcon.jpg"
 
 const User = ({ userId }) => {
 
@@ -17,7 +18,7 @@ const User = ({ userId }) => {
                 <div className="user-div-image">
                     {user?.image?.length 
                         ? <img width="75px" height="75px" className="user-profile-picture" src={user?.image} alt="User" />
-                        : <img width="75px" height="75px" className="user-profile-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692648401/userimages/usericon_hgvt7j.jpg" alt="User" />
+                        : <img width="75px" height="75px" className="user-profile-picture" src={UserIcon} alt="User" />
                     }
                 </div>
                 <div className="user-div-info">

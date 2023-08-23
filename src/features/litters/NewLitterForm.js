@@ -162,7 +162,7 @@ const NewLitterForm = () => {
                 <p className="register-litter-page-title">Register Litter</p>
                 <br />
                 
-                <label htmlFor="litter">
+                <label htmlFor="mother">
                     <b>Litter's Mother</b>
                 </label>
                 <br />
@@ -256,7 +256,7 @@ const NewLitterForm = () => {
                     <b>Born</b>
                 </label>
                 <br />
-                <Calendar minDate={mother?.length ? new Date(dogs?.entities[mother]?.birth) : null} maxDate={new Date()} onChange={handleBornChanged} value={born} />
+                <Calendar name="born" minDate={mother?.length ? new Date(dogs?.entities[mother]?.birth) : null} maxDate={new Date()} onChange={handleBornChanged} value={born} />
                 <br />
                 
                 <button

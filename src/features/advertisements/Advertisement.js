@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { useGetAdvertisementsQuery } from "./advertisementsApiSlice"
 import { useGetUsersQuery } from "../users/usersApiSlice"
 import { memo } from "react"
+import AdIcon from "../../config/images/AdIcon.jpg"
 
 const Advertisement = ({ advertisementId }) => {
 
@@ -28,7 +29,7 @@ const Advertisement = ({ advertisementId }) => {
             <div className="advertisement-div-image">
                 {advertisement?.image?.length 
                     ? <img width="150px" height="150px" className="advertisement-picture" src={advertisement?.image} alt="Advertisement" />
-                    : <img width="150px" height="150px" className="advertisement-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692618076/dogimages/default_fpiv1s.jpg" alt="Dog" />
+                    : <img width="150px" height="150px" className="advertisement-picture" src={AdIcon} alt="Advertisement" />
                 }
             </div>
             <div className="advertisement-div-info">

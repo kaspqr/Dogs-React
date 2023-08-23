@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { useGetDogsQuery } from "./dogsApiSlice"
 import { memo } from "react"
+import DogIcon from "../../config/images/DogIcon.jpg"
 
 const UserDog = ({ dogId }) => {
 
@@ -18,7 +19,7 @@ const UserDog = ({ dogId }) => {
             <div className="dog-div-image">
                 {dog?.image?.length 
                     ? <img width="150px" height="150px" className="dog-profile-picture" src={dog?.image} alt="Dog" />
-                    : <img width="150px" height="150px" className="dog-profile-picture" src="https://res.cloudinary.com/dqqbog907/image/upload/v1692618076/dogimages/default_fpiv1s.jpg" alt="Dog" />
+                    : <img width="150px" height="150px" className="dog-profile-picture" src={DogIcon} alt="Dog" />
                 }
             </div>
             <div className="dog-div-info">

@@ -37,6 +37,7 @@ const NewUserForm = () => {
     const [country, setCountry] = useState('Argentina')
     const [region, setRegion] = useState('')
     const [bio, setBio] = useState('')
+    const [successMsg, setSuccessMsg] = useState('')
 
     useEffect(() => {
         setValidUsername(USERNAME_REGEX.test(username))
@@ -65,7 +66,7 @@ const NewUserForm = () => {
             setCountry('')
             setRegion('')
             setBio('')
-            return <p>A verification link has been sent to your email. You will be able to log in once your account is verified.</p>
+            setSuccessMsg('A verification link has been sent to your email. You will be able to log in once your account is verified.')
         }
     }, [isSuccess, navigate])
 
@@ -98,145 +99,144 @@ const NewUserForm = () => {
 
     if (isLoading) return <p>Loading...</p>
 
-    const content = (
-        <>
-            {isError ? <p>{error?.data?.message}</p> : null}
+    const content = successMsg?.length ? <p>{successMsg}</p> :
+    <>
+        {isError ? <p>{error?.data?.message}</p> : null}
 
-            <form onSubmit={handleSaveUserClicked}>
-                <div>
-                    <p className="register-page-title">Register New Account</p>
-                </div>
+        <form onSubmit={handleSaveUserClicked}>
+            <div>
+                <p className="register-page-title">Register New Account</p>
+            </div>
 
-                <p>Fields marked with <b>*</b> are required</p>
-                <br />
-                
-                <label htmlFor="username">
-                    <b>Username (6-20 Letters and/or Numbers)*</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="username"
-                    name="username"
-                    autoComplete="off"
-                    value={username}
-                    onChange={handleUsernameChanged}
-                />
-                <br />
+            <p>Fields marked with <b>*</b> are required</p>
+            <br />
+            
+            <label htmlFor="username">
+                <b>Username (6-20 Letters and/or Numbers)*</b>
+            </label>
+            <br />
+            <input 
+                type="text" 
+                id="username"
+                name="username"
+                autoComplete="off"
+                value={username}
+                onChange={handleUsernameChanged}
+            />
+            <br />
 
-                <label htmlFor="password">
-                    <b>Password (8-20 Characters, Optionally Including !@#%)*</b>
-                </label>
-                <br />
-                <input 
-                    type="password" 
-                    id="password"
-                    name="password"
-                    value={password}
-                    onChange={handlePasswordChanged}
-                />
-                <br />
+            <label htmlFor="password">
+                <b>Password (8-20 Characters, Optionally Including !@#%)*</b>
+            </label>
+            <br />
+            <input 
+                type="password" 
+                id="password"
+                name="password"
+                value={password}
+                onChange={handlePasswordChanged}
+            />
+            <br />
 
-                <label htmlFor="confirm-password">
-                    <b>Confirm Password*</b>
-                </label>
-                <br />
-                <input 
-                    type="password" 
-                    id="confirm-password"
-                    name="confirm-password"
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChanged}
-                />
-                <br />
+            <label htmlFor="confirm-password">
+                <b>Confirm Password*</b>
+            </label>
+            <br />
+            <input 
+                type="password" 
+                id="confirm-password"
+                name="confirm-password"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChanged}
+            />
+            <br />
 
-                <label htmlFor="email">
-                    <b>Email*</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={handleEmailChanged}
-                />
-                <br />
+            <label htmlFor="email">
+                <b>Email*</b>
+            </label>
+            <br />
+            <input 
+                type="text" 
+                id="email"
+                name="email"
+                value={email}
+                onChange={handleEmailChanged}
+            />
+            <br />
 
-                <label htmlFor="name">
-                    <b>Name*</b>
-                </label>
-                <br />
-                <input 
-                    type="text" 
-                    id="name"
-                    name="name"
-                    value={name}
-                    onChange={handleNameChanged}
-                />
-                <br />
+            <label htmlFor="name">
+                <b>Name*</b>
+            </label>
+            <br />
+            <input 
+                type="text" 
+                id="name"
+                name="name"
+                value={name}
+                onChange={handleNameChanged}
+            />
+            <br />
 
-                <label htmlFor="country">
-                    <b>Country*</b>
-                </label>
-                <br />
-                <select 
-                    type="text" 
-                    id="country"
-                    name="country"
-                    value={country}
-                    onChange={handleCountryChanged}
+            <label htmlFor="country">
+                <b>Country*</b>
+            </label>
+            <br />
+            <select 
+                type="text" 
+                id="country"
+                name="country"
+                value={country}
+                onChange={handleCountryChanged}
+            >
+                {Countries}
+            </select>
+            <br />
+
+            <label htmlFor="region">
+                <b>Region</b>
+            </label>
+            <br />
+            <select 
+                disabled={!bigCountries?.includes(country)}
+                name="region" 
+                id="region"
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+            >
+                <option value="none ">Region (optional)</option>
+                {bigCountries?.includes(country) ? Regions[country] : null}
+            </select>
+            <br />
+            <br />
+
+            <label htmlFor="bio">
+                <b>Bio</b>
+            </label>
+            <br />
+            <textarea 
+                cols="30"
+                rows="10"
+                maxLength="500"
+                name="bio" 
+                id="bio"
+                value={bio}
+                onChange={handleBioChanged}
+            />
+            <br />
+            <br />
+
+            <div className="register-page-button-div">
+                <button
+                    className="black-button"
+                    title="Register"
+                    disabled={!canSave}
+                    style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                 >
-                    {Countries}
-                </select>
-                <br />
-
-                <label htmlFor="region">
-                    <b>Region</b>
-                </label>
-                <br />
-                <select 
-                    disabled={!bigCountries?.includes(country)}
-                    name="region" 
-                    id="region"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                >
-                    <option value="none ">Region (optional)</option>
-                    {bigCountries?.includes(country) ? Regions[country] : null}
-                </select>
-                <br />
-                <br />
-
-                <label htmlFor="bio">
-                    <b>Bio</b>
-                </label>
-                <br />
-                <textarea 
-                    cols="30"
-                    rows="10"
-                    maxLength="500"
-                    name="bio" 
-                    id="bio"
-                    value={bio}
-                    onChange={handleBioChanged}
-                />
-                <br />
-                <br />
-
-                <div className="register-page-button-div">
-                    <button
-                        className="black-button"
-                        title="Save"
-                        disabled={!canSave}
-                        style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
-                    >
-                        Register
-                    </button>
-                </div>
-            </form>
-        </>
-    )
+                    Register
+                </button>
+            </div>
+        </form>
+    </>
 
     return content
 }

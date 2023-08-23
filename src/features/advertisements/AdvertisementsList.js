@@ -198,6 +198,7 @@ const AdvertisementsList = () => {
           ? <p>There are currently no advertisements</p>
           : <>
               <button
+                title="Toggle Search View"
                 className="black-button"
                 onClick={handleToggleFilterView}
               >
@@ -208,101 +209,114 @@ const AdvertisementsList = () => {
               <br />
 
               <div id="ad-filter-div" style={{display: "none"}}>
-                <p><b>Title</b></p>
-                <input 
-                  value={title}
-                  name="advertisement-title-search-input" 
-                  id="advertisement-title-search-input" 
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                
-                <p><b>Type</b></p>
-                <select 
-                  value={type}
-                  name="advertisement-type" 
-                  id="advertisement-type"
-                  onChange={handleTypeChanged}
-                >
-                  <option value="">--</option>
-                  {AdvertisementTypes}
-                </select>
-                
-                <p><b>Country</b></p>
-                <select 
-                  value={country}
-                  name="advertisement-country" 
-                  id="advertisement-country"
-                  onChange={handleCountryChanged}
-                >
-                  <option value="">--</option>
-                  {Countries}
-                </select>
-                
-                <p><b>Region</b></p>
-                <select 
-                  disabled={!bigCountries.includes(country)}
-                  value={region}
-                  name="advertisement-region" 
-                  id="advertisement-region"
-                  onChange={(e) => setRegion(e.target.value)}
-                >
-                  <option value="">--</option>
-                  {bigCountries?.includes(country)
-                    ? Regions[country]
-                    : null
-                  }
-                </select>
-
-                <p><b>Currency</b></p>
-                <select 
-                  value={currency}
-                  name="advertisement-currency" 
-                  id="advertisement-currency"
-                  onChange={handleCurrencyChanged}
-                  disabled={currencyDisabled}
-                >
-                  <option value="">--</option>
-                  {Currencies}
-                </select>
-
-                <br />
-
-                <p><b>Lowest Price</b></p>
-                <input 
-                  type="text"
-                  value={lowestPrice}
-                  name="advertisement-lowest-price" 
-                  id="advertisement-lowest-price"
-                  onChange={(e) => {
-                    if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
-                      setLowestPrice(e.target.value)}
+                <form onSubmit={(e) => e.preventDefault()}>
+                  <label htmlFor="advertisement-title-search-input"><b>Title</b></label>
+                  <br />
+                  <input 
+                    value={title}
+                    name="advertisement-title-search-input" 
+                    id="advertisement-title-search-input" 
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <br />
+                  
+                  <label htmlFor="advertisement-type"><b>Type</b></label>
+                  <br />
+                  <select 
+                    value={type}
+                    name="advertisement-type" 
+                    id="advertisement-type"
+                    onChange={handleTypeChanged}
+                  >
+                    <option value="">--</option>
+                    {AdvertisementTypes}
+                  </select>
+                  <br />
+                  
+                  <label htmlFor="advertisement-country"><b>Country</b></label>
+                  <br />
+                  <select 
+                    value={country}
+                    name="advertisement-country" 
+                    id="advertisement-country"
+                    onChange={handleCountryChanged}
+                  >
+                    <option value="">--</option>
+                    {Countries}
+                  </select>
+                  <br />
+                  
+                  <label htmlFor="advertisement-region"><b>Region</b></label>
+                  <br />
+                  <select 
+                    disabled={!bigCountries.includes(country)}
+                    value={region}
+                    name="advertisement-region" 
+                    id="advertisement-region"
+                    onChange={(e) => setRegion(e.target.value)}
+                  >
+                    <option value="">--</option>
+                    {bigCountries?.includes(country)
+                      ? Regions[country]
+                      : null
                     }
-                  }
-                  disabled={!currency?.length}
-                />
+                  </select>
+                  <br />
 
-                <br />
+                  <label htmlFor="advertisement-currency"><b>Currency</b></label>
+                  <br />
+                  <select 
+                    value={currency}
+                    name="advertisement-currency" 
+                    id="advertisement-currency"
+                    onChange={handleCurrencyChanged}
+                    disabled={currencyDisabled}
+                  >
+                    <option value="">--</option>
+                    {Currencies}
+                  </select>
 
-                <p><b>Highest Price</b></p>
-                <input 
-                  type="text"
-                  value={highestPrice}
-                  name="advertisement-highest-price" 
-                  id="advertisement-highest-price"
-                  onChange={(e) => {
-                    if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
-                      setHighestPrice(e.target.value)}
+                  <br />
+
+                  <label htmlFor="advertisement-lowest-price"><b>Lowest Price</b></label>
+                  <br />
+                  <input 
+                    type="text"
+                    value={lowestPrice}
+                    name="advertisement-lowest-price" 
+                    id="advertisement-lowest-price"
+                    onChange={(e) => {
+                      if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
+                        setLowestPrice(e.target.value)}
+                      }
                     }
-                  }
-                  disabled={!currency?.length}
-                />
+                    disabled={!currency?.length}
+                  />
 
-                <br />
+                  <br />
+
+                  <label htmlFor="advertisement-highest-price"><b>Highest Price</b></label>
+                  <br />
+                  <input 
+                    type="text"
+                    value={highestPrice}
+                    name="advertisement-highest-price" 
+                    id="advertisement-highest-price"
+                    onChange={(e) => {
+                      if (PRICE_REGEX.test(e.target.value) || e.target.value === '') {
+                        setHighestPrice(e.target.value)}
+                      }
+                    }
+                    disabled={!currency?.length}
+                  />
+                </form>
+
                 <br />
 
                 <button 
                   onClick={handleSearchClicked}
                   className="black-button search-button"
+                  title="Search"
                 >
                   Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
                 </button>
@@ -312,6 +326,7 @@ const AdvertisementsList = () => {
               </div>
             <p>
               <button 
+                title="Go to Previous Page"
                 style={currentPage === 1 ? {display: "none"} : null}
                 disabled={currentPage === 1}
                 className="pagination-button"
@@ -325,6 +340,7 @@ const AdvertisementsList = () => {
               {` Page ${currentPage} of ${maxPage} `}
 
               <button 
+                title="Go to Next Page"
                 className="pagination-button"
                 style={currentPage === maxPage ? {display: "none"} : null}
                 disabled={currentPage === maxPage}
@@ -346,14 +362,17 @@ const AdvertisementsList = () => {
                     : {float: "none"}
                 }
               >
+                <label className="off-screen" htmlFor="page-number">Page Number</label>
                 <input 
                   onChange={(e) => setNewPage(e.target.value)} 
                   value={newPage} 
                   type="number" 
+                  name="page-number"
                   className="new-page-input"
                   placeholder="Page no."
                 />
                 <button
+                  title="Go to the Specified Page"
                   style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
                   disabled={goToPageButtonDisabled}
                   onClick={() => {
@@ -377,6 +396,7 @@ const AdvertisementsList = () => {
 
             <p>
               <button 
+                title="Go to Previous Page"
                 style={currentPage === 1 ? {display: "none"} : null}
                 disabled={currentPage === 1}
                 className="pagination-button"
@@ -390,6 +410,7 @@ const AdvertisementsList = () => {
               {` Page ${currentPage} of ${maxPage} `}
 
               <button 
+                title="Go to Next Page"
                 className="pagination-button"
                 style={currentPage === maxPage ? {display: "none"} : null}
                 disabled={currentPage === maxPage}
@@ -411,14 +432,17 @@ const AdvertisementsList = () => {
                     : {float: "none"}
                 }
               >
+                <label className="off-screen" htmlFor="another-page-number">Page Number</label>
                 <input 
                   onChange={(e) => setNewPage(e.target.value)} 
                   value={newPage} 
                   type="number" 
                   className="new-page-input"
                   placeholder="Page no."
+                  name="another-page-number"
                 />
                 <button
+                  title="Go to the Specified Page"
                   style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
                   disabled={goToPageButtonDisabled}
                   onClick={() => {

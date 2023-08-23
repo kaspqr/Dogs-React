@@ -197,6 +197,9 @@ const NewAdvertisementForm = () => {
                 <br />
                 <br />
 
+                <p>A picture can be added in the 'Edit' form once the advertisement has been successfully posted.</p>
+                <br />
+
                 <div className="advertisement-post-page-buttons-div">
                     <button
                         style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}

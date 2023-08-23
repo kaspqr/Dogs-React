@@ -131,6 +131,7 @@ const UsersList = () => {
     content = (
       <>
         <button
+          title="Toggle Search View"
           className="black-button"
           onClick={handleToggleFilterView}
         >
@@ -141,59 +142,66 @@ const UsersList = () => {
         <br />
 
         <div id="user-filter-div" style={{display: "none"}}>
-          <p><b>Username</b></p>
-          <input 
-            type="text"
-            value={username}
-            name="user-username-search-input" 
-            id="user-username-search-input" 
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <form onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="user-username-search-input"><b>Username</b></label>
+            <br />
+            <input 
+              type="text"
+              value={username}
+              name="user-username-search-input" 
+              id="user-username-search-input" 
+              onChange={(e) => setUsername(e.target.value)}
+            />
 
+            <br />
+
+            <label htmlFor="user-country"><b>Country</b></label>
+            <br />
+            <select 
+              value={country}
+              name="user-country" 
+              id="user-country"
+              onChange={handleCountryChanged}
+            >
+              <option value="">--</option>
+              {Countries}
+            </select>
+            <br />
+            
+            <label htmlFor="user-region"><b>Region</b></label>
+            <br />
+            <select 
+              disabled={!bigCountries.includes(country)}
+              value={region}
+              name="user-region" 
+              id="user-region"
+              onChange={(e) => setRegion(e.target.value)}
+            >
+              <option value="">--</option>
+              {bigCountries?.includes(country)
+                ? Regions[country]
+                : null
+              }
+            </select>
+            <br />
+            <br />
+
+            <button 
+              title="Search"
+              onClick={handleSearchClicked}
+              className="black-button search-button"
+            >
+              Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+            </button>
+
+          </form>
           <br />
 
-          <p><b>Country</b></p>
-          <select 
-            value={country}
-            name="advertisement-country" 
-            id="advertisement-country"
-            onChange={handleCountryChanged}
-          >
-            <option value="">--</option>
-            {Countries}
-          </select>
-          
-          <p><b>Region</b></p>
-          <select 
-            disabled={!bigCountries.includes(country)}
-            value={region}
-            name="advertisement-region" 
-            id="advertisement-region"
-            onChange={(e) => setRegion(e.target.value)}
-          >
-            <option value="">--</option>
-            {bigCountries?.includes(country)
-              ? Regions[country]
-              : null
-            }
-          </select>
-
-          <br />
-          <br />
-
-          <button 
-            onClick={handleSearchClicked}
-            className="black-button search-button"
-          >
-            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
-          </button>
-
-          <br />
-          <br />
         </div>
 
         <p>
           <button 
+            title="Go to Previous Page"
             style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
             className="pagination-button"
@@ -207,6 +215,7 @@ const UsersList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
+            title="Go to Next Page"
             className="pagination-button"
             style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
@@ -228,7 +237,9 @@ const UsersList = () => {
                 : {float: "none"}
             }
           >
+            <label className="off-screen" htmlFor="page-number">Page Number</label>
             <input 
+              name="page-number"
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
               type="number" 
@@ -236,6 +247,7 @@ const UsersList = () => {
               placeholder="Page no."
             />
             <button
+              title="Go to the Specified Page"
               style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
               disabled={goToPageButtonDisabled}
               onClick={() => {
@@ -259,6 +271,7 @@ const UsersList = () => {
 
         <p>
           <button 
+            title="Go to Previous Page"
             style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
             className="pagination-button"
@@ -272,6 +285,7 @@ const UsersList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
+            title="Go to Next Page"
             className="pagination-button"
             style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
@@ -293,7 +307,9 @@ const UsersList = () => {
                 : {float: "none"}
             }
           >
+            <label className="off-screen" htmlFor="another-page-number">Page Number</label>
             <input 
+              name="another-page-number"
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
               type="number" 
@@ -301,6 +317,7 @@ const UsersList = () => {
               placeholder="Page no."
             />
             <button
+              title="Go to the Specified Page"
               style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
               disabled={goToPageButtonDisabled}
               onClick={() => {

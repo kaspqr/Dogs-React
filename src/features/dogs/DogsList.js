@@ -258,6 +258,7 @@ const DogsList = () => {
         {userId?.length ? <><Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link><br /><br /></> : null}
 
         <button
+          title="Toggle Search View"
           className="black-button"
           onClick={handleToggleFilterView}
         >
@@ -268,167 +269,192 @@ const DogsList = () => {
         <br />
 
         <div id="dog-filter-div" style={{display: "none"}}>
-          <p><b>Name</b></p>
-          <input 
-            value={name}
-            name="dog-name-search-input" 
-            id="dog-name-search-input" 
-            onChange={(e) => setName(e.target.value)}
-          />
+          <form onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="dog-name-search-input"><b>Name</b></label>
+            <br />
+            <input 
+              value={name}
+              name="dog-name-search-input" 
+              id="dog-name-search-input" 
+              onChange={(e) => setName(e.target.value)}
+            />
+            <br />
 
-          <p><b>Breed</b></p>
-          <select 
-            onChange={(e) => setBreed(e.target.value)}
-            value={breed}
-            name="dogs-filter-breed-select" 
-            id="dogs-filter-breed-select"
-          >
-            <option value="">--</option>
-            {breedOptions}
-          </select>
+            <label htmlFor="dogs-filter-breed-select"><b>Breed</b></label>
+            <br />
+            <select 
+              onChange={(e) => setBreed(e.target.value)}
+              value={breed}
+              name="dogs-filter-breed-select" 
+              id="dogs-filter-breed-select"
+            >
+              <option value="">--</option>
+              {breedOptions}
+            </select>
 
-          <br />
-          <br />
+            <br />
+            <br />
 
-          <p><b>Born at Earliest</b></p>
-          <Calendar maxDate={bornLatest || new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
-          <button 
-            className="black-button"
-            disabled={bornEarliest === ''}
-            style={bornEarliest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
-            onClick={() => setBornEarliest('')}
-          >
-            Clear Date
-          </button>
+            <label htmlFor="born-at-earliest-calendar-input"><b>Born at Earliest</b></label>
+            <br />
+            <Calendar name="born-at-earliest-calendar-input" maxDate={bornLatest || new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
+            <button 
+              title="Clear Date for Born at Earliest"
+              className="black-button"
+              disabled={bornEarliest === ''}
+              style={bornEarliest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+              onClick={() => setBornEarliest('')}
+            >
+              Clear Date
+            </button>
 
-          <br />
-          <br />
+            <br />
+            <br />
 
-          <p><b>Born at Latest</b></p>
-          <Calendar minDate={bornEarliest || null} maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
-          <button 
-            className="black-button"
-            disabled={bornLatest === ''}
-            style={bornLatest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
-            onClick={() => setBornLatest('')}
-          >
-            Clear Date
-          </button>
+            <label htmlFor="born-at-latest-calendar-input"><b>Born at Latest</b></label>
+            <br />
+            <Calendar name="born-at-latest-calendar-input" minDate={bornEarliest || null} maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
+            <button 
+              title="Clear Date for Born at Latest"
+              className="black-button"
+              disabled={bornLatest === ''}
+              style={bornLatest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+              onClick={() => setBornLatest('')}
+            >
+              Clear Date
+            </button>
 
-          <br />
-          <br />
+            <br />
+            <br />
 
-          <p><b>Country</b></p>
-          <select 
-            value={country}
-            name="dog-country" 
-            id="dog-country"
-            onChange={handleCountryChanged}
-          >
-            <option value="">--</option>
-            {Countries}
-          </select>
-          
-          <p><b>Region</b></p>
-          <select 
-            disabled={!bigCountries?.includes(country)}
-            value={region}
-            name="dog-region" 
-            id="dog-region"
-            onChange={(e) => setRegion(e.target.value)}
-          >
-            <option value="">--</option>
-            {bigCountries?.includes(country)
-              ? Regions[country]
-              : null
-            }
-          </select>
+            <label htmlFor="dog-country"><b>Country</b></label>
+            <br />
+            <select 
+              value={country}
+              name="dog-country" 
+              id="dog-country"
+              onChange={handleCountryChanged}
+            >
+              <option value="">--</option>
+              {Countries}
+            </select>
+            <br />
+            
+            <label htmlFor="dog-region"><b>Region</b></label>
+            <br />
+            <select 
+              disabled={!bigCountries?.includes(country)}
+              value={region}
+              name="dog-region" 
+              id="dog-region"
+              onChange={(e) => setRegion(e.target.value)}
+            >
+              <option value="">--</option>
+              {bigCountries?.includes(country)
+                ? Regions[country]
+                : null
+              }
+            </select>
+            <br />
 
-          <p><b>Passport</b></p>
-          <select 
-            value={passport} 
-            onChange={(e) => setPassport(e.target.value)}
-            name="passport" 
-            id="passport"
-          >
-            <option value="">--</option>
-            <option value="yes">Documented</option>
-            <option value="no">Not Documented</option>
-          </select>
+            <label htmlFor="passport"><b>Passport</b></label>
+            <br />
+            <select 
+              value={passport} 
+              onChange={(e) => setPassport(e.target.value)}
+              name="passport" 
+              id="passport"
+            >
+              <option value="">--</option>
+              <option value="yes">Documented</option>
+              <option value="no">Not Documented</option>
+            </select>
+            <br />
 
-          <p><b>Fixed</b></p>
-          <select 
-            value={fixed} 
-            onChange={(e) => setFixed(e.target.value)}
-            name="fixed" 
-            id="fixed"
-          >
-            <option value="">--</option>
-            <option value="yes">Fixed</option>
-            <option value="no">Not Fixed</option>
-          </select>
+            <label htmlFor="fixed"><b>Fixed</b></label>
+            <br />
+            <select 
+              value={fixed} 
+              onChange={(e) => setFixed(e.target.value)}
+              name="fixed" 
+              id="fixed"
+            >
+              <option value="">--</option>
+              <option value="yes">Fixed</option>
+              <option value="no">Not Fixed</option>
+            </select>
+            <br />
 
-          <p><b>Good</b></p>
-          <select 
-            value={gender} 
-            onChange={handleGenderChanged}
-            name="gender" 
-            id="gender"
-          >
-            <option value="">--</option>
-            <option value="female">Girl</option>
-            <option value="male">Boy</option>
-          </select>
+            <label htmlFor="gender"><b>Good</b></label>
+            <br />
+            <select 
+              value={gender} 
+              onChange={handleGenderChanged}
+              name="gender" 
+              id="gender"
+            >
+              <option value="">--</option>
+              <option value="female">Girl</option>
+              <option value="male">Boy</option>
+            </select>
+            <br />
 
-          <p><b>Currently in Heat</b></p>
-          <select 
-            disabled={gender !== 'female'}
-            value={heat} 
-            onChange={(e) => setHeat(e.target.value)}
-            name="heat" 
-            id="heat"
-          >
-            <option value="">--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+            <label htmlFor="heat"><b>Currently in Heat</b></label>
+            <br />
+            <select 
+              disabled={gender !== 'female'}
+              value={heat} 
+              onChange={(e) => setHeat(e.target.value)}
+              name="heat" 
+              id="heat"
+            >
+              <option value="">--</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <br />
 
-          <p><b>Chipped</b></p>
-          <select 
-            value={chipped} 
-            onChange={handleChippedChanged}
-            name="chipped" 
-            id="chipped"
-          >
-            <option value="">--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+            <label htmlFor="chipped"><b>Chipped</b></label>
+            <br />
+            <select 
+              value={chipped} 
+              onChange={handleChippedChanged}
+              name="chipped" 
+              id="chipped"
+            >
+              <option value="">--</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <br />
 
-          <p><b>Chipnumber</b></p>
-          <input 
-            disabled={chipped !== 'yes'}
-            value={chipnumber} 
-            onChange={(e) => setChipnumber(e.target.value)}
-            name="chipnumber" 
-            id="chipnumber"
-          />
+            <label htmlFor="chipnumber"><b>Chipnumber</b></label>
+            <br />
+            <input 
+              disabled={chipped !== 'yes'}
+              value={chipnumber} 
+              onChange={(e) => setChipnumber(e.target.value)}
+              name="chipnumber" 
+              id="chipnumber"
+            />
 
-          <br />
-          <br />
+            <br />
+            <br />
 
-          <button 
-            onClick={handleSearchClicked}
-            className="black-button search-button"
-          >
-            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
-          </button>
-          <br />
+            <button 
+              title="Search"
+              onClick={handleSearchClicked}
+              className="black-button search-button"
+            >
+              Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+            </button>
+          </form>
           <br />
         </div>
 
         <p>
           <button 
+            title="Go to Previous Page"
             style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
             className="pagination-button"
@@ -442,6 +468,7 @@ const DogsList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
+            title="Go to Next Page"
             className="pagination-button"
             style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
@@ -463,14 +490,17 @@ const DogsList = () => {
                 : {float: "none"}
             }
           >
+            <label className="off-screen" htmlFor="page-number">Page Number</label>
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
               type="number" 
+              name="page-number"
               className="new-page-input"
               placeholder="Page no."
             />
             <button
+              title="Go to the Specified Page"
               style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
               disabled={goToPageButtonDisabled}
               onClick={() => {
@@ -494,6 +524,7 @@ const DogsList = () => {
 
         <p>
           <button 
+            title="Go to Previous Page"
             style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
             className="pagination-button"
@@ -507,6 +538,7 @@ const DogsList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
+            title="Go to Next Page"
             className="pagination-button"
             style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
@@ -528,14 +560,17 @@ const DogsList = () => {
                 : {float: "none"}
             }
           >
+            <label className="off-screen" htmlFor="another-page-number">Page Number</label>
             <input 
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
               type="number" 
+              name="another-page-number"
               className="new-page-input"
               placeholder="Page no."
             />
             <button
+              title="Go to the Specified Page"
               style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
               disabled={goToPageButtonDisabled}
               onClick={() => {
