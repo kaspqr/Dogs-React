@@ -227,7 +227,7 @@ const DogsList = () => {
       return ad._id
     })
 
-    const itemsPerPage = 50
+    const itemsPerPage = 20
 
     const maxPage = Math.ceil(filteredIds?.length ? filteredIds?.length / itemsPerPage : reversedNewIds?.length / itemsPerPage)
 
@@ -248,18 +248,18 @@ const DogsList = () => {
 
     if (!reversedNewIds?.length) {
       return <>
-        {userId?.length ? <><Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link><br /><br /></> : null}
+        {userId?.length ? <><Link to={'/dogs/new'}><button title="Add a New Dog" className="black-button three-hundred">Add a New Dog</button></Link><br /><br /></> : null}
         <p>There are currently no dogs in the database</p>
       </>
     }
 
     content = (
       <>
-        {userId?.length ? <><Link to={'/dogs/new'}><button className="black-button">Add a New Dog</button></Link><br /><br /></> : null}
+        {userId?.length ? <><Link to={'/dogs/new'}><button title="Add a New Dog" className="black-button three-hundred">Add a New Dog</button></Link><br /><br /></> : null}
 
         <button
           title="Toggle Search View"
-          className="black-button"
+          className="black-button three-hundred"
           onClick={handleToggleFilterView}
         >
           Toggle Search View
@@ -273,6 +273,7 @@ const DogsList = () => {
             <label htmlFor="dog-name-search-input"><b>Name</b></label>
             <br />
             <input 
+              className="three-hundred"
               value={name}
               name="dog-name-search-input" 
               id="dog-name-search-input" 
@@ -280,7 +281,7 @@ const DogsList = () => {
             />
             <br />
 
-            <label htmlFor="dogs-filter-breed-select"><b>Breed</b></label>
+            <label className="top-spacer" htmlFor="dogs-filter-breed-select"><b>Breed</b></label>
             <br />
             <select 
               onChange={(e) => setBreed(e.target.value)}
@@ -293,9 +294,8 @@ const DogsList = () => {
             </select>
 
             <br />
-            <br />
 
-            <label htmlFor="born-at-earliest-calendar-input"><b>Born at Earliest</b></label>
+            <label className="top-spacer" htmlFor="born-at-earliest-calendar-input"><b>Born at Earliest</b></label>
             <br />
             <Calendar name="born-at-earliest-calendar-input" maxDate={bornLatest || new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
             <button 
@@ -309,9 +309,8 @@ const DogsList = () => {
             </button>
 
             <br />
-            <br />
 
-            <label htmlFor="born-at-latest-calendar-input"><b>Born at Latest</b></label>
+            <label className="top-spacer" htmlFor="born-at-latest-calendar-input"><b>Born at Latest</b></label>
             <br />
             <Calendar name="born-at-latest-calendar-input" minDate={bornEarliest || null} maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
             <button 
@@ -325,9 +324,8 @@ const DogsList = () => {
             </button>
 
             <br />
-            <br />
 
-            <label htmlFor="dog-country"><b>Country</b></label>
+            <label className="top-spacer" htmlFor="dog-country"><b>Country</b></label>
             <br />
             <select 
               value={country}
@@ -340,7 +338,7 @@ const DogsList = () => {
             </select>
             <br />
             
-            <label htmlFor="dog-region"><b>Region</b></label>
+            <label className="top-spacer" htmlFor="dog-region"><b>Region</b></label>
             <br />
             <select 
               disabled={!bigCountries?.includes(country)}
@@ -357,7 +355,7 @@ const DogsList = () => {
             </select>
             <br />
 
-            <label htmlFor="passport"><b>Passport</b></label>
+            <label className="top-spacer" htmlFor="passport"><b>Passport</b></label>
             <br />
             <select 
               value={passport} 
@@ -371,7 +369,7 @@ const DogsList = () => {
             </select>
             <br />
 
-            <label htmlFor="fixed"><b>Fixed</b></label>
+            <label className="top-spacer" htmlFor="fixed"><b>Fixed</b></label>
             <br />
             <select 
               value={fixed} 
@@ -385,7 +383,7 @@ const DogsList = () => {
             </select>
             <br />
 
-            <label htmlFor="gender"><b>Good</b></label>
+            <label className="top-spacer" htmlFor="gender"><b>Good</b></label>
             <br />
             <select 
               value={gender} 
@@ -399,7 +397,7 @@ const DogsList = () => {
             </select>
             <br />
 
-            <label htmlFor="heat"><b>Currently in Heat</b></label>
+            <label className="top-spacer" htmlFor="heat"><b>Currently in Heat</b></label>
             <br />
             <select 
               disabled={gender !== 'female'}
@@ -414,7 +412,7 @@ const DogsList = () => {
             </select>
             <br />
 
-            <label htmlFor="chipped"><b>Chipped</b></label>
+            <label className="top-spacer" htmlFor="chipped"><b>Chipped</b></label>
             <br />
             <select 
               value={chipped} 
@@ -428,9 +426,10 @@ const DogsList = () => {
             </select>
             <br />
 
-            <label htmlFor="chipnumber"><b>Chipnumber</b></label>
+            <label className="top-spacer" htmlFor="chipnumber"><b>Chipnumber</b></label>
             <br />
             <input 
+              className="three-hundred"
               disabled={chipped !== 'yes'}
               value={chipnumber} 
               onChange={(e) => setChipnumber(e.target.value)}
@@ -444,7 +443,7 @@ const DogsList = () => {
             <button 
               title="Search"
               onClick={handleSearchClicked}
-              className="black-button search-button"
+              className="black-button search-button three-hundred"
             >
               Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
             </button>

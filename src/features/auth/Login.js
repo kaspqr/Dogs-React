@@ -84,6 +84,7 @@ const Login = () => {
           <br />
 
           <input 
+            className="three-hundred"
             type="text" 
             id="username"
             ref={userRef}
@@ -94,11 +95,12 @@ const Login = () => {
           />
           <br />
 
-          <label htmlFor="password">
+          <label className="top-spacer" htmlFor="password">
             <b>Password</b>
           </label>
           <br />
           <input 
+            className="three-hundred"
             type="password" 
             id="password"
             onChange={handlePwdInput}
@@ -116,7 +118,7 @@ const Login = () => {
           <br />
 
           <button 
-            className="black-button"
+            className="black-button three-hundred"
             disabled={!username?.length || !password?.length}
             style={!username?.length || !password?.length ? {backgroundColor: "grey", cursor: "default"} : null}
           >

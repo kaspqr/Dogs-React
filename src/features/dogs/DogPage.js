@@ -181,7 +181,7 @@ const DogPage = () => {
     const content = userId === dog?.user 
         ? <>
             <button
-                className="black-button"
+                className="black-button three-hundred"
                 onClick={() => navigate(`/dogs/edit/${dog?.id}`)}
             >
                 Edit
@@ -274,11 +274,11 @@ const DogPage = () => {
             <br />
             {siblingsContent}
             {filteredLitters?.length ? <><p><b>{dog?.name}'s litters and each litter's puppies</b></p><br /></> : null}
-            {filteredLitters?.length ? littersContent : <>{dog?.name} has no litters and therefore has no children in the database<br /><br /></>}
+            {filteredLitters?.length ? littersContent : <>{dog?.name} has no litters and therefore has no puppies in the database<br /><br /></>}
             {content}
             {userId?.length && dog?.user !== userId
                 ? <><button 
-                    className="black-button"
+                    className="black-button three-hundred"
                     onClick={() => navigate(`/reportdog/${dog?.id}`)}
                 >
                     Report Dog
@@ -286,7 +286,7 @@ const DogPage = () => {
                 : null
             }
             {isAdmin || isSuperAdmin
-                ? <><button className="black-button" onClick={handleAdminDelete}>Delete as Admin</button></>
+                ? <><button className="black-button three-hundred" onClick={handleAdminDelete}>Delete as Admin</button></>
                 : null
             }
         </>

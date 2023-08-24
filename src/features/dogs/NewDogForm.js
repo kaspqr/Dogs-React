@@ -127,6 +127,7 @@ const NewDogForm = () => {
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text" 
                     maxLength="30"
                     id="dogname"
@@ -137,7 +138,7 @@ const NewDogForm = () => {
                 />
                 <br />
 
-                <label htmlFor="breed">
+                <label className="top-spacer" htmlFor="breed">
                     <b>Breed*</b>
                 </label>
                 <br />
@@ -153,19 +154,19 @@ const NewDogForm = () => {
                 </select>
                 <br />
 
-                <label htmlFor="isFemale">
-                    <b>Gender*</b>
+                <label className="top-spacer" htmlFor="isFemale">
+                    <b>Good*</b>
                 </label>
                 <br />
                 <select 
                     onChange={handleFemaleChanged}
                 >
-                  <option value="female">Female</option>
-                  <option value="male">Male</option>
+                  <option value="female">Girl</option>
+                  <option value="male">Boy</option>
                 </select>
                 <br />
 
-                <label htmlFor="country">
+                <label className="top-spacer" htmlFor="country">
                     <b>Country*</b>
                 </label>
                 <br />
@@ -179,7 +180,7 @@ const NewDogForm = () => {
                 </select>
                 <br />
 
-                <label htmlFor="region">
+                <label className="top-spacer" htmlFor="region">
                     <b>Region</b>
                 </label>
                 <br />
@@ -195,35 +196,36 @@ const NewDogForm = () => {
                 </select>
                 <br />
 
-                <label htmlFor="passport">
+                <label className="top-spacer" htmlFor="passport">
                     <b>Passport </b>
                     <FontAwesomeIcon name="passport" onClick={handlePassportChanged} size="xl" icon={passport ? faToggleOn : faToggleOff} color={passport ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
-                <label htmlFor="heat">
+                <label className="top-spacer" htmlFor="heat">
                     <b>Heat </b>
                     <FontAwesomeIcon name="heat" onClick={female ? handleHeatChanged : null} size="xl" icon={heat ? faToggleOn : faToggleOff} color={heat ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
-                <label htmlFor="sterilized">
+                <label className="top-spacer" htmlFor="sterilized">
                     <b>Fixed </b>
                     <FontAwesomeIcon name="sterilized" onClick={handleSterilizedChanged} size="xl" icon={sterilized ? faToggleOn : faToggleOff} color={sterilized ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
-                <label htmlFor="microchipped">
+                <label className="top-spacer" htmlFor="microchipped">
                     <b>Microchipped </b>
                     <FontAwesomeIcon name="microchipped" onClick={handleMicrochippedChanged} size="xl" icon={microchipped ? faToggleOn : faToggleOff} color={microchipped ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
-                <label htmlFor="chipnumber">
+                <label className="top-spacer" htmlFor="chipnumber">
                     <b>Chipnumber</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     disabled={microchipped === false}
                     type="text" 
                     id="chipnumber"
@@ -232,16 +234,14 @@ const NewDogForm = () => {
                     onChange={handleChipnumberChanged}
                 />
                 <br />
-                <br />
 
-                <label htmlFor="birth">
+                <label className="top-spacer" htmlFor="birth">
                     <b>Date of Birth*</b>
                 </label>
                 <br />
                 <Calendar name="birth" maxDate={death || new Date()} onChange={handleBirthChanged} value={birth} />
-                <br />
 
-                <label htmlFor="death">
+                <label className="top-spacer" htmlFor="death">
                     <b>Date of Death (If Not Alive)</b>
                 </label>
                 <Calendar name="death" minDate={birth || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
@@ -255,13 +255,13 @@ const NewDogForm = () => {
                     Clear Date
                 </button>
                 <br />
-                <br />
 
-                <label htmlFor="info">
+                <label className="top-spacer" htmlFor="info">
                     <b>Additional Info</b>
                 </label>
                 <br />
                 <textarea 
+                    className="three-hundred"
                     cols="30"
                     rows="10"
                     maxLength="500"
@@ -278,7 +278,7 @@ const NewDogForm = () => {
 
                 <div>
                     <button
-                        className="black-button"
+                        className="black-button three-hundred"
                         style={saveColor}
                         title="Save"
                         disabled={!canSave}

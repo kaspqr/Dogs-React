@@ -46,30 +46,33 @@ const AdvertisementReportPage = () => {
 
     const content = successMsg?.length ? <p>{successMsg}</p> :
     <>
-        <label htmlFor="report">
-            <b>Reason for reporting advertisement <Link target="_blank" className="orange-link" to={`/advertisements/${advertisement?.id}`}>{advertisement?.title}</Link></b>
-        </label>
-        <br />
-        <br />
-        <textarea 
-            value={report}
-            onChange={(e) => setReport(e.target.value)}
-            name="report" 
-            id="report" 
-            maxLength="900"
-            cols="30" 
-            rows="10"
-        />
-        <br />
-        <br />
-        <button
-            className="black-button"
-            onClick={handleReportClicked}
-            disabled={report?.length < 1}
-            style={report?.length < 1 ? {backgroundColor: "grey", cursor: "default"} : null}
-        >
-            Report
-        </button>
+        <form onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="report">
+                <b>Reason for reporting advertisement <Link target="_blank" className="orange-link" to={`/advertisements/${advertisement?.id}`}>{advertisement?.title}</Link></b>
+            </label>
+            <br />
+            <textarea 
+                className="top-spacer three-hundred"
+                value={report}
+                onChange={(e) => setReport(e.target.value)}
+                name="report" 
+                id="report" 
+                maxLength="900"
+                cols="30" 
+                rows="10"
+            />
+            <br />
+            <br />
+            <button
+                title="Report Advertisement"
+                className="black-button three-hundred"
+                onClick={handleReportClicked}
+                disabled={report?.length < 1}
+                style={report?.length < 1 ? {backgroundColor: "grey", cursor: "default"} : null}
+            >
+                Report
+            </button>
+        </form>
     </>
 
     return content

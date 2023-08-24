@@ -196,7 +196,7 @@ const EditUserForm = ({ user }) => {
 
                 <button 
                     title="Update Profile Picture"
-                    className="black-button" 
+                    className="black-button three-hundred" 
                     onClick={handleSubmitFile}
                     disabled={!previewSource || uploadLoading === true}
                     style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
@@ -208,10 +208,8 @@ const EditUserForm = ({ user }) => {
                 {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
                 {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
 
-                <br />
-
                 {previewSource && <>
-                    <img className="user-profile-picture" height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <img className="user-profile-picture top-spacer" height="300px" width="300px" src={previewSource} alt="chosen" />
                     <br />
                     <br />
                 </>}
@@ -224,6 +222,7 @@ const EditUserForm = ({ user }) => {
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="password" 
                     id="current-password"
                     name="current-password"
@@ -232,11 +231,12 @@ const EditUserForm = ({ user }) => {
                 />
                 <br />
 
-                <label htmlFor="password">
+                <label className="top-spacer" htmlFor="password">
                     <b>New Password (8-20 characters, including !@#%)</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="password" 
                     id="password"
                     name="password"
@@ -245,11 +245,12 @@ const EditUserForm = ({ user }) => {
                 />
                 <br />
 
-                <label htmlFor="confirm-password">
+                <label className="top-spacer" htmlFor="confirm-password">
                     <b>Confirm New Password</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="password" 
                     id="confirm-password"
                     name="confirm-password"
@@ -258,11 +259,12 @@ const EditUserForm = ({ user }) => {
                 />
                 <br />
 
-                <label htmlFor="email">
+                <label className="top-spacer" htmlFor="email">
                     <b>Email*</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text" 
                     id="email"
                     name="email"
@@ -271,11 +273,12 @@ const EditUserForm = ({ user }) => {
                 />
                 <br />
 
-                <label htmlFor="name">
+                <label className="top-spacer" htmlFor="name">
                     <b>Name (Max. 30 Letters)*</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text" 
                     id="name"
                     name="name"
@@ -284,7 +287,7 @@ const EditUserForm = ({ user }) => {
                 />
                 <br />
 
-                <label htmlFor="country">
+                <label className="top-spacer" htmlFor="country">
                     <b>Country</b>
                 </label>
                 <br />
@@ -299,7 +302,7 @@ const EditUserForm = ({ user }) => {
                 </select>
                 <br />
 
-                <label htmlFor="region">
+                <label className="top-spacer" htmlFor="region">
                     <b>Region</b>
                 </label>
                 <br />
@@ -314,13 +317,13 @@ const EditUserForm = ({ user }) => {
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
-                <br />
 
-                <label htmlFor="bio">
+                <label className="top-spacer" htmlFor="bio">
                     <b>Bio</b>
                 </label>
                 <br />
                 <textarea 
+                    className="three-hundred"
                     cols="30"
                     rows="10"
                     maxLength="500"
@@ -334,7 +337,7 @@ const EditUserForm = ({ user }) => {
                 
                 <div className="edit-profile-buttons-div">
                     <button
-                        className="black-button"
+                        className="black-button three-hundred"
                         title="Save"
                         disabled={!canSave}
                         style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
@@ -342,12 +345,14 @@ const EditUserForm = ({ user }) => {
                     >
                         Save
                     </button>
+                    <br />
+                    <br />
                     <button
                         title="Delete"
                         disabled={!currentPassword?.length}
                         style={!currentPassword?.length ? {backgroundColor: "grey", cursor: "default"} : null}
                         onClick={() => setDeletionVisible(!deletionVisible)}
-                        className="edit-profile-delete-button black-button"
+                        className="three-hundred black-button"
                     >
                         Delete Account
                     </button>
@@ -359,11 +364,11 @@ const EditUserForm = ({ user }) => {
                             <b>Enter your current password on top of the page, type "confirmdelete" in the input below and click on the Confirm Deletion button to delete your account.</b>
                         </label>
                         <br />
-                        <input name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                        <input className="three-hundred" name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
                         <br />
                         <br />
                         <button
-                            className="black-button"
+                            className="black-button three-hundred"
                             title="Confirm Deletion"
                             disabled={confirmDelete !== 'confirmdelete' || !currentPassword?.length}
                             style={confirmDelete !== 'confirmdelete' || !currentPassword?.length ? {backgroundColor: "grey", cursor: "default"} : null}

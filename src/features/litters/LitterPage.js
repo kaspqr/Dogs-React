@@ -275,7 +275,8 @@ const LitterPage = () => {
             <>
                 <br />
                 <button
-                    className="black-button"
+                    title="Delete Litter"
+                    className="black-button three-hundred"
                     onClick={() => setDeletionVisible(!deletionVisible)}
                 >
                     Delete Litter
@@ -284,22 +285,24 @@ const LitterPage = () => {
                     : <>
                     <br />
                     <br />
-                    <label htmlFor="confirm-delete">
-                        <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your dog's litter from the database.</b>
-                    </label>
-                    <br />
-                    <input type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
-                    <br />
-                    <br />
-                    <button
-                        className="black-button"
-                        title="confirm-delete"
-                        disabled={confirmDelete !== 'confirmdelete'}
-                        style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
-                        onClick={() => handleDeleteLitter()}
-                    >
-                        Confirm Deletion
-                    </button>
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <label htmlFor="confirm-delete">
+                            <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your dog's litter from the database.</b>
+                        </label>
+                        <br />
+                        <input className="three-hundred" name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                        <br />
+                        <br />
+                        <button
+                            className="black-button three-hundred"
+                            title="Confirm Deletion"
+                            disabled={confirmDelete !== 'confirmdelete'}
+                            style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
+                            onClick={() => handleDeleteLitter()}
+                        >
+                            Confirm Deletion
+                        </button>
+                    </form>
                 </>}
             </>
         )
@@ -351,15 +354,18 @@ const LitterPage = () => {
 
     const fatherContent = father?.id?.length || !filteredFathers?.length
         ? null
-        : <><p><b>{userId === mother?.user ? 'Add ' : 'Propose '}Father to Litter</b></p>
-                <select value={selectedFather} onChange={(e) => setSelectedFather(e.target.value)}>
+        : <><form onSubmit={(e) => e.preventDefault()}>
+                <label htmlFor="pick-your-dog"><b>{userId === mother?.user ? 'Add ' : 'Propose '}Father to Litter</b></label>
+                <br />
+                <select name="pick-your-dog" value={selectedFather} onChange={(e) => setSelectedFather(e.target.value)}>
                     <option value="">Pick Your Dog</option>
                     {fatherOptionsContent}
                 </select>
                 <br />
                 <br />
                 <button
-                    className="black-button"
+                    title={userId === mother?.user ? 'Add Father' : 'Propose Father'}
+                    className="black-button three-hundred"
                     style={fatherButtonStyle}
                     disabled={!canSaveFather}
                     onClick={userId === mother?.user ? addFatherToLitter : proposeFatherToLitter}
@@ -368,19 +374,21 @@ const LitterPage = () => {
                 </button>
                 <br />
                 <br />
-            </>
+            </form></>
 
     const addProposedFatherContent = proposedFatherContent?.length && !father?.id?.length
-        ? <>
-            <p><b>Add Proposed Father</b></p>
-            <select value={selectedProposeFather} onChange={(e) => setSelectedProposeFather(e.target.value)}>
+        ? <><form onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="add-proposed-father"><b>Add Proposed Father</b></label>
+            <br />
+            <select name="add-proposed-father" value={selectedProposeFather} onChange={(e) => setSelectedProposeFather(e.target.value)}>
                 <option value="">--</option>
                 {proposedFatherContent}
             </select>
             <br />
             <br />
             <button
-                className="black-button"
+                title="Add Proposed Father"
+                className="black-button three-hundred"
                 style={!selectedProposeFather?.length ? {backgroundColor: "grey", cursor: "default"} : null}
                 disabled={!selectedProposeFather?.length}
                 onClick={addProposedFatherToLitter}
@@ -389,20 +397,22 @@ const LitterPage = () => {
             </button>
             <br />
             <br />
-        </>
+        </form></>
         : null
 
     const addProposedPuppyContent = proposedPuppyContent?.length && (litter?.children > filteredDogs?.length || !filteredDogs?.length)
-        ? <>
-            <p><b>Add Proposed Puppy</b></p>
-            <select value={selectedProposePuppy} onChange={(e) => setSelectedProposePuppy(e.target.value)}>
+        ? <><form onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="add-proposed-puppy"><b>Add Proposed Puppy</b></label>
+            <br />
+            <select name="add-proposed-puppy" value={selectedProposePuppy} onChange={(e) => setSelectedProposePuppy(e.target.value)}>
                 <option value="">--</option>
                 {proposedPuppyContent}
             </select>
             <br />
             <br />
             <button
-                className="black-button"
+                title="Add Proposed Puppy"
+                className="black-button three-hundred"
                 style={!selectedProposePuppy?.length ? {backgroundColor: "grey", cursor: "default"} : null}
                 disabled={!selectedProposePuppy?.length}
                 onClick={addProposedPuppyToLitter}
@@ -411,19 +421,22 @@ const LitterPage = () => {
             </button>
             <br />
             <br />
-        </>
+        </form></>
         : null
 
     const addPuppyContent = filteredUserDogs?.length && (litter?.children > filteredDogs?.length || !filteredDogs?.length)
-        ? <><p><b>{userId === mother?.user ? 'Add ' : 'Propose '}Puppy to Litter</b></p>
-            <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
+        ? <><form onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="pick-dog"><b>{userId === mother?.user ? 'Add ' : 'Propose '}Puppy to Litter</b></label>
+            <br />
+            <select name="pick-dog" value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
                 <option value="">Pick Your Dog</option>
                 {optionsContent}
             </select>
             <br />
             <br />
             <button
-                className="black-button"
+                title={userId === mother?.user ? 'Add Dog' : 'Propose Dog'}
+                className="black-button three-hundred"
                 disabled={selectedDog?.length ? false : true}
                 style={selectedDog?.length ? null : {backgroundColor: "grey", cursor: "default"}}
                 onClick={userId === mother?.user ? () => addToLitter() : proposePuppyToLitter}
@@ -432,12 +445,13 @@ const LitterPage = () => {
             </button>
             <br />
             <br />
-            </>
+        </form></>
         : null
 
     const deleteFatherContent = father?.id?.length && (userId === mother?.user || userId === father?.user)
         ? <><button
-            className="black-button"
+            title="Remove Father from Litter"
+            className="black-button three-hundred"
             onClick={handleRemoveFather}
         >
             Remove Father

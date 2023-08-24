@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { useGetUsersQuery, useUpdateUserMutation } from "./usersApiSlice"
 import { useGetDogsQuery, useUpdateDogMutation } from "../dogs/dogsApiSlice"
@@ -6,8 +6,12 @@ import { useGetConversationsQuery, useAddNewConversationMutation } from "../conv
 import { useGetDogProposesQuery, useAddNewDogProposeMutation, useDeleteDogProposeMutation } from "../dogs/proposeDogApiSlice"
 import { useGetFatherProposesQuery, useDeleteFatherProposeMutation } from "../litters/fatherProposesApiSlice"
 import { useGetPuppyProposesQuery, useDeletePuppyProposeMutation } from "../litters/puppyProposesApiSlice"
-import { useState } from "react"
+import { useGetAdvertisementsQuery } from "../advertisements/advertisementsApiSlice"
+import { useState, useEffect } from "react"
 import UserDog from "../dogs/UserDog"
+import UserAdvertisement from "../advertisements/UserAdvertisement"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 
 const UserPage = () => {
 
@@ -18,6 +22,29 @@ const UserPage = () => {
 
     const [selectedProposeDog, setSelectedProposeDog] = useState('')
     const [selectedAcceptDog, setSelectedAcceptDog] = useState('')
+
+    const [currentAdvertisementPage, setCurrentAdvertisementPage] = useState(1)
+    const [newAdvertisementPage, setNewAdvertisementPage] = useState('')
+
+    const [currentDogPage, setCurrentDogPage] = useState(1)
+    const [newDogPage, setNewDogPage] = useState('')
+
+    // State for checking how wide is the user's screen
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+    // Function for handling the resizing of screen
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth)
+    }
+
+    // Always check if a window is being resized
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     // User whose page we're on
     const { id } = useParams()
@@ -91,6 +118,19 @@ const UserPage = () => {
         refetchOnMountOrArgChange: true
     })
 
+    // GET all advertisements made by the user
+    const {
+        data: advertisements,
+        isLoading: isAdvertisementLoading,
+        isSuccess: isAdvertisementSuccess,
+        isError: isAdvertisementError,
+        error: advertisementError
+    } = useGetAdvertisementsQuery('advertisementsList', {
+        pollingInterval: 75000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
+
     // GET all dog proposals
     const {
         data: dogproposes,
@@ -130,10 +170,19 @@ const UserPage = () => {
         refetchOnMountOrArgChange: true
     })
 
+    // Reset pages when going directly from one user's page to another user's page
+    useEffect(() => {
+        setCurrentAdvertisementPage(1)
+        setNewAdvertisementPage('')
+        setCurrentDogPage(1)
+        setNewDogPage('')
+    }, [user])
+
     // Variable for either an error or content after fetching the user's dogs
-    let dogContent
     let proposeDogContent
     let myProposalsContent
+    let dogPaginationContent
+    let finalAdvertisementsContent
 
     // Variable to store the ID of the conversation between the two users
     let filteredConversation
@@ -167,20 +216,21 @@ const UserPage = () => {
     if (isLoading || isConversationLoading || isDogProposeLoading || isPuppyProposeLoading 
         || isFatherProposeLoading || isUpdateDogLoading || isUpdateLoading || isLoadingDeleteDogPropose 
         || isLoadingDeleteFatherPropose || isLoadingDeletePuppyPropose || isLoadingNewConversation 
-        || isLoadingNewDogPropose) dogContent = <p>Loading...</p>
+        || isLoadingNewDogPropose || isAdvertisementLoading) finalAdvertisementsContent = <p>Loading...</p>
     
-    if (isError) dogContent = <p>{error?.data?.message}</p>
-    if (isPuppyProposeError) dogContent = <p>{puppyProposeError?.data?.message}</p>
-    if (isFatherProposeError) dogContent = <p>{fatherProposeError?.data?.message}</p>
-    if (isConversationError) dogContent = <p>{conversationError?.data?.message}</p>
-    if (isDogProposeError) dogContent = <p>{dogProposeError?.data?.message}</p>
-    if (isUpdateDogError) dogContent = <p>{updateDogError?.data?.message}</p>
-    if (isUpdateError) dogContent = <p>{updateError?.data?.message}</p>
-    if (isErrorDeleteDogPropose) dogContent = <p>{errorDeleteDogPropose?.data?.message}</p>
-    if (isErrorDeletePuppyPropose) dogContent = <p>{errorDeletePuppyPropose?.data?.message}</p>
-    if (isErrorDeleteFatherPropose) dogContent = <p>{errorDeleteFatherPropose?.data?.message}</p>
-    if (isErrorNewDogPropose) dogContent = <p>{errorNewDogPropose?.data?.message}</p>
-    if (isErrorNewConversation) dogContent = <p>{errorNewConversation?.data?.message}</p>
+    if (isError) finalAdvertisementsContent = <p>{error?.data?.message}</p>
+    if (isPuppyProposeError) finalAdvertisementsContent = <p>{puppyProposeError?.data?.message}</p>
+    if (isFatherProposeError) finalAdvertisementsContent = <p>{fatherProposeError?.data?.message}</p>
+    if (isConversationError) finalAdvertisementsContent = <p>{conversationError?.data?.message}</p>
+    if (isDogProposeError) finalAdvertisementsContent = <p>{dogProposeError?.data?.message}</p>
+    if (isUpdateDogError) finalAdvertisementsContent = <p>{updateDogError?.data?.message}</p>
+    if (isUpdateError) finalAdvertisementsContent = <p>{updateError?.data?.message}</p>
+    if (isErrorDeleteDogPropose) finalAdvertisementsContent = <p>{errorDeleteDogPropose?.data?.message}</p>
+    if (isErrorDeletePuppyPropose) finalAdvertisementsContent = <p>{errorDeletePuppyPropose?.data?.message}</p>
+    if (isErrorDeleteFatherPropose) finalAdvertisementsContent = <p>{errorDeleteFatherPropose?.data?.message}</p>
+    if (isErrorNewDogPropose) finalAdvertisementsContent = <p>{errorNewDogPropose?.data?.message}</p>
+    if (isErrorNewConversation) finalAdvertisementsContent = <p>{errorNewConversation?.data?.message}</p>
+    if (isAdvertisementError) finalAdvertisementsContent = <p>{advertisementError?.data?.message}</p>
 
     const handleProposeDog = async () => {
         await addNewDogPropose({ "dog": selectedProposeDog, "user": user?.id })
@@ -192,9 +242,6 @@ const UserPage = () => {
         setSelectedAcceptDog('')
     }
 
-    // Variable for storing all dogs that belong to the user
-    let filteredDogs
-
     // Variable for storing all dogs that belong to the logged in user
     let filteredProposeDogs = []
 
@@ -205,15 +252,19 @@ const UserPage = () => {
 
     let deleteProposalsContent
     
-    if (isSuccess && isDogProposeSuccess && isFatherProposeSuccess && isPuppyProposeSuccess) {
+    if (isSuccess && isDogProposeSuccess && isFatherProposeSuccess && isPuppyProposeSuccess && isAdvertisementSuccess) {
         const { ids, entities } = dogs
 
         const { ids: proposeIds, entities: proposeEntities } = dogproposes
         const { ids: fatherProposeIds, entities: fatherProposeEntities } = fatherproposes
         const { ids: puppyProposeIds, entities: puppyProposeEntities } = puppyproposes
+        const { ids: advertisementIds, entities: advertisementEntities } = advertisements
 
         // All IDs of Dog Proposes that were made to the user whose page we're on
         const filteredProposeIds = proposeIds?.filter(proposeId => proposeEntities[proposeId]?.user === user?.id)
+
+        // All Advertisement objects of advertisements that were made by the user whose page we're on
+        const filteredAdvertisementIds = advertisementIds?.filter(advertisementId => advertisementEntities[advertisementId]?.poster === user?.id)
 
         // All IDs of Dog Proposes that were made to the user that's logged in
         const filteredMyProposeIds = userId !== user?.id 
@@ -252,7 +303,8 @@ const UserPage = () => {
         if (filteredMadeDogProposes?.length || filteredMadeFatherProposes?.length || filteredMadePuppyProposes?.length) {
             const madeDogProposesContent = filteredMadeDogProposes?.length
                 ? <><button 
-                    className="black-button" 
+                    title="Delete Dog Transfer Proposals Made by Me"
+                    className="black-button three-hundred" 
                     onClick={() => filteredMadeDogProposes?.forEach((proposal) => {
                         handleDeleteDogProposal(proposal)
                     })}
@@ -266,7 +318,8 @@ const UserPage = () => {
 
             const madeFatherProposesContent = filteredMadeFatherProposes?.length
                 ? <><button 
-                    className="black-button" 
+                    title="Delete Father Proposals Made by Me"
+                    className="black-button three-hundred" 
                     onClick={() => filteredMadeFatherProposes?.forEach((proposal) => {
                         handleDeleteFatherProposal(proposal)
                     })}
@@ -280,7 +333,8 @@ const UserPage = () => {
 
             const madePuppyProposesContent = filteredMadePuppyProposes?.length
                 ? <><button 
-                    className="black-button" 
+                    title="Delete Puppy Proposals Made by Me"
+                    className="black-button three-hundred" 
                     onClick={() => filteredMadePuppyProposes?.forEach((proposal) => {
                         handleDeletePuppyProposal(proposal)
                     })}
@@ -305,11 +359,6 @@ const UserPage = () => {
             ? ids?.filter(dogId => entities[dogId]?.user === userId)
             : null
 
-        // Assign filteredDogs an array of Dog Objects that the user whose page we're on, owns
-        if (filteredIds?.length) {
-            filteredDogs = filteredIds.map(dogId => entities[dogId])
-        }
-
         // If there are Dog Proposes made to the user that's logged in
         // And there are Dogs that the user whose page we're on, owns
         // Fill myProposals array with dogs 
@@ -333,34 +382,32 @@ const UserPage = () => {
             }
         })
 
-        if (filteredDogs?.length) {
-            dogContent = filteredDogs.map(dog => (
-                <UserDog key={dog?.id} dogId={dog?.id} />
-            ))
-        }
-
         if (filteredProposeDogs?.length) {
             const proposeDogs = filteredProposeDogs?.map(dog => <option value={dog?.id} key={dog?.id}>{dog?.name}</option>)
 
             proposeDogContent = proposeDogs?.length
                 ? <>
-                    <p><b>Transfer Dog to {user?.username}</b></p>
-                    <select value={selectedProposeDog} onChange={(e) => setSelectedProposeDog(e.target.value)}>
-                        <option value="">--</option>
-                        {proposeDogs}
-                    </select>
-                    <br />
-                    <br />
-                    <button
-                        className="black-button"
-                        disabled={!selectedProposeDog?.length}
-                        style={!selectedProposeDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
-                        onClick={handleProposeDog}
-                    >
-                        Propose Transfer
-                    </button>
-                    <br />
-                    <br />
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <label htmlFor="transfer-selected-dog"><b>Transfer Dog to {user?.username}</b></label>
+                        <br />
+                        <select name="transfer-selected-dog" value={selectedProposeDog} onChange={(e) => setSelectedProposeDog(e.target.value)}>
+                            <option value="">--</option>
+                            {proposeDogs}
+                        </select>
+                        <br />
+                        <br />
+                        <button 
+                            title="Propose Transferring Selected Dog to User"
+                            className="black-button three-hundred"
+                            disabled={!selectedProposeDog?.length}
+                            style={!selectedProposeDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                            onClick={handleProposeDog}
+                        >
+                            Propose Transfer
+                        </button>
+                        <br />
+                        <br />
+                    </form>
                 </>
                 : null
         }
@@ -370,26 +417,217 @@ const UserPage = () => {
 
             myProposalsContent = acceptDogs?.length 
                 ? <>
-                    <p><b>Accept Dog{myProposals?.length > 1 ? 's' : null} Offered by {user?.username}</b></p>
-                    <select value={selectedAcceptDog} onChange={(e) => setSelectedAcceptDog(e.target.value)}>
-                        <option value="">--</option>
-                        {acceptDogs}
-                    </select>
-                    <br />
-                    <br />
-                    <button
-                        className="black-button"
-                        disabled={!selectedAcceptDog?.length}
-                        style={!selectedAcceptDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
-                        onClick={handleAcceptDog}
-                    >
-                        Accept Dog
-                    </button>
-                    <br />
-                    <br />
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <label htmlFor="accept-selected-dog"><b>Accept Dog{myProposals?.length > 1 ? 's' : null} Offered by {user?.username}</b></label>
+                        <br />
+                        <select name="accept-selected-dog" value={selectedAcceptDog} onChange={(e) => setSelectedAcceptDog(e.target.value)}>
+                            <option value="">--</option>
+                            {acceptDogs}
+                        </select>
+                        <br />
+                        <br />
+                        <button
+                            title="Accept Ownership of Selected Dog's Account"
+                            className="black-button three-hundred"
+                            disabled={!selectedAcceptDog?.length}
+                            style={!selectedAcceptDog?.length ? {backgroundColor: "grey", cursor: "default"} : null}
+                            onClick={handleAcceptDog}
+                        >
+                            Accept Dog
+                        </button>
+                        <br />
+                        <br />
+                    </form>
                 </>
                 : null
         }
+
+        // Pagination for the user's advertisements
+        const itemsPerAdvertisementPage = 5
+
+        const maxAdvertisementPage = Math.ceil(filteredAdvertisementIds?.length ? filteredAdvertisementIds?.length / itemsPerAdvertisementPage : 1)
+
+        const startAdvertisementIndex = (currentAdvertisementPage - 1) * itemsPerAdvertisementPage
+        const endAdvertisementIndex = startAdvertisementIndex + itemsPerAdvertisementPage
+
+        // Advertisements to display on the current page
+        const advertisementsToDisplay = filteredAdvertisementIds?.length
+        ? filteredAdvertisementIds.slice(startAdvertisementIndex, endAdvertisementIndex)
+        : null
+
+        const goToAdvertisementPageButtonDisabled = newAdvertisementPage < 1 
+            || newAdvertisementPage > maxAdvertisementPage || parseInt(newAdvertisementPage) === currentAdvertisementPage
+
+        // Advertisement component for each advertisement
+        const tableAdvertisementContent = advertisementsToDisplay?.map(advertisementId => (
+            <UserAdvertisement key={advertisementId} advertisementId={advertisementId} />
+        ))
+
+        finalAdvertisementsContent = !filteredAdvertisementIds?.length ? null : <>
+            {userId === user?.id || !userId ? null : <><br /><br /></>}
+            <p><b>{filteredAdvertisementIds?.length} Active Advertisement{filteredAdvertisementIds?.length === 1 ? null : 's'}</b></p>
+            <br />
+            <p>
+            <button 
+                title="Go to Previous Advertisements Page"
+                style={currentAdvertisementPage === 1 ? {display: "none"} : null}
+                disabled={currentAdvertisementPage === 1}
+                className="pagination-button"
+                onClick={() => {
+                setCurrentAdvertisementPage(currentAdvertisementPage - 1)
+                }}
+            >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+            </button>
+
+            {` Page ${currentAdvertisementPage} of ${maxAdvertisementPage} `}
+
+            <button 
+                title="Go to Next Advertisement Page"
+                className="pagination-button"
+                style={currentAdvertisementPage === maxAdvertisementPage ? {display: "none"} : null}
+                disabled={currentAdvertisementPage === maxAdvertisementPage}
+                onClick={() => {
+                setCurrentAdvertisementPage(currentAdvertisementPage + 1)
+                }}
+            >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+            </button>
+
+            {windowWidth > 600 || maxAdvertisementPage === 1 ? null : <><br /><br /></>}
+
+            <span 
+                className="new-page-input-span"
+                style={maxAdvertisementPage === 1 
+                ? {display: "none"}
+                : windowWidth > 600 
+                    ? null 
+                    : {float: "none"}
+                }
+            >
+                <label htmlFor="new-advertisement-page-input" className="off-screen">Advertisements Page Number</label>
+                <input 
+                    name="new-advertisement-page-input"
+                    onChange={(e) => setNewAdvertisementPage(e.target.value)} 
+                    value={newAdvertisementPage} 
+                    type="number" 
+                    className="new-page-input"
+                    placeholder="Page no."
+                />
+                <button
+                    title="Go to the Specified Advertisements Page"
+                    style={goToAdvertisementPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+                    disabled={goToAdvertisementPageButtonDisabled}
+                    onClick={() => {
+                        if (newAdvertisementPage >= 1 && newAdvertisementPage <= maxAdvertisementPage) {
+                            setCurrentAdvertisementPage(parseInt(newAdvertisementPage))
+                        }
+                    }}
+                    className="black-button"
+                >
+                    Go to Page
+                </button>
+            </span>
+
+            </p>
+
+            <br />
+            {tableAdvertisementContent}
+            <br />
+        </>
+
+
+        // Pagination for the user's dogs
+        const itemsPerDogPage = 5
+
+        const maxDogPage = Math.ceil(filteredIds?.length ? filteredIds?.length / itemsPerDogPage : 1)
+
+        const startDogIndex = (currentDogPage - 1) * itemsPerDogPage
+        const endDogIndex = startDogIndex + itemsPerDogPage
+
+        // Dogs to display on the current page
+        const dogsToDisplay = filteredIds?.length
+        ? filteredIds.slice(startDogIndex, endDogIndex)
+        : null
+
+        const goToDogPageButtonDisabled = newDogPage < 1 
+            || newDogPage > maxDogPage || parseInt(newDogPage) === currentDogPage
+
+        // Dog component for each dog
+        const tableDogContent = dogsToDisplay?.map(dogId => (
+            <UserDog key={dogId} dogId={dogId} />
+        ))
+
+        dogPaginationContent = !filteredIds?.length ? null : <>
+            <p><b>{filteredIds?.length} Dog{filteredIds?.length === 1 ? null : 's'} Administered</b></p><br />
+            <p>
+            <button 
+                title="Go to Previous Dogs Page"
+                style={currentDogPage === 1 ? {display: "none"} : null}
+                disabled={currentDogPage === 1}
+                className="pagination-button"
+                onClick={() => {
+                setCurrentDogPage(currentDogPage - 1)
+                }}
+            >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
+            </button>
+
+            {` Page ${currentDogPage} of ${maxDogPage} `}
+
+            <button 
+                title="Go to Next Dog Page"
+                className="pagination-button"
+                style={currentDogPage === maxDogPage ? {display: "none"} : null}
+                disabled={currentDogPage === maxDogPage}
+                onClick={() => {
+                setCurrentDogPage(currentDogPage + 1)
+                }}
+            >
+                <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
+            </button>
+
+            {windowWidth > 600 || maxDogPage === 1 ? null : <><br /><br /></>}
+
+            <span 
+                className="new-page-input-span"
+                style={maxDogPage === 1 
+                ? {display: "none"}
+                : windowWidth > 600 
+                    ? null 
+                    : {float: "none"}
+                }
+            >
+                <label htmlFor="new-dog-page-input" className="off-screen">Dogs Page Number</label>
+                <input 
+                    name="new-dog-page-input"
+                    onChange={(e) => setNewDogPage(e.target.value)} 
+                    value={newDogPage} 
+                    type="number" 
+                    className="new-page-input"
+                    placeholder="Page no."
+                />
+                <button
+                    title="Go to the Specified Dogs Page"
+                    style={goToDogPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
+                    disabled={goToDogPageButtonDisabled}
+                    onClick={() => {
+                        if (newDogPage >= 1 && newDogPage <= maxDogPage) {
+                            setCurrentDogPage(parseInt(newDogPage))
+                        }
+                    }}
+                    className="black-button"
+                >
+                    Go to Page
+                </button>
+            </span>
+
+            </p>
+
+            <br />
+            {tableDogContent}
+            <br />
+        </>
     }
 
     if (!user) return <p>User not found</p>
@@ -434,6 +672,7 @@ const UserPage = () => {
                 {user?.username}
                 {userId === id 
                     ? <button
+                        title="Edit Profile"
                         className="user-page-edit-button black-button"
                         onClick={handleEdit}
                     >
@@ -443,6 +682,7 @@ const UserPage = () => {
                 }
                 {userId?.length && userId !== id 
                     ? <button
+                        title="Message User"
                         className="user-page-edit-button black-button"
                         onClick={handleMessage}
                     >
@@ -460,13 +700,13 @@ const UserPage = () => {
             <p><b>From </b>{user?.region && user?.region !== 'none ' ? `${user?.region}, ` : null}{user?.country}</p>
             <br />
             {user?.bio?.length ? <><p><b>Bio</b></p><p>{user.bio}</p><br /></> : null}
-            {filteredDogs?.length ? <><p><b>Dogs Administered</b></p><br />{dogContent}<br /></> : null}
             {proposeDogContent}
             {myProposalsContent}
             {deleteProposalsContent}
             {userId?.length && id !== userId
                 ? <button 
-                    className="black-button"
+                    title="Report User"
+                    className="black-button three-hundred"
                     onClick={() => navigate(`/reportuser/${id}`)}
                 >
                     Report User
@@ -475,16 +715,18 @@ const UserPage = () => {
             }
             {(isAdmin || isSuperAdmin) && !user?.roles?.includes("Admin", "SuperAdmin") && id !== userId
                 ? user?.active
-                    ? <><br /><br /><button className="black-button" onClick={handleBanUser}>Ban User</button></>
-                    : <><br /><br /><button className="black-button" onClick={handleUnbanUser}>Unban User</button></>
+                    ? <><br /><br /><button title="Ban User" className="black-button three-hundred" onClick={handleBanUser}>Ban User</button></>
+                    : <><br /><br /><button title="Unban User" className="black-button three-hundred" onClick={handleUnbanUser}>Unban User</button></>
                 : null
             }
             {isSuperAdmin && !user?.roles?.includes("SuperAdmin") && id !== userId
                 ? !user?.roles?.includes("Admin")
-                    ? <><br /><br /><button className="black-button" onClick={handleMakeAdmin}>Make Admin</button></>
-                    : <><br /><br /><button className="black-button" onClick={handleRemoveAdmin}>Remove Admin</button></>
+                    ? <><br /><br /><button title="Make Admin" className="black-button three-hundred" onClick={handleMakeAdmin}>Make Admin</button></>
+                    : <><br /><br /><button title="Remove Admin" className="black-button three-hundred" onClick={handleRemoveAdmin}>Remove Admin</button></>
                 : null
             }
+            {finalAdvertisementsContent}
+            {dogPaginationContent}
         </>
     )
 

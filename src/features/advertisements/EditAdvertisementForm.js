@@ -129,6 +129,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text" 
                     id="title"
                     name="title"
@@ -137,10 +138,9 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <br />
-                <br />
 
-                <span className="label-file-input" onClick={handleFileClicked} htmlFor="advertisement-image">
-                    <b>Browse Picture</b> <FontAwesomeIcon icon={faUpload} />
+                <span className="top-spacer label-file-input" onClick={handleFileClicked} htmlFor="advertisement-image">
+                    <b>Browse Picture</b><label className="off-screen" htmlFor="advertisement-image">Browse Picture</label> <FontAwesomeIcon icon={faUpload} />
                     <input
                         id="file"
                         type="file"
@@ -153,7 +153,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 <br />
 
                 <button 
-                    className="black-button" 
+                    className="black-button three-hundred" 
                     onClick={handleSubmitFile}
                     disabled={!previewSource || uploadLoading === true}
                     style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
@@ -165,20 +165,18 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
                 {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
 
-                <br />
-
                 {previewSource && <>
                     <img height="300px" width="300px" src={previewSource} alt="chosen" />
-                    <br />
                     <br />
                 </>}
 
                 {advertisement?.type !== 'Found' && advertisement?.type !== 'Lost'
-                    ? <><label htmlFor="price">
+                    ? <><label className="top-spacer" htmlFor="price">
                         <b>Price</b>
                         </label>
                         <br />
                         <input 
+                            className="three-hundred"
                             type="text" 
                             id="price"
                             name="price"
@@ -192,7 +190,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                         />
                         <br />
 
-                        <label htmlFor="currency">
+                        <label className="top-spacer" htmlFor="currency">
                             <b>Currency</b>
                         </label>
                         <br />
@@ -204,16 +202,16 @@ const EditAdvertisementForm = ({ advertisement }) => {
                         >
                             {Currencies}
                         </select>
-                        <br />
                         <br /></>
                     : <br />
                 }
 
-                <label htmlFor="info">
+                <label className="top-spacer" htmlFor="info">
                     <b>Info</b>
                 </label>
                 <br />
                 <textarea 
+                    className="three-hundred"
                     id="info"
                     name="info"
                     cols="30"
@@ -226,16 +224,18 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 <div className="advertisement-edit-page-buttons-div">
                         <button
                             title="Save"
-                            className="edit-advertisement-save-button black-button"
+                            className="black-button three-hundred"
                             onClick={handleSaveAdvertisementClicked}
                             disabled={!canSave}
                             style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                         >
                             Save
                         </button>
+                        <br />
+                        <br />
                         <button
                             title="Delete"
-                            className="edit-advertisement-delete-button black-button"
+                            className="black-button three-hundred"
                             onClick={() => setDeletionVisible(!deletionVisible)}
                         >
                             Delete
@@ -248,11 +248,11 @@ const EditAdvertisementForm = ({ advertisement }) => {
                                 <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your advertisement from the database.</b>
                             </label>
                             <br />
-                            <input name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                            <input className="three-hundred" name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
                             <br />
                             <br />
                             <button
-                                className="black-button"
+                                className="black-button three-hundred"
                                 title="confirm-delete"
                                 disabled={confirmDelete !== 'confirmdelete'}
                                 style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}

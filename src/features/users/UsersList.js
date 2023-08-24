@@ -107,7 +107,7 @@ const UsersList = () => {
       return user._id
     })
 
-    const itemsPerPage = 50
+    const itemsPerPage = 20
 
     const maxPage = Math.ceil(filteredIds?.length ? filteredIds?.length / itemsPerPage : reversedNewIds?.length / itemsPerPage)
 
@@ -132,7 +132,7 @@ const UsersList = () => {
       <>
         <button
           title="Toggle Search View"
-          className="black-button"
+          className="black-button three-hundred"
           onClick={handleToggleFilterView}
         >
           Toggle Search View
@@ -146,6 +146,7 @@ const UsersList = () => {
             <label htmlFor="user-username-search-input"><b>Username</b></label>
             <br />
             <input 
+              className="three-hundred"
               type="text"
               value={username}
               name="user-username-search-input" 
@@ -155,7 +156,7 @@ const UsersList = () => {
 
             <br />
 
-            <label htmlFor="user-country"><b>Country</b></label>
+            <label className="top-spacer" htmlFor="user-country"><b>Country</b></label>
             <br />
             <select 
               value={country}
@@ -168,7 +169,7 @@ const UsersList = () => {
             </select>
             <br />
             
-            <label htmlFor="user-region"><b>Region</b></label>
+            <label className="top-spacer" htmlFor="user-region"><b>Region</b></label>
             <br />
             <select 
               disabled={!bigCountries.includes(country)}
@@ -189,7 +190,7 @@ const UsersList = () => {
             <button 
               title="Search"
               onClick={handleSearchClicked}
-              className="black-button search-button"
+              className="black-button search-button three-hundred"
             >
               Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
             </button>

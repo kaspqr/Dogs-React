@@ -198,12 +198,14 @@ const EditDogForm = ({ dog }) => {
     const removeLitterContent = dog?.litter?.length && dog?.litter !== 'none '
         ? <>
             <button
-                className="edit-dog-delete-button black-button"
+                className="three-hundred black-button"
                 title="Remove Litter"
                 onClick={handleRemoveLitter}
             >
                 Remove Litter
             </button>
+            <br />
+            <br />
         </>
         : null
 
@@ -222,6 +224,7 @@ const EditDogForm = ({ dog }) => {
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     name="name" 
                     id="name"
                     maxLength="30"
@@ -229,9 +232,8 @@ const EditDogForm = ({ dog }) => {
                     onChange={(e) => setName(e.target.value)}
                 />
                 <br />
-                <br />
 
-                <span className="label-file-input" onClick={handleFileClicked} htmlFor="dog-image">
+                <span className="top-spacer label-file-input" onClick={handleFileClicked} htmlFor="dog-image">
                     <b>Browse Profile Picture</b><label htmlFor="dog-image" className="off-screen">Browse Profile Picture</label> <FontAwesomeIcon icon={faUpload} />
                     <input
                         id="file"
@@ -246,7 +248,7 @@ const EditDogForm = ({ dog }) => {
 
                 <button 
                     title="Update Dog Profile Picture"
-                    className="black-button" 
+                    className="black-button three-hundred" 
                     onClick={handleSubmitFile}
                     disabled={!previewSource || uploadLoading === true}
                     style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
@@ -258,14 +260,12 @@ const EditDogForm = ({ dog }) => {
                 {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
                 {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
 
-                <br />
-
                 {previewSource && <>
-                    <img className="dog-profile-picture" height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <img className="dog-profile-picture top-spacer" height="300px" width="300px" src={previewSource} alt="chosen" />
                     <br />
                 </>}
 
-                <label htmlFor="country">
+                <label className="top-spacer" htmlFor="country">
                     <b>Country</b>
                 </label>
                 <br />
@@ -279,7 +279,7 @@ const EditDogForm = ({ dog }) => {
                 </select>
                 <br />
 
-                <label htmlFor="region">
+                <label className="top-spacer" htmlFor="region">
                     <b>Region</b>
                 </label>
                 <br />
@@ -295,7 +295,7 @@ const EditDogForm = ({ dog }) => {
                 </select>
                 <br />
 
-                <label htmlFor="passport" className="switch">
+                <label htmlFor="passport" className="top-spacer">
                     <b>Passport </b>
                     <FontAwesomeIcon name="passport" onClick={handlePassportChanged} size="xl" icon={passport ? faToggleOn : faToggleOff} color={passport ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
@@ -303,7 +303,7 @@ const EditDogForm = ({ dog }) => {
 
                 {dog?.female === false
                     ? null
-                    : <><label htmlFor="heat">
+                    : <><label className="top-spacer" htmlFor="heat">
                             <b>Heat </b>
                             <FontAwesomeIcon name="heat" onClick={handleHeatChanged} size="xl" icon={heat ? faToggleOn : faToggleOff} color={heat ? 'rgb(23, 152, 207)' : 'grey'} />
                         </label>
@@ -311,23 +311,24 @@ const EditDogForm = ({ dog }) => {
                 }
 
 
-                <label htmlFor="sterilized">
+                <label className="top-spacer" htmlFor="sterilized">
                     <b>{dog?.female === true ? 'Sterilized ' : 'Castrated '}</b>
                     <FontAwesomeIcon name="sterilized" onClick={handleSterilizedChanged} size="xl" icon={sterilized ? faToggleOn : faToggleOff} color={sterilized ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
-                <label htmlFor="microchipped">
+                <label className="top-spacer" htmlFor="microchipped">
                     <b>Microchipped </b>
                     <FontAwesomeIcon name="microchipped" onClick={handleMicrochippedChanged} size="xl" icon={microchipped ? faToggleOn : faToggleOff} color={microchipped ? 'rgb(23, 152, 207)' : 'grey'} />
                 </label>
                 <br />
 
-                <label htmlFor="chipnumber">
+                <label className="top-spacer" htmlFor="chipnumber">
                     <b>Chipnumber</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     disabled={microchipped === false}
                     type="text" 
                     id="chipnumber"
@@ -337,11 +338,12 @@ const EditDogForm = ({ dog }) => {
                 />
                 <br />
                 
-                <label htmlFor="instagram">
+                <label className="top-spacer" htmlFor="instagram">
                     <b>Instagram Username</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text"
                     id="instagram"
                     name="instagram"
@@ -350,11 +352,12 @@ const EditDogForm = ({ dog }) => {
                 />
                 <br />
                 
-                <label htmlFor="facebook">
+                <label className="top-spacer" htmlFor="facebook">
                     <b>Facebook Username</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text"
                     id="facebook"
                     name="facebook"
@@ -363,11 +366,12 @@ const EditDogForm = ({ dog }) => {
                 />
                 <br />
                 
-                <label htmlFor="youtube">
+                <label className="top-spacer" htmlFor="youtube">
                     <b>YouTube Username</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text"
                     id="youtube"
                     name="youtube"
@@ -376,11 +380,12 @@ const EditDogForm = ({ dog }) => {
                 />
                 <br />
                 
-                <label htmlFor="tiktok">
+                <label className="top-spacer" htmlFor="tiktok">
                     <b>TikTok Username</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text"
                     id="tiktok"
                     name="tiktok"
@@ -388,9 +393,8 @@ const EditDogForm = ({ dog }) => {
                     onChange={handleTiktokChanged}
                 />
                 <br />
-                <br />
 
-                <label htmlFor="death">
+                <label className="top-spacer" htmlFor="death">
                     <b>Date of Death</b>
                 </label>
                 <br />
@@ -404,13 +408,13 @@ const EditDogForm = ({ dog }) => {
                     Clear date
                 </button>
                 <br />
-                <br />
 
-                <label htmlFor="info">
+                <label className="top-spacer" htmlFor="info">
                     <b>Info</b>
                 </label>
                 <br />
                 <textarea 
+                    className="three-hundred"
                     rows="10"
                     cols="30"
                     id="info"
@@ -423,7 +427,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 <div>
                     <button
-                        className="black-button"
+                        className="black-button three-hundred"
                         title="Save"
                         onClick={handleSaveDogClicked}
                         disabled={!canSave}
@@ -431,9 +435,11 @@ const EditDogForm = ({ dog }) => {
                     >
                         Save
                     </button>
+                    <br />
+                    <br />
                     {removeLitterContent}
                     <button
-                        className="edit-dog-delete-button black-button"
+                        className="three-hundred black-button"
                         title="Delete"
                         onClick={() => setDeletionVisible(!deletionVisible)}
                     >
@@ -447,11 +453,11 @@ const EditDogForm = ({ dog }) => {
                             <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your dog from the database.</b>
                         </label>
                         <br />
-                        <input name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                        <input className="three-hundred" name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
                         <br />
                         <br />
                         <button
-                            className="black-button"
+                            className="black-button three-hundred"
                             title="Confirm Delete Dog"
                             disabled={confirmDelete !== 'confirmdelete'}
                             style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}

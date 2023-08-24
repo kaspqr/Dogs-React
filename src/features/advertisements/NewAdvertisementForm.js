@@ -93,6 +93,7 @@ const NewAdvertisementForm = () => {
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text" 
                     id="title"
                     name="title"
@@ -102,7 +103,7 @@ const NewAdvertisementForm = () => {
                 />
                 <br />
 
-                <label htmlFor="type">
+                <label className="top-spacer" htmlFor="type">
                     <b>Type</b>
                 </label>
                 <br />
@@ -116,11 +117,12 @@ const NewAdvertisementForm = () => {
                 </select>
                 <br />
                 
-                <label htmlFor="price">
+                <label className="top-spacer" htmlFor="price">
                     <b>Price</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     type="text" 
                     id="price"
                     name="price"
@@ -134,7 +136,7 @@ const NewAdvertisementForm = () => {
                 />
                 <br />
                 
-                <label htmlFor="currency">
+                <label className="top-spacer" htmlFor="currency">
                     <b>Currency</b>
                 </label>
                 <br />
@@ -150,7 +152,7 @@ const NewAdvertisementForm = () => {
                 </select>
                 <br />
 
-                <label htmlFor="country">
+                <label className="top-spacer" htmlFor="country">
                     <b>Country</b>
                 </label>
                 <br />
@@ -164,7 +166,7 @@ const NewAdvertisementForm = () => {
                 </select>
                 <br />
 
-                <label htmlFor="region">
+                <label className="top-spacer" htmlFor="region">
                     <b>Region</b>
                 </label>
                 <br />
@@ -179,13 +181,13 @@ const NewAdvertisementForm = () => {
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
-                <br />
 
-                <label htmlFor="info">
+                <label className="top-spacer" htmlFor="info">
                     <b>Info</b>
                 </label>
                 <br />
                 <textarea 
+                    className="three-hundred"
                     id="info"
                     name="info"
                     cols="30"
@@ -203,7 +205,7 @@ const NewAdvertisementForm = () => {
                 <div className="advertisement-post-page-buttons-div">
                     <button
                         style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
-                        className="black-button"
+                        className="black-button three-hundred"
                         title="Post"
                         disabled={!canSave}
                     >

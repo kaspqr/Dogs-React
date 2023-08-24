@@ -27,6 +27,7 @@ const AdvertisementsList = () => {
   const [filteredIds, setFilteredIds] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [newPage, setNewPage] = useState('')
+  const [sort, setSort] = useState('')
 
   const currencyDisabled = type === 'Found' || type === 'Lost' || type === ''
 
@@ -70,6 +71,7 @@ const AdvertisementsList = () => {
     if (e.target.value === '') { // Cannot have a price without currency
       setLowestPrice('')
       setHighestPrice('')
+      setSort('')
     }
     setCurrency(e.target.value)
   }
@@ -80,6 +82,7 @@ const AdvertisementsList = () => {
       setCurrency('')
       setLowestPrice('')
       setHighestPrice('')
+      setSort('')
     }
     setType(e.target.value)
   }
@@ -120,7 +123,6 @@ const AdvertisementsList = () => {
 
     const filteredAdsType = type?.length
       ? filteredAdsCountry?.filter((ad) => {
-        console.log(ad.type)
         return ad.type === type
       })
       : filteredAdsCountry
@@ -143,7 +145,13 @@ const AdvertisementsList = () => {
       })
       : filteredAdsLowestPrice
 
-    const finalFilteredAds = filteredAdsHighestPrice
+    const finalFilteredAds = !sort?.length 
+      ? filteredAdsHighestPrice
+      : sort === 'ascending'
+        ? filteredAdsHighestPrice.sort((a, b) => b.price - a.price)
+        : sort === 'descending'
+          ? filteredAdsHighestPrice.sort((a, b) => a.price - b.price)
+          : filteredAdsHighestPrice
 
     if (!finalFilteredAds?.length) alert("Unfortunately, no matching advertisement has been found")
 
@@ -171,7 +179,7 @@ const AdvertisementsList = () => {
       return ad._id
     })
 
-    const itemsPerPage = 50
+    const itemsPerPage = 2
 
     const maxPage = Math.ceil(filteredIds?.length ? filteredIds?.length / itemsPerPage : reversedNewIds?.length / itemsPerPage)
 
@@ -192,14 +200,14 @@ const AdvertisementsList = () => {
 
     content = (
       <>
-        {userId?.length ? <><Link to={'/advertisements/new'}><button className="black-button">Post an Advertisement</button></Link><br /><br /></> : null}
+        {userId?.length ? <><Link to={'/advertisements/new'}><button title="Post an Advertisement" className="black-button three-hundred">Post an Advertisement</button></Link><br /><br /></> : null}
 
         {!reversedNewIds?.length 
           ? <p>There are currently no advertisements</p>
           : <>
               <button
                 title="Toggle Search View"
-                className="black-button"
+                className="black-button three-hundred"
                 onClick={handleToggleFilterView}
               >
                 Toggle Search View
@@ -213,6 +221,7 @@ const AdvertisementsList = () => {
                   <label htmlFor="advertisement-title-search-input"><b>Title</b></label>
                   <br />
                   <input 
+                    className="three-hundred"
                     value={title}
                     name="advertisement-title-search-input" 
                     id="advertisement-title-search-input" 
@@ -220,7 +229,7 @@ const AdvertisementsList = () => {
                   />
                   <br />
                   
-                  <label htmlFor="advertisement-type"><b>Type</b></label>
+                  <label className="top-spacer" htmlFor="advertisement-type"><b>Type</b></label>
                   <br />
                   <select 
                     value={type}
@@ -233,7 +242,7 @@ const AdvertisementsList = () => {
                   </select>
                   <br />
                   
-                  <label htmlFor="advertisement-country"><b>Country</b></label>
+                  <label className="top-spacer" htmlFor="advertisement-country"><b>Country</b></label>
                   <br />
                   <select 
                     value={country}
@@ -246,7 +255,7 @@ const AdvertisementsList = () => {
                   </select>
                   <br />
                   
-                  <label htmlFor="advertisement-region"><b>Region</b></label>
+                  <label className="top-spacer" htmlFor="advertisement-region"><b>Region</b></label>
                   <br />
                   <select 
                     disabled={!bigCountries.includes(country)}
@@ -263,7 +272,7 @@ const AdvertisementsList = () => {
                   </select>
                   <br />
 
-                  <label htmlFor="advertisement-currency"><b>Currency</b></label>
+                  <label className="top-spacer" htmlFor="advertisement-currency"><b>Currency</b></label>
                   <br />
                   <select 
                     value={currency}
@@ -278,9 +287,10 @@ const AdvertisementsList = () => {
 
                   <br />
 
-                  <label htmlFor="advertisement-lowest-price"><b>Lowest Price</b></label>
+                  <label className="top-spacer" htmlFor="advertisement-lowest-price"><b>Lowest Price</b></label>
                   <br />
                   <input 
+                    className="three-hundred"
                     type="text"
                     value={lowestPrice}
                     name="advertisement-lowest-price" 
@@ -295,9 +305,10 @@ const AdvertisementsList = () => {
 
                   <br />
 
-                  <label htmlFor="advertisement-highest-price"><b>Highest Price</b></label>
+                  <label className="top-spacer" htmlFor="advertisement-highest-price"><b>Highest Price</b></label>
                   <br />
                   <input 
+                    className="three-hundred"
                     type="text"
                     value={highestPrice}
                     name="advertisement-highest-price" 
@@ -309,13 +320,29 @@ const AdvertisementsList = () => {
                     }
                     disabled={!currency?.length}
                   />
+
+                  <br />
+
+                  <label className="top-spacer" htmlFor="sort-by-price"><b>Sort by Price</b></label>
+                  <br />
+                  <select 
+                    value={sort}
+                    name="sort-by-price" 
+                    id="sort-by-price"
+                    onChange={(e) => setSort(e.target.value)}
+                    disabled={!currency?.length}
+                  >
+                    <option value="">--</option>
+                    <option value="ascending">Ascending</option>
+                    <option value="descending">Descending</option>
+                  </select>
                 </form>
 
                 <br />
 
                 <button 
                   onClick={handleSearchClicked}
-                  className="black-button search-button"
+                  className="black-button search-button three-hundred"
                   title="Search"
                 >
                   Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />

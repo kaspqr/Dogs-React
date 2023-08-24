@@ -185,7 +185,7 @@ const NewLitterForm = () => {
                 </select>
                 <br />
 
-                <label htmlFor="breed">
+                <label className="top-spacer" htmlFor="breed">
                     <b>Puppies' Breed</b>
                 </label>
                 <br />
@@ -202,11 +202,12 @@ const NewLitterForm = () => {
 
                 <br />
 
-                <label htmlFor="puppies">
+                <label className="top-spacer" htmlFor="puppies">
                     <b>Amount of Puppies Born</b>
                 </label>
                 <br />
                 <input 
+                    className="three-hundred"
                     value={children}
                     onChange={(e) => {
                         if (PUPPIES_REGEX.test(e.target.value) || e.target.value === '') {
@@ -221,7 +222,7 @@ const NewLitterForm = () => {
 
                 <br />
 
-                <label htmlFor="country">
+                <label className="top-spacer" htmlFor="country">
                     <b>Country</b>
                 </label>
                 <br />
@@ -235,7 +236,7 @@ const NewLitterForm = () => {
                 </select>
                 <br />
 
-                <label htmlFor="region">
+                <label className="top-spacer" htmlFor="region">
                     <b>Region</b>
                 </label>
                 <br />
@@ -250,9 +251,8 @@ const NewLitterForm = () => {
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
-                <br />
 
-                <label htmlFor="born">
+                <label className="top-spacer" htmlFor="born">
                     <b>Born</b>
                 </label>
                 <br />
@@ -260,7 +260,7 @@ const NewLitterForm = () => {
                 <br />
                 
                 <button
-                    className="black-button"
+                    className="black-button three-hundred"
                     style={saveColor}
                     title="Save"
                     disabled={!canSave}

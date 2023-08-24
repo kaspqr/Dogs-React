@@ -182,17 +182,18 @@ const LittersList = () => {
 
     if (!reversedNewIds?.length) {
       return <>
-        {userId?.length ? <><Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link><br /><br /></> : null}
+        {userId?.length ? <><Link to={'/litters/new'}><button title="Add a New Litter" className="black-button three-hundred">Add a New Litter</button></Link><br /><br /></> : null}
         <p>There are currently no litters in the database</p>
       </>
     }
 
     content = (
       <>
-        {userId?.length ? <><Link to={'/litters/new'}><button className="black-button">Add a New Litter</button></Link><br /><br /></> : null}
+        {userId?.length ? <><Link to={'/litters/new'}><button title="Add a New Litter" className="black-button three-hundred">Add a New Litter</button></Link><br /><br /></> : null}
         
         <button
-          className="black-button"
+          title="Toggle Search View"
+          className="black-button three-hundred"
           onClick={handleToggleFilterView}
         >
           Toggle Search View
@@ -202,120 +203,134 @@ const LittersList = () => {
         <br />
 
         <div id="litter-filter-div" style={{display: "none"}}>
-          <p><b>Born at Earliest</b></p>
-          <Calendar maxDate={bornLatest || new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
-          <button 
-            className="black-button"
-            disabled={bornEarliest === ''}
-            style={bornEarliest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
-            onClick={() => setBornEarliest('')}
-          >
-            Clear Date
-          </button>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="born-at-earliest"><b>Born at Earliest</b></label>
+            <br />
+            <Calendar name="born-at-earliest" maxDate={bornLatest || new Date()} onChange={handleBornEarliestChanged} value={bornEarliest} />
+            <button 
+              title="Clear Date for Born at Earliest"
+              className="black-button"
+              disabled={bornEarliest === ''}
+              style={bornEarliest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+              onClick={() => setBornEarliest('')}
+            >
+              Clear Date
+            </button>
 
-          <br />
-          <br />
+            <br />
 
-          <p><b>Born at Latest</b></p>
-          <Calendar minDate={bornEarliest || null} maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
-          <button 
-            className="black-button"
-            disabled={bornLatest === ''}
-            style={bornLatest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
-            onClick={() => setBornLatest('')}
-          >
-            Clear Date
-          </button>
+            <label className="top-spacer" htmlFor="born-at-latest"><b>Born at Latest</b></label>
+            <br />
+            <Calendar name="born-at-latest" minDate={bornEarliest || null} maxDate={new Date()} onChange={handleBornLatestChanged} value={bornLatest} />
+            <button 
+              title="Clear Date for Born at Latest"
+              className="black-button"
+              disabled={bornLatest === ''}
+              style={bornLatest === '' ? {backgroundColor: "grey", cursor: "default"} : null}
+              onClick={() => setBornLatest('')}
+            >
+              Clear Date
+            </button>
 
-          <br />
-          <br />
+            <br />
 
-          <p><b>Breed</b></p>
-          <select 
-            onChange={(e) => setBreed(e.target.value)}
-            value={breed}
-            name="dogs-filter-breed-select" 
-            id="dogs-filter-breed-select"
-          >
-            <option value="">--</option>
-            {breedOptions}
-          </select>
+            <label className="top-spacer" htmlFor="dogs-filter-breed-select"><b>Breed</b></label>
+            <br />
+            <select 
+              onChange={(e) => setBreed(e.target.value)}
+              value={breed}
+              name="dogs-filter-breed-select" 
+              id="dogs-filter-breed-select"
+            >
+              <option value="">--</option>
+              {breedOptions}
+            </select>
+            <br />
 
-          <br />
-
-          <p><b>Country</b></p>
-          <select 
-            value={country}
-            name="litter-country" 
-            id="litter-country"
-            onChange={handleCountryChanged}
-          >
-            <option value="">--</option>
-            {Countries}
-          </select>
-          
-          <p><b>Region</b></p>
-          <select 
-            disabled={!bigCountries.includes(country)}
-            value={region}
-            name="litter-region" 
-            id="litter-region"
-            onChange={(e) => setRegion(e.target.value)}
-          >
-            <option value="">--</option>
-            {bigCountries?.includes(country)
-              ? Regions[country]
-              : null
-            }
-          </select>
-
-          <p><b>Lowest Amount of Puppies</b></p>
-          <input 
-            type="text"
-            value={lowestPuppies}
-            name="litter-lowest-puppies-search-input" 
-            id="litter-lowest-puppies-search-input" 
-            onChange={(e) => {
-              if (PUPPIES_AMOUNT_REGEX.test(e.target.value) || e.target.value === '') {
-                setLowestPuppies(e.target.value)}
+            <label className="top-spacer" htmlFor="litter-country"><b>Country</b></label>
+            <br />
+            <select 
+              value={country}
+              name="litter-country" 
+              id="litter-country"
+              onChange={handleCountryChanged}
+            >
+              <option value="">--</option>
+              {Countries}
+            </select>
+            <br />
+            
+            <label className="top-spacer" htmlFor="litter-region"><b>Region</b></label>
+            <br />
+            <select 
+              disabled={!bigCountries.includes(country)}
+              value={region}
+              name="litter-region" 
+              id="litter-region"
+              onChange={(e) => setRegion(e.target.value)}
+            >
+              <option value="">--</option>
+              {bigCountries?.includes(country)
+                ? Regions[country]
+                : null
               }
-            }
-          />
+            </select>
+            <br />
 
-          <br />
-
-          <p><b>Highest Amount of Puppies</b></p>
-          <input 
-            type="text"
-            value={highestPuppies}
-            name="litter-highest-puppies-search-input" 
-            id="litter-highest-puppies-search-input" 
-            onChange={(e) => {
-              if (PUPPIES_AMOUNT_REGEX.test(e.target.value) || e.target.value === '') {
-                setHighestPuppies(e.target.value)}
+            <label className="top-spacer" htmlFor="litter-lowest-puppies-search-input"><b>Lowest Amount of Puppies</b></label>
+            <br />
+            <input 
+              className="three-hundred"
+              type="text"
+              value={lowestPuppies}
+              name="litter-lowest-puppies-search-input" 
+              id="litter-lowest-puppies-search-input" 
+              onChange={(e) => {
+                if (PUPPIES_AMOUNT_REGEX.test(e.target.value) || e.target.value === '') {
+                  setLowestPuppies(e.target.value)}
+                }
               }
-            }
-          />
+            />
 
-          <br />
-          <br />
+            <br />
 
-          <button 
-            onClick={handleSearchClicked}
-            className="black-button search-button"
-            disabled={lowestPuppies?.length && highestPuppies?.length && lowestPuppies > highestPuppies}
-            style={lowestPuppies?.length && highestPuppies?.length 
-              && lowestPuppies > highestPuppies ? {backgroundColor: "grey", cursor: "default"} : null
-            }
-          >
-            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
-          </button>
-          <br />
-          <br />
+            <label className="top-spacer" htmlFor="litter-highest-puppies-search-input"><b>Highest Amount of Puppies</b></label>
+            <br />
+            <input 
+              className="three-hundred"
+              type="text"
+              value={highestPuppies}
+              name="litter-highest-puppies-search-input" 
+              id="litter-highest-puppies-search-input" 
+              onChange={(e) => {
+                if (PUPPIES_AMOUNT_REGEX.test(e.target.value) || e.target.value === '') {
+                  setHighestPuppies(e.target.value)}
+                }
+              }
+            />
+
+            <br />
+            <br />
+
+            <button 
+              title="Search"
+              onClick={handleSearchClicked}
+              className="three-hundred black-button search-button"
+              disabled={lowestPuppies?.length && highestPuppies?.length && lowestPuppies > highestPuppies}
+              style={lowestPuppies?.length && highestPuppies?.length 
+                && lowestPuppies > highestPuppies ? {backgroundColor: "grey", cursor: "default"} : null
+              }
+            >
+              Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+            </button>
+            <br />
+            <br />
+          </form>
         </div>
 
         <p>
           <button 
+            title="Go to Previous Page"
             style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
             className="pagination-button"
@@ -329,6 +344,7 @@ const LittersList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
+            title="Go to Next Page"
             className="pagination-button"
             style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
@@ -350,7 +366,9 @@ const LittersList = () => {
                 : {float: "none"}
             }
           >
+            <label htmlFor="page-number" className="off-screen">Page Number</label>
             <input 
+              name="page-number"
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
               type="number" 
@@ -358,6 +376,7 @@ const LittersList = () => {
               placeholder="Page no."
             />
             <button
+              title="Go to the Specified Page"
               style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
               disabled={goToPageButtonDisabled}
               onClick={() => {
@@ -381,6 +400,7 @@ const LittersList = () => {
 
         <p>
           <button 
+            title="Go to Previous Page"
             style={currentPage === 1 ? {display: "none"} : null}
             disabled={currentPage === 1}
             className="pagination-button"
@@ -394,6 +414,7 @@ const LittersList = () => {
           {` Page ${currentPage} of ${maxPage} `}
 
           <button 
+            title="Go to Next Page"
             className="pagination-button"
             style={currentPage === maxPage ? {display: "none"} : null}
             disabled={currentPage === maxPage}
@@ -415,7 +436,9 @@ const LittersList = () => {
                 : {float: "none"}
             }
           >
+            <label htmlFor="another-page-number" className="off-screen">Page Number</label>
             <input 
+              name="another-page-number"
               onChange={(e) => setNewPage(e.target.value)} 
               value={newPage} 
               type="number" 
@@ -423,6 +446,7 @@ const LittersList = () => {
               placeholder="Page no."
             />
             <button
+              title="Go to the Specified Page"
               style={goToPageButtonDisabled ? {backgroundColor: "grey", cursor: "default"} : null}
               disabled={goToPageButtonDisabled}
               onClick={() => {

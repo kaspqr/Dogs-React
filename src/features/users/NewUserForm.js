@@ -116,6 +116,7 @@ const NewUserForm = () => {
             </label>
             <br />
             <input 
+                className="three-hundred"
                 type="text" 
                 id="username"
                 name="username"
@@ -125,11 +126,12 @@ const NewUserForm = () => {
             />
             <br />
 
-            <label htmlFor="password">
+            <label className="top-spacer" htmlFor="password">
                 <b>Password (8-20 Characters, Optionally Including !@#%)*</b>
             </label>
             <br />
             <input 
+                className="three-hundred"
                 type="password" 
                 id="password"
                 name="password"
@@ -138,11 +140,12 @@ const NewUserForm = () => {
             />
             <br />
 
-            <label htmlFor="confirm-password">
+            <label className="top-spacer" htmlFor="confirm-password">
                 <b>Confirm Password*</b>
             </label>
             <br />
             <input 
+                className="three-hundred"
                 type="password" 
                 id="confirm-password"
                 name="confirm-password"
@@ -151,11 +154,12 @@ const NewUserForm = () => {
             />
             <br />
 
-            <label htmlFor="email">
+            <label className="top-spacer" htmlFor="email">
                 <b>Email*</b>
             </label>
             <br />
             <input 
+                className="three-hundred"
                 type="text" 
                 id="email"
                 name="email"
@@ -164,11 +168,12 @@ const NewUserForm = () => {
             />
             <br />
 
-            <label htmlFor="name">
+            <label className="top-spacer" htmlFor="name">
                 <b>Name*</b>
             </label>
             <br />
             <input 
+                className="three-hundred"
                 type="text" 
                 id="name"
                 name="name"
@@ -177,7 +182,7 @@ const NewUserForm = () => {
             />
             <br />
 
-            <label htmlFor="country">
+            <label className="top-spacer" htmlFor="country">
                 <b>Country*</b>
             </label>
             <br />
@@ -192,7 +197,7 @@ const NewUserForm = () => {
             </select>
             <br />
 
-            <label htmlFor="region">
+            <label className="top-spacer" htmlFor="region">
                 <b>Region</b>
             </label>
             <br />
@@ -207,13 +212,13 @@ const NewUserForm = () => {
                 {bigCountries?.includes(country) ? Regions[country] : null}
             </select>
             <br />
-            <br />
 
-            <label htmlFor="bio">
+            <label className="top-spacer" htmlFor="bio">
                 <b>Bio</b>
             </label>
             <br />
             <textarea 
+                className="three-hundred"
                 cols="30"
                 rows="10"
                 maxLength="500"
@@ -227,7 +232,7 @@ const NewUserForm = () => {
 
             <div className="register-page-button-div">
                 <button
-                    className="black-button"
+                    className="black-button three-hundred"
                     title="Register"
                     disabled={!canSave}
                     style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
