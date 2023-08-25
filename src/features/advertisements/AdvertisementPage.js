@@ -80,7 +80,7 @@ const AdvertisementPage = () => {
             <p><b>Info</b></p>
             <p>{advertisement?.info}</p>
             <br />
-            {userId === advertisement?.poster ? <><Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement?.id}`}><button className="black-button three-hundred">Edit</button></Link></> : null}
+            {userId === advertisement?.poster ? <><Link className="edit-advertisement-link" to={`/advertisements/edit/${advertisement?.id}`}><button title="Edit" className="black-button three-hundred">Edit</button></Link></> : null}
             {userId?.length && advertisement?.poster !== userId
                 ? <><button 
                     className="black-button three-hundred"
@@ -91,7 +91,7 @@ const AdvertisementPage = () => {
                 : null
             }
             {isAdmin || isSuperAdmin
-                ? <><button className="black-button three-hundred" onClick={handleAdminDelete}>
+                ? <><button title="Delete as Admin" className="black-button three-hundred" onClick={handleAdminDelete}>
                     Delete as Admin
                 </button></>
                 : null

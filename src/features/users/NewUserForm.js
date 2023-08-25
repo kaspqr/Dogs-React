@@ -230,17 +230,17 @@ const NewUserForm = () => {
             <br />
             <br />
 
-            <div className="register-page-button-div">
-                <button
-                    className="black-button three-hundred"
-                    title="Register"
-                    disabled={!canSave}
-                    style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
-                >
-                    Register
-                </button>
-            </div>
         </form>
+        <div className="register-page-button-div">
+            <button
+                className="black-button three-hundred"
+                title="Register"
+                disabled={!canSave}
+                style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
+            >
+                Register
+            </button>
+        </div>
     </>
 
     return content

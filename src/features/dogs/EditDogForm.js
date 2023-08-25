@@ -82,6 +82,8 @@ const EditDogForm = ({ dog }) => {
     // DELETE the dog
     const handleDeleteDogClicked = async () => {
         await deleteDog({ id: dog.id })
+        setConfirmDelete('')
+        setDeletionVisible(false)
     }
 
     const handleRemoveLitter = async () => {
@@ -290,7 +292,7 @@ const EditDogForm = ({ dog }) => {
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                 >
-                    <option value="NONE ">Region (optional)</option>
+                    <option value="none ">--</option>
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
@@ -400,6 +402,7 @@ const EditDogForm = ({ dog }) => {
                 <br />
                 <Calendar name="death" minDate={new Date(dog?.birth) || null} maxDate={new Date()} onChange={handleDeathChanged} value={death} />
                 <button 
+                    title="Clear Date of Death"
                     className="black-button"
                     style={death === '' ? {backgroundColor: "grey", cursor: "default"} : null}
                     disabled={death === ''}

@@ -191,7 +191,7 @@ const NewDogForm = () => {
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                 >
-                    <option value="none ">Region (optional)</option>
+                    <option value="none ">--</option>
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />

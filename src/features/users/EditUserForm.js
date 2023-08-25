@@ -208,11 +208,13 @@ const EditUserForm = ({ user }) => {
                 {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
                 {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
 
-                {previewSource && <>
-                    <img className="user-profile-picture top-spacer" height="300px" width="300px" src={previewSource} alt="chosen" />
-                    <br />
-                    <br />
-                </>}
+                {previewSource 
+                    ? <>
+                        <img className="user-profile-picture top-spacer" height="300px" width="300px" src={previewSource} alt="chosen" />
+                        <br />
+                        <br />
+                    </>
+                    : <br />}
 
                 <p>Fields marked with <b>*</b> are required</p>
                 <br />

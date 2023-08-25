@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { setCredentials } from "./authSlice"
 import { useLoginMutation } from "./authApiSlice"
@@ -29,6 +29,11 @@ const Login = () => {
     userRef.current.focus()
   }, [])
 
+  useEffect(() => {
+    // Clear the error message if the username or password has changed
+    setErrMsg('')
+  }, [username, password])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -54,7 +59,7 @@ const Login = () => {
           + "verification email being sent to you in case you have waited at least 1 hour since the last try."
         )
       }
-      errRef?.current?.focus()
+      errRef.current.focus()
     }
   }
 
@@ -75,7 +80,7 @@ const Login = () => {
       </header>
 
       <main>
-        {errMsg?.length ? <p ref={errRef} aria-live="assertive">{errMsg}</p> : null}
+        <p ref={errRef} aria-live="assertive">{errMsg}</p>
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="username">
@@ -87,6 +92,7 @@ const Login = () => {
             className="three-hundred"
             type="text" 
             id="username"
+            name="username"
             ref={userRef}
             value={username}
             onChange={handleUserInput}
@@ -101,6 +107,7 @@ const Login = () => {
           <br />
           <input 
             className="three-hundred"
+            name="password"
             type="password" 
             id="password"
             onChange={handlePwdInput}
@@ -112,12 +119,12 @@ const Login = () => {
 
           <label htmlFor="persist">
             <b>Trust This Device </b>
-            <FontAwesomeIcon onClick={handleToggle} size="xl" icon={persist ? faToggleOn : faToggleOff} color={persist ? 'rgb(23, 152, 207)' : 'grey'} />
+            <FontAwesomeIcon name="persist" onClick={handleToggle} size="xl" icon={persist ? faToggleOn : faToggleOff} color={persist ? 'rgb(23, 152, 207)' : 'grey'} />
           </label>
           <br />
           <br />
-
           <button 
+            type="submit"
             className="black-button three-hundred"
             disabled={!username?.length || !password?.length}
             style={!username?.length || !password?.length ? {backgroundColor: "grey", cursor: "default"} : null}
@@ -126,6 +133,8 @@ const Login = () => {
           </button>
 
         </form>
+        <br />
+        <Link to={'/resetpassword'}>Forgot Password? Click here</Link>
       </main>
     </>
   )

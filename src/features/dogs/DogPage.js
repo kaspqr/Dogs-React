@@ -181,6 +181,7 @@ const DogPage = () => {
     const content = userId === dog?.user 
         ? <>
             <button
+                title="Edit Dog"
                 className="black-button three-hundred"
                 onClick={() => navigate(`/dogs/edit/${dog?.id}`)}
             >
@@ -286,7 +287,7 @@ const DogPage = () => {
                 : null
             }
             {isAdmin || isSuperAdmin
-                ? <><button className="black-button three-hundred" onClick={handleAdminDelete}>Delete as Admin</button></>
+                ? <><button title="Delete as Admin" className="black-button three-hundred" onClick={handleAdminDelete}>Delete as Admin</button></>
                 : null
             }
         </>

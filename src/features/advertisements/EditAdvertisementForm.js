@@ -62,6 +62,8 @@ const EditAdvertisementForm = ({ advertisement }) => {
     // DELETE function
     const handleDeleteAdvertisementClicked = async () => {
         await deleteAdvertisement({ id: advertisement.id })
+        setDeletionVisible(false)
+        setConfirmDelete('')
     }
 
     const previewFile = (file) => {
@@ -153,6 +155,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 <br />
 
                 <button 
+                    title="Update Adcertisement Picture"
                     className="black-button three-hundred" 
                     onClick={handleSubmitFile}
                     disabled={!previewSource || uploadLoading === true}
@@ -221,48 +224,48 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 />
                 <br />
                 <br />
-                <div className="advertisement-edit-page-buttons-div">
-                        <button
-                            title="Save"
-                            className="black-button three-hundred"
-                            onClick={handleSaveAdvertisementClicked}
-                            disabled={!canSave}
-                            style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
-                        >
-                            Save
-                        </button>
-                        <br />
-                        <br />
-                        <button
-                            title="Delete"
-                            className="black-button three-hundred"
-                            onClick={() => setDeletionVisible(!deletionVisible)}
-                        >
-                            Delete
-                        </button>
-                        {deletionVisible === false ? null 
-                            : <>
-                            <br />
-                            <br />
-                            <label htmlFor="confirm-delete">
-                                <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your advertisement from the database.</b>
-                            </label>
-                            <br />
-                            <input className="three-hundred" name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
-                            <br />
-                            <br />
-                            <button
-                                className="black-button three-hundred"
-                                title="confirm-delete"
-                                disabled={confirmDelete !== 'confirmdelete'}
-                                style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
-                                onClick={handleDeleteAdvertisementClicked}
-                            >
-                                Confirm Deletion
-                            </button>
-                        </>}
-                    </div>
             </form>
+            <div className="advertisement-edit-page-buttons-div">
+                <button
+                    title="Save"
+                    className="black-button three-hundred"
+                    onClick={handleSaveAdvertisementClicked}
+                    disabled={!canSave}
+                    style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
+                >
+                    Save
+                </button>
+                <br />
+                <br />
+                <button
+                    title="Delete"
+                    className="black-button three-hundred"
+                    onClick={() => setDeletionVisible(!deletionVisible)}
+                >
+                    Delete
+                </button>
+                {deletionVisible === false ? null 
+                    : <>
+                    <br />
+                    <br />
+                    <label htmlFor="confirm-delete">
+                        <b>Type "confirmdelete" and click on the Confirm Deletion button to delete your advertisement from the database.</b>
+                    </label>
+                    <br />
+                    <input className="three-hundred" name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
+                    <br />
+                    <br />
+                    <button
+                        className="black-button three-hundred"
+                        title="Confirm Deletion"
+                        disabled={confirmDelete !== 'confirmdelete'}
+                        style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
+                        onClick={handleDeleteAdvertisementClicked}
+                    >
+                        Confirm Deletion
+                    </button>
+                </>}
+            </div>
         </>
     )
 

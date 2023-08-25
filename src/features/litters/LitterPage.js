@@ -53,6 +53,8 @@ const LitterPage = () => {
     const [selectedProposePuppy, setSelectedProposePuppy] = useState('')
     const [confirmDelete, setConfirmDelete] = useState('')
     const [deletionVisible, setDeletionVisible] = useState(false)
+    const [confirmRemove, setConfirmRemove] = useState('')
+    const [removalVisible, setRemovalVisible] = useState(false)
 
     const navigate = useNavigate()
 
@@ -267,6 +269,8 @@ const LitterPage = () => {
     // DELETE THE litter
     async function handleDeleteLitter() {
         await deleteLitter({ id: litterid })
+        setDeletionVisible(false)
+        setConfirmDelete('')
     }
 
     // Option to DELETE the litter only for the user that is the administrative user of the litter's mother dog
@@ -293,16 +297,16 @@ const LitterPage = () => {
                         <input className="three-hundred" name="confirm-delete" type="text" value={confirmDelete} onChange={(e) => setConfirmDelete(e.target.value)} />
                         <br />
                         <br />
-                        <button
-                            className="black-button three-hundred"
-                            title="Confirm Deletion"
-                            disabled={confirmDelete !== 'confirmdelete'}
-                            style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
-                            onClick={() => handleDeleteLitter()}
-                        >
-                            Confirm Deletion
-                        </button>
                     </form>
+                    <button
+                        className="black-button three-hundred"
+                        title="Confirm Deletion"
+                        disabled={confirmDelete !== 'confirmdelete'}
+                        style={confirmDelete !== 'confirmdelete' ? {backgroundColor: "grey", cursor: "default"} : null}
+                        onClick={() => handleDeleteLitter()}
+                    >
+                        Confirm Deletion
+                    </button>
                 </>}
             </>
         )
@@ -346,6 +350,8 @@ const LitterPage = () => {
 
     const handleRemoveFather = async () => {
         await updateLitter({ "id": litterid, "removeFather": true })
+        setConfirmRemove('')
+        setRemovalVisible(false)
     }
 
     // Boolean to control the style and 'disabled' value of the ADD FATHER button
@@ -452,12 +458,35 @@ const LitterPage = () => {
         ? <><button
             title="Remove Father from Litter"
             className="black-button three-hundred"
-            onClick={handleRemoveFather}
+            onClick={() => setRemovalVisible(!removalVisible)}
         >
             Remove Father
         </button>
         <br />
         <br />
+        {removalVisible === false ? null 
+            : <>
+            <form onSubmit={(e) => e.preventDefault()}>
+                <label htmlFor="confirm-remove">
+                    <b>Type "confirmremove" and click on the Confirm Removal button to remove your dog from the litter's father position</b>
+                </label>
+                <br />
+                <input className="three-hundred" name="confirm-remove" type="text" value={confirmRemove} onChange={(e) => setConfirmRemove(e.target.value)} />
+                <br />
+                <br />
+            </form>
+            <button
+                className="black-button three-hundred"
+                title="Confirm Removal"
+                disabled={confirmRemove !== 'confirmremove'}
+                style={confirmRemove !== 'confirmremove' ? {backgroundColor: "grey", cursor: "default"} : null}
+                onClick={handleRemoveFather}
+            >
+                Confirm Removal
+            </button>
+            <br />
+            <br />
+        </>}
         </>
         : null
 

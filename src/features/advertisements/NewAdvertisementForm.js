@@ -177,7 +177,7 @@ const NewAdvertisementForm = () => {
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                 >
-                    <option value="">Region (optional)</option>
+                    <option value="">--</option>
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
@@ -201,18 +201,17 @@ const NewAdvertisementForm = () => {
 
                 <p>A picture can be added in the 'Edit' form once the advertisement has been successfully posted.</p>
                 <br />
-
-                <div className="advertisement-post-page-buttons-div">
-                    <button
-                        style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
-                        className="black-button three-hundred"
-                        title="Post"
-                        disabled={!canSave}
-                    >
-                        Post
-                    </button>
-                </div>
             </form>
+            <div className="advertisement-post-page-buttons-div">
+                <button
+                    style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
+                    className="black-button three-hundred"
+                    title="Post"
+                    disabled={!canSave}
+                >
+                    Post
+                </button>
+            </div>
         </>
     )
 

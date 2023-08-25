@@ -49,6 +49,8 @@ import UserReportsList from "./features/adminpage/UserReportsList"
 import ReportedUserPage from "./features/adminpage/ReportedUserPage"
 
 import EmailVerify from "./features/auth/emailVerify"
+import ResetPassword from "./features/auth/ResetPassword"
+import ChoosePassword from "./features/auth/ChoosePassword"
 
 function App() {
 
@@ -68,6 +70,10 @@ function App() {
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<NewUserForm />} />
+            <Route path="resetpassword">
+              <Route index element={<ResetPassword />} />
+              <Route path=":id/verify/:resettoken" element={<ChoosePassword />} />
+            </Route>
             <Route path="users/:id/verify/:token" element={<EmailVerify />} />
 
 

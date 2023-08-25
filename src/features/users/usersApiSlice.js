@@ -54,6 +54,18 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 { type: 'User', id: arg.id }
             ]
         }),
+        resetPassword: builder.mutation({
+            query: initalUserData => ({
+                url: '/users/resetpassword',
+                method: 'PATCH',
+                body: {
+                    ...initalUserData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'User', id: arg.id }
+            ]
+        }),
         deleteUser: builder.mutation({
             query: initialUserData => ({
                 url: '/users',
@@ -71,6 +83,7 @@ export const {
     useGetUsersQuery,
     useAddNewUserMutation,
     useUpdateUserMutation,
+    useResetPasswordMutation,
     useDeleteUserMutation,
 } = usersApiSlice
 

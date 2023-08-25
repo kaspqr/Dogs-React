@@ -76,8 +76,6 @@ const EmailVerify = () => {
             const token = entities[filteredId]
 
             if (!user?.id?.length || token?.user !== user?._id) {
-                console.log(token)
-                console.log(user)
                 return <h1>Invalid Link</h1>
             }
 

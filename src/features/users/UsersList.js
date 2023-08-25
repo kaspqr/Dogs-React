@@ -187,15 +187,15 @@ const UsersList = () => {
             <br />
             <br />
 
-            <button 
-              title="Search"
-              onClick={handleSearchClicked}
-              className="black-button search-button three-hundred"
-            >
-              Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
-            </button>
-
           </form>
+          <button 
+            title="Search"
+            onClick={handleSearchClicked}
+            className="black-button search-button three-hundred"
+          >
+            Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />
+          </button>
+          <br />
           <br />
 
         </div>

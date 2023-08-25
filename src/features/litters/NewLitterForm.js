@@ -152,7 +152,7 @@ const NewLitterForm = () => {
 
     if (!dogs) return null
 
-    const saveColor = !canSave ? {backgroundColor: "grey"} : null
+    const saveColor = !canSave ? {backgroundColor: "grey", cursor: "default"} : null
 
     const content = (
         <>
@@ -247,7 +247,7 @@ const NewLitterForm = () => {
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                 >
-                    <option value="">Region (optional)</option>
+                    <option value="">--</option>
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />
@@ -259,15 +259,15 @@ const NewLitterForm = () => {
                 <Calendar name="born" minDate={mother?.length ? new Date(dogs?.entities[mother]?.birth) : null} maxDate={new Date()} onChange={handleBornChanged} value={born} />
                 <br />
                 
-                <button
-                    className="black-button three-hundred"
-                    style={saveColor}
-                    title="Save"
-                    disabled={!canSave}
-                >
-                    Save
-                </button>
             </form>
+            <button
+                className="black-button three-hundred"
+                style={saveColor}
+                title="Save"
+                disabled={!canSave}
+            >
+                Save
+            </button>
         </>
     )
 
