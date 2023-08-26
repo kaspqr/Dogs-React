@@ -10,8 +10,13 @@ import { Currencies } from "../../config/currencies"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { useState, useEffect } from "react"
+import { adjustWidth } from "../../utils/adjustWidth"
 
 const AdvertisementsList = () => {
+
+  // Call the function initially and when the window is resized
+  adjustWidth()
+  window.addEventListener('resize', adjustWidth)
 
   const { userId } = useAuth()
 
@@ -179,7 +184,7 @@ const AdvertisementsList = () => {
       return ad._id
     })
 
-    const itemsPerPage = 2
+    const itemsPerPage = 20
 
     const maxPage = Math.ceil(filteredIds?.length ? filteredIds?.length / itemsPerPage : reversedNewIds?.length / itemsPerPage)
 

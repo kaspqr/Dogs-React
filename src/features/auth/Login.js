@@ -7,8 +7,13 @@ import usePersist from "../../hooks/usePersist"
 import useAuth from "../../hooks/useAuth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons"
+import { adjustWidth } from "../../utils/adjustWidth"
 
 const Login = () => {
+
+  // Call the function initially and when the window is resized
+  adjustWidth()
+  window.addEventListener('resize', adjustWidth)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()

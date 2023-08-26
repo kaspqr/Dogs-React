@@ -4,13 +4,19 @@ import { useGetMessagesQuery, useAddNewMessageMutation } from "../messages/messa
 import Message from "../messages/Message"
 import { useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 
 const ConversationPage = () => {
 
     const { userId } = useAuth()
     const { conversationid } = useParams()
     const [newMessage, setNewMessage] = useState('')
+    const [displayedMessagesCount, setDisplayedMessagesCount] = useState(30)
+    const [hasMoreMessages, setHasMoreMessages] = useState(true)
+    const [initialMessagesLoaded, setInitialMessagesLoaded] = useState(false)
+
+    // Variable to store all messages in this conversation
+    let filteredMessages
 
     // POST method for a new message
     const [addNewMessage, {
@@ -27,6 +33,53 @@ const ConversationPage = () => {
             await addNewMessage({ sender: userId, conversation: conversationid, text: newMessage })
         }
     }
+
+    // GET all the messages
+    const {
+        data: messages,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetMessagesQuery('messagesList', {
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
+
+    const conversationDivRef = useRef(null)
+
+    useEffect(() => {
+        // Scroll the conversation div to the bottom after component renders
+        if (conversationDivRef?.current && initialMessagesLoaded === false) {
+            conversationDivRef.current.scrollTop = conversationDivRef.current.scrollHeight
+            setInitialMessagesLoaded(true)
+        }
+    }, [messages, initialMessagesLoaded])
+
+    // Define the handleScroll function using useCallback
+    const handleScroll = useCallback(() => {
+        if (conversationDivRef?.current.scrollTop === 0 && hasMoreMessages) {
+            // Get the current scroll height and scroll position before adding more messages
+            const previousScrollHeight = conversationDivRef?.current.scrollHeight
+            const previousScrollTop = conversationDivRef?.current.scrollTop
+        
+            // Load more messages here and update the displayedMessagesCount
+            setDisplayedMessagesCount(prevCount => prevCount + 30)
+        
+            // Use setTimeout to allow time for rendering the new messages
+            setTimeout(() => {
+                // Use requestAnimationFrame to ensure accurate calculation after rendering
+                requestAnimationFrame(() => {
+                // Calculate the new scroll position to maintain context
+                const newScrollHeight = conversationDivRef?.current.scrollHeight
+                const scrollPositionChange = newScrollHeight - previousScrollHeight
+                conversationDivRef.current.scrollTop = previousScrollTop + scrollPositionChange
+                })
+            }, 0)
+        }
+      }, [hasMoreMessages])
+      
 
     // GET the conversation with all of it's .values
     const { conversation } = useGetConversationsQuery("conversationsList", {
@@ -49,34 +102,33 @@ const ConversationPage = () => {
         }),
     })
 
-    // GET all the messages
-    const {
-        data: messages,
-        isLoading,
-        isSuccess,
-        isError,
-        error
-    } = useGetMessagesQuery('messagesList', {
-        pollingInterval: 15000,
-        refetchOnFocus: true,
-        refetchOnMountOrArgChange: true
-    })
-
-    const conversationDivRef = useRef(null)
-
-    useEffect(() => {
-        // Scroll the conversation div to the bottom after component renders
-        if (conversationDivRef.current) {
-            conversationDivRef.current.scrollTop = conversationDivRef.current.scrollHeight
-        }
-    }, [messages])
-
     // Clear the input if the previous message has been successfully sent
     useEffect(() => {
         if (isMessageSuccess) {
             setNewMessage('')
         }
     }, [isMessageSuccess])
+
+    useEffect(() => {
+        const divRef = conversationDivRef?.current; // Capture the current ref value
+        divRef?.addEventListener('scroll', handleScroll)
+        
+        return () => {
+            divRef?.removeEventListener('scroll', handleScroll)
+        }
+    }, [hasMoreMessages, handleScroll])
+
+    useEffect(() => {
+        if (filteredMessages?.length) {
+            setHasMoreMessages(displayedMessagesCount < filteredMessages.length)
+        }
+    }, [displayedMessagesCount, filteredMessages])
+
+    // Logic to handle received messages
+    useEffect(() => {
+        // Increment the total messages count and displayed messages count
+        setDisplayedMessagesCount(prevCount => prevCount + 1)
+    }, [messages?.ids.length])
     
     // Variable for errors and content
     let messageContent
@@ -87,9 +139,6 @@ const ConversationPage = () => {
     
     if (isSuccess) {
         const { ids, entities } = messages
-
-        // Variable to store all messages in this conversation
-        let filteredMessages
 
         // Filter all the IDs of all the messages in this conversation
         const filteredIds = ids.filter(messageId => entities[messageId].conversation === conversation?.id)
@@ -102,10 +151,11 @@ const ConversationPage = () => {
         let tableContent
 
         if (filteredMessages?.length) {
-            tableContent = filteredMessages.map(message => (
-               <Message key={message.id} messageId={message.id} />
+            const messagesToDisplay = filteredMessages.slice(-displayedMessagesCount)
+            tableContent = messagesToDisplay.map(message => (
+              <Message key={message.id} messageId={message.id} />
             ))
-        }
+          }
       
         messageContent = (
             <>

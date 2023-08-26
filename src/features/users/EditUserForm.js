@@ -7,8 +7,13 @@ import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUpload } from "@fortawesome/free-solid-svg-icons"
+import { adjustWidth } from "../../utils/adjustWidth"
 
 const EditUserForm = ({ user }) => {
+
+    // Call the function initially and when the window is resized
+    adjustWidth()
+    window.addEventListener('resize', adjustWidth)
 
     // PATCH function for updating the user
     const [updateUser, {

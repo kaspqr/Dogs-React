@@ -10,8 +10,13 @@ import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons"
+import { adjustWidth } from "../../utils/adjustWidth"
 
 const NewDogForm = () => {
+
+    // Call the function initially and when the window is resized
+    adjustWidth()
+    window.addEventListener('resize', adjustWidth)
 
     const { userId } = useAuth()
 

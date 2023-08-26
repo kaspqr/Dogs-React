@@ -3,8 +3,13 @@ import { useParams, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { useState, useEffect } from "react"
 import { useAddNewUserReportMutation } from "./userReportsApiSlice"
+import { adjustWidth } from "../../utils/adjustWidth"
 
 const UserReportPage = () => {
+
+    // Call the function initially and when the window is resized
+    adjustWidth()
+    window.addEventListener('resize', adjustWidth)
 
     const { userId } = useAuth()
     const { userid } = useParams()

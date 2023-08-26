@@ -12,8 +12,13 @@ import UserDog from "../dogs/UserDog"
 import UserAdvertisement from "../advertisements/UserAdvertisement"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
+import { adjustWidth } from "../../utils/adjustWidth"
 
 const UserPage = () => {
+
+    // Call the function initially and when the window is resized
+    adjustWidth()
+    window.addEventListener('resize', adjustWidth)
 
     const navigate = useNavigate()
 

@@ -40,9 +40,6 @@ input[type=number] {
   overflow: hidden;
 }
 
-.three-hundred {
-  width: 300px;
-}
 
 .top-spacer {
   margin-top: 8px;
@@ -372,6 +369,7 @@ input[type="file"] {
   color: white;
   font-weight: bold;
   cursor: pointer;
+  border-radius: 3px;
 }
 
 .black-button:hover {
@@ -414,6 +412,10 @@ thead {
 
 select {
   padding: 5px;
+  width: 300px;
+}
+
+.three-hundred {
   width: 300px;
 }
 
@@ -482,5 +484,11 @@ select {
   #layout-header {
     padding-left: 20px;
     padding-right: 20px;
+  }
+}
+
+@media (max-width: 440px) {
+  select, .three-hundred {
+    width: calc(100vw - 40px);
   }
 }
