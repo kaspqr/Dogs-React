@@ -44,7 +44,8 @@ const EditUserForm = ({ user }) => {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [currentPassword, setCurrentPassword] = useState('')
     const [name, setName] = useState(user.name)
-    const [email, setEmail] = useState(user.email)
+    const [email, setEmail] = useState('')
+    const [confirmEmail, setConfirmEmail] = useState('')
     const [bio, setBio] = useState(user.bio !== 'none ' ? user.bio : '')
     const [country, setCountry] = useState(user.country)
     const [region, setRegion] = useState(user.region?.length ? user.region : '')
@@ -75,6 +76,7 @@ const EditUserForm = ({ user }) => {
     const handleCurrentPasswordChanged = e => setCurrentPassword(e.target.value)
     const handleNameChanged = e => setName(e.target.value)
     const handleEmailChanged = e => setEmail(e.target.value)
+    const handleConfirmEmailChanged = e => setConfirmEmail(e.target.value)
     const handleBioChanged = e => setBio(e.target.value)
 
     const handleCountryChanged = e => {
@@ -168,7 +170,8 @@ const EditUserForm = ({ user }) => {
                 ? logoutError
                 : ''
 
-    const canSave = currentPassword?.length && NAME_REGEX.test(name) && EMAIL_REGEX.test(email)
+    const canSave = currentPassword?.length && NAME_REGEX.test(name) && email !== user?.email
+        && ((EMAIL_REGEX.test(email) && email === confirmEmail) || !email?.length)
         && ((!password?.length && !confirmPassword?.length) || (PASSWORD_REGEX.test(password) && password === confirmPassword))
 
     const content = (
@@ -193,6 +196,7 @@ const EditUserForm = ({ user }) => {
                     />
                 </span>
                 <br />
+                <br />
 
                 <button 
                     title="Update Profile Picture"
@@ -201,7 +205,7 @@ const EditUserForm = ({ user }) => {
                     disabled={!previewSource || uploadLoading === true}
                     style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
                 >
-                    Update
+                    Update Picture
                 </button>
                 <br />
 
@@ -262,7 +266,7 @@ const EditUserForm = ({ user }) => {
                 <br />
 
                 <label className="top-spacer" htmlFor="email">
-                    <b>Email*</b>
+                    <b>New Email</b>
                 </label>
                 <br />
                 <input 
@@ -272,6 +276,20 @@ const EditUserForm = ({ user }) => {
                     name="email"
                     value={email}
                     onChange={handleEmailChanged}
+                />
+                <br />
+
+                <label className="top-spacer" htmlFor="confirm-email">
+                    <b>Confirm New Email</b>
+                </label>
+                <br />
+                <input 
+                    className="three-hundred"
+                    type="text" 
+                    id="confirm-email"
+                    name="confirm-email"
+                    value={confirmEmail}
+                    onChange={handleConfirmEmailChanged}
                 />
                 <br />
 
@@ -315,7 +333,7 @@ const EditUserForm = ({ user }) => {
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                 >
-                    <option value="none ">Region (optional)</option>
+                    <option value="none ">--</option>
                     {bigCountries?.includes(country) ? Regions[country] : null}
                 </select>
                 <br />

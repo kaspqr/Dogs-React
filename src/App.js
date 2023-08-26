@@ -49,12 +49,13 @@ import UserReportsList from "./features/adminpage/UserReportsList"
 import ReportedUserPage from "./features/adminpage/ReportedUserPage"
 
 import EmailVerify from "./features/auth/emailVerify"
+import NewEmail from "./features/auth/newEmail"
 import ResetPassword from "./features/auth/ResetPassword"
 import ChoosePassword from "./features/auth/ChoosePassword"
 
 function App() {
 
-  useTitle('Dogs App')
+  useTitle('Paw Retriever')
 
   return (
     <Routes>
@@ -75,6 +76,7 @@ function App() {
               <Route path=":id/verify/:resettoken" element={<ChoosePassword />} />
             </Route>
             <Route path="users/:id/verify/:token" element={<EmailVerify />} />
+            <Route path="users/:id/verifyemail/:emailtoken" element={<NewEmail />} />
 
 
             <Route path="users">

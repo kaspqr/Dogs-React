@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useAddNewAdvertisementMutation } from "./advertisementsApiSlice"
 import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
@@ -7,6 +7,8 @@ import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
 import { AdvertisementTypes } from "../../config/advertisementTypes"
 import { Currencies } from "../../config/currencies"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faUpload } from "@fortawesome/free-solid-svg-icons"
 
 const NewAdvertisementForm = () => {
 
@@ -25,18 +27,16 @@ const NewAdvertisementForm = () => {
     const PRICE_REGEX = /^[1-9]\d{0,11}$/
 
     const [title, setTitle] = useState('')
-
     const [type, setType] = useState('Sell')
-
     const [price, setPrice] = useState()
-
     const [currency, setCurrency] = useState('$')
-
     const [country, setCountry] = useState('Argentina')
-
     const [region, setRegion] = useState('')
-
     const [info, setInfo] = useState('')
+    const [previewSource, setPreviewSource] = useState()
+    const [uploadMessage, setUploadMessage] = useState('')
+    const [uploadLoading, setUploadLoading] = useState(false)
+    const fileInputRef = useRef(null)
 
     useEffect(() => {
         // Once POSTed, set everything back to default
@@ -48,6 +48,8 @@ const NewAdvertisementForm = () => {
             setCountry('Argentina')
             setRegion('')
             setInfo('')
+            setUploadMessage('')
+            setUploadLoading(false)
             navigate('/')
         }
     }, [isAdvertisementSuccess, navigate])
@@ -58,11 +60,29 @@ const NewAdvertisementForm = () => {
     const canSave = title?.length && type?.length && info?.length && !isAdvertisementLoading
         && (type === 'Found' || type === 'Lost' || (price?.length && currency?.length)) 
 
+    const previewFile = (file) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onloadend = () => {
+            setPreviewSource(reader.result)
+        }
+    }
+
+    const handleFileChanged = (e) => {
+        const file = e.target.files[0]
+        previewFile(file)
+    }
+
+    const handleFileClicked = () => {
+        // Programmatically trigger the click event on the file input
+        fileInputRef.current.click();
+    }
+
     const handleSaveAdvertisementClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
             // POST method for an advertisement
-            await addNewAdvertisement({ poster: userId, title, price, type, info, currency, country, region })
+            await addNewAdvertisement({ poster: userId, title, price, type, info, currency, country, region, image: previewSource })
         }
     }
 
@@ -102,6 +122,27 @@ const NewAdvertisementForm = () => {
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <br />
+
+                <span className="top-spacer label-file-input" onClick={handleFileClicked} htmlFor="advertisement-image">
+                    <b>Browse Picture</b><label className="off-screen" htmlFor="advertisement-image">Browse Picture</label> <FontAwesomeIcon icon={faUpload} />
+                    <input
+                        id="file"
+                        type="file"
+                        name="advertisement-image"
+                        ref={fileInputRef}
+                        onChange={handleFileChanged}
+                        style={{ display: "none" }}
+                    />
+                </span>
+                <br />
+
+                {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
+                {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
+
+                {previewSource && <>
+                    <img height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <br />
+                </>}
 
                 <label className="top-spacer" htmlFor="type">
                     <b>Type</b>
@@ -198,12 +239,10 @@ const NewAdvertisementForm = () => {
                 />
                 <br />
                 <br />
-
-                <p>A picture can be added in the 'Edit' form once the advertisement has been successfully posted.</p>
-                <br />
             </form>
             <div className="advertisement-post-page-buttons-div">
                 <button
+                    onClick={handleSaveAdvertisementClicked}
                     style={!canSave ? {backgroundColor: "grey", cursor: "default"} : null}
                     className="black-button three-hundred"
                     title="Post"

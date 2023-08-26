@@ -84,7 +84,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="username">
-            <b>Username</b>
+            <b>Username or Email</b>
           </label>
           <br />
 
