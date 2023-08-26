@@ -15,7 +15,8 @@ const NewDogForm = () => {
 
     const { userId } = useAuth()
 
-    const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
+    const NAME_REGEX = /^(?!^\s*$)(?:[a-zA-Z']+(\s|$))+$/
+    const CHIPNUMBER_REGEX = /^(?!^\s)(?!.*\s{2,})[\s\S]*$/
 
     const navigate = useNavigate()
 
@@ -40,7 +41,6 @@ const NewDogForm = () => {
 
     const handleBreedChanged = e => setBreed(e.target.value)
     const handleInfoChanged = e => setInfo(e.target.value)
-    const handleChipnumberChanged = e => setChipnumber(e.target.value)
     const handleBirthChanged = date => setBirth(date)
     const handleDeathChanged = date => setDeath(date)
 
@@ -123,7 +123,7 @@ const NewDogForm = () => {
                 <br />
                 
                 <label htmlFor="dogname">
-                    <b>Dog's Name (Max. 30 Letters)*</b>
+                    <b>Dog's Name (Max. 30 Characters)*</b>
                 </label>
                 <br />
                 <input 
@@ -133,8 +133,13 @@ const NewDogForm = () => {
                     id="dogname"
                     name="dogname"
                     autoComplete="off"
+                    required
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                        if (NAME_REGEX.test(e.target.value) || e.target.value === '') {
+                            setName(e.target.value)}
+                        }
+                    }
                 />
                 <br />
 
@@ -230,8 +235,13 @@ const NewDogForm = () => {
                     type="text" 
                     id="chipnumber"
                     name="chipnumber"
+                    maxLength="50"
                     value={chipnumber}
-                    onChange={handleChipnumberChanged}
+                    onChange={(e) => {
+                        if (CHIPNUMBER_REGEX.test(e.target.value) || e.target.value === '') {
+                            setChipnumber(e.target.value)}
+                        }
+                    }
                 />
                 <br />
 
@@ -271,9 +281,6 @@ const NewDogForm = () => {
                     onChange={handleInfoChanged}
                 />
                 <br />
-                <br />
-
-                <p>A picture can be added in the 'Edit' form once the dog has been successfully saved.</p>
                 <br />
 
                 <div>

@@ -124,6 +124,7 @@ const ConversationPage = () => {
                             id="new-message" 
                         />
                         <button
+                            title="Send Message"
                             className="send-message-button black-button"
                             disabled={!newMessage?.length}
                         >

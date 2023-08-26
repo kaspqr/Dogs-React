@@ -26,6 +26,8 @@ const NewLitterForm = () => {
     const [country, setCountry] = useState('Argentina')
     const [region, setRegion] = useState('')
 
+    const day = 1000 * 60 * 60 * 24
+
     // POST function for adding a new litter
     const [addNewLitter, {
         isLoading: isLitterLoading,
@@ -57,6 +59,7 @@ const NewLitterForm = () => {
     const handleMotherChanged = e => {
 
         setBreed('')
+        setBorn('')
 
         const { ids, entities } = dogs
 
@@ -128,11 +131,12 @@ const NewLitterForm = () => {
         const { ids, entities } = dogs
 
         // Filter all the female dog IDs who are administrated by the logged in user
-        const filteredIds = ids.filter(dogId => entities[dogId].user === userId && entities[dogId].female === true)
+        const filteredIds = ids.filter(dogId => entities[dogId].user === userId && entities[dogId].female === true 
+            && new Date(entities[dogId].birth).getTime() < new Date().getTime() - 60 * day)
         // And get their .values
         const filteredDogs = filteredIds.map(dogId => entities[dogId])
 
-        if (!filteredIds.length) return <p>You have no female dogs.</p>
+        if (!filteredIds.length) return <p>You do not have female dogs who are old enough to have litters</p>
 
         // Create an <option>s list for each female dog administrated by the logged in user
         if (filteredDogs?.length) {
@@ -156,7 +160,7 @@ const NewLitterForm = () => {
 
     const content = (
         <>
-            <p>{dogsContent}</p>
+            {dogsContent}
 
             <form onSubmit={handleSaveLitterClicked}>
                 <p className="register-litter-page-title">Register Litter</p>
@@ -256,11 +260,12 @@ const NewLitterForm = () => {
                     <b>Born</b>
                 </label>
                 <br />
-                <Calendar name="born" minDate={mother?.length ? new Date(dogs?.entities[mother]?.birth) : null} maxDate={new Date()} onChange={handleBornChanged} value={born} />
+                <Calendar name="born" minDate={mother?.length ? new Date((new Date(dogs?.entities[mother]?.birth)).getTime() + 59 * day) : null} maxDate={new Date()} onChange={handleBornChanged} value={born} />
                 <br />
                 
             </form>
             <button
+                onClick={handleSaveLitterClicked}
                 className="black-button three-hundred"
                 style={saveColor}
                 title="Save"

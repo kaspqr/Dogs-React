@@ -63,7 +63,7 @@ const ConversationsList = () => {
         const allConvoMessages = Object.values(msgEntities)?.filter(msg => msg.conversation === conversationId)
 
         // Last message of current conversation
-        lastMessages.push(allConvoMessages[allConvoMessages.length - 1])
+        if (allConvoMessages?.length) lastMessages.push(allConvoMessages[allConvoMessages.length - 1])
       })
 
       // Sort the collection of last messages from each convo by time, newest first
@@ -80,7 +80,7 @@ const ConversationsList = () => {
       console.log('Filtered conversations has no length')
     }
 
-    content = !filteredIds?.length 
+    content = !lastMessages?.length 
       ? <p>You have no messages</p> 
       : tableContent
   }

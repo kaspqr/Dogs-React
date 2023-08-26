@@ -3,7 +3,7 @@ import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useGetLittersQuery } from "../litters/littersApiSlice"
 
 import { useNavigate, useParams, Link } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Fragment } from "react"
 
 import useAuth from "../../hooks/useAuth"
 
@@ -167,7 +167,7 @@ const DogPage = () => {
                     {litter?.born?.length ? <> born on <b>{litter?.born?.split(' ').slice(1, 4).join(' ')}</b></> : null}
                     {!allChildren?.length ? <><br />This litter doesn't have any puppies added to it</> : null}
                     {allChildren?.map(child => child?.litter === litter?.id 
-                        ? <><br />{child?.female === true ? <b>Daughter </b> : <b>Son </b>}<Link key={child?.id} className="orange-link" to={`/dogs/${child?.id}`}><b>{child?.name}</b></Link></>
+                        ? <Fragment key={child.id}><br />{child?.female === true ? <b>Daughter </b> : <b>Son </b>}<Link key={child?.id} className="orange-link" to={`/dogs/${child?.id}`}><b>{child?.name}</b></Link></Fragment>
                         : null
                     )}
                 </p>

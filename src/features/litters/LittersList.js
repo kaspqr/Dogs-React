@@ -316,9 +316,9 @@ const LittersList = () => {
               title="Search"
               onClick={handleSearchClicked}
               className="three-hundred black-button search-button"
-              disabled={lowestPuppies?.length && highestPuppies?.length && lowestPuppies > highestPuppies}
+              disabled={lowestPuppies?.length && highestPuppies?.length && parseInt(lowestPuppies) > parseInt(highestPuppies)}
               style={lowestPuppies?.length && highestPuppies?.length 
-                && lowestPuppies > highestPuppies ? {backgroundColor: "grey", cursor: "default"} : null
+                && parseInt(lowestPuppies) > parseInt(highestPuppies) ? {backgroundColor: "grey", cursor: "default"} : null
               }
             >
               Search <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faMagnifyingGlass} />

@@ -447,7 +447,7 @@ const LitterPage = () => {
                 style={selectedDog?.length ? null : {backgroundColor: "grey", cursor: "default"}}
                 onClick={userId === mother?.user ? () => addToLitter() : proposePuppyToLitter}
             >
-                {userId === mother?.user ? 'Add ' : 'Propose '}Dog
+                {userId === mother?.user ? 'Add ' : 'Propose '}Puppy
             </button>
             <br />
             <br />

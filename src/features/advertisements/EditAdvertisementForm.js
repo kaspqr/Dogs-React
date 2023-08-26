@@ -24,6 +24,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
     }] = useDeleteAdvertisementMutation()
 
     const PRICE_REGEX = /^[1-9]\d{0,11}$/
+    const TITLE_REGEX = /^(?!^\s*$)(?:[\w.,!?:]+(?:\s|$))+$/
 
     const navigate = useNavigate()
 
@@ -77,6 +78,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
     const handleFileChanged = (e) => {
         const file = e.target.files[0]
         previewFile(file)
+        setUploadMessage('')
     }
 
     const uploadImage = async (base64EncodedImage) => {
@@ -137,7 +139,11 @@ const EditAdvertisementForm = ({ advertisement }) => {
                     name="title"
                     maxLength="50"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e) => {
+                        if (TITLE_REGEX.test(e.target.value) || e.target.value === '') {
+                            setTitle(e.target.value)}
+                        }
+                    }
                 />
                 <br />
 
@@ -152,6 +158,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                         style={{ display: "none" }}
                     />
                 </span>
+                <br />
                 <br />
 
                 <button 
@@ -169,6 +176,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
                 {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
 
                 {previewSource && <>
+                    <br />
                     <img height="300px" width="300px" src={previewSource} alt="chosen" />
                     <br />
                 </>}

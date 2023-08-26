@@ -25,34 +25,35 @@ const NewAdvertisementForm = () => {
     const navigate = useNavigate()
 
     const PRICE_REGEX = /^[1-9]\d{0,11}$/
+    const TITLE_REGEX = /^(?!^\s*$)(?:[\w.,!?:]+(?:\s|$))+$/
 
     const [title, setTitle] = useState('')
     const [type, setType] = useState('Sell')
-    const [price, setPrice] = useState()
+    const [price, setPrice] = useState('')
     const [currency, setCurrency] = useState('$')
     const [country, setCountry] = useState('Argentina')
     const [region, setRegion] = useState('')
     const [info, setInfo] = useState('')
     const [previewSource, setPreviewSource] = useState()
-    const [uploadMessage, setUploadMessage] = useState('')
-    const [uploadLoading, setUploadLoading] = useState(false)
     const fileInputRef = useRef(null)
 
     useEffect(() => {
         // Once POSTed, set everything back to default
         if (isAdvertisementSuccess) {
             setTitle('')
-            setType('')
+            setType('Sell')
             setPrice('')
             setCurrency('$')
             setCountry('Argentina')
             setRegion('')
             setInfo('')
-            setUploadMessage('')
-            setUploadLoading(false)
             navigate('/')
         }
     }, [isAdvertisementSuccess, navigate])
+
+    useEffect(() => {
+
+    }, [previewSource])
 
     if (isAdvertisementError) return <p>{advertisementError}</p>
 
@@ -75,7 +76,7 @@ const NewAdvertisementForm = () => {
 
     const handleFileClicked = () => {
         // Programmatically trigger the click event on the file input
-        fileInputRef.current.click();
+        fileInputRef.current.click()
     }
 
     const handleSaveAdvertisementClicked = async (e) => {
@@ -97,6 +98,8 @@ const NewAdvertisementForm = () => {
             // Price nor currency is allowed with above types
             setPrice('')
             setCurrency('')
+        } else if (currency === '') {
+            setCurrency('$')
         }
         setType(e.target.value)
     }
@@ -119,7 +122,11 @@ const NewAdvertisementForm = () => {
                     name="title"
                     maxLength="50"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e) => {
+                        if (TITLE_REGEX.test(e.target.value) || e.target.value === '') {
+                            setTitle(e.target.value)}
+                        }
+                    }
                 />
                 <br />
 
@@ -136,10 +143,8 @@ const NewAdvertisementForm = () => {
                 </span>
                 <br />
 
-                {uploadLoading === true ? <><span className="upload-message">Uploading...</span><br /></> : null}
-                {uploadLoading === false && uploadMessage?.length ? <><span className="upload-message">{uploadMessage}</span><br /></> : null}
-
                 {previewSource && <>
+                    <br />
                     <img height="300px" width="300px" src={previewSource} alt="chosen" />
                     <br />
                 </>}
@@ -188,7 +193,7 @@ const NewAdvertisementForm = () => {
                     disabled={type === 'Found' || type === 'Lost'}
                     onChange={(e) => setCurrency(e.target.value)}
                 >
-                    <option value="">--</option>
+                    <option disabled={type !== 'Found' && type !== 'Lost'} value="">--</option>
                     {Currencies}
                 </select>
                 <br />

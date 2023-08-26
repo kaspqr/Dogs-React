@@ -208,7 +208,7 @@ const NewUserForm = () => {
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
             >
-                <option value="none ">Region (optional)</option>
+                <option value="none ">--</option>
                 {bigCountries?.includes(country) ? Regions[country] : null}
             </select>
             <br />
@@ -233,6 +233,7 @@ const NewUserForm = () => {
         </form>
         <div className="register-page-button-div">
             <button
+                onClick={handleSaveUserClicked}
                 className="black-button three-hundred"
                 title="Register"
                 disabled={!canSave}

@@ -13,7 +13,7 @@ const EditDogForm = ({ dog }) => {
 
     const navigate = useNavigate()
 
-    const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/
+    const NAME_REGEX = /^(?!^\s*$)(?:[a-zA-Z']+(\s|$))+$/
 
     const [heat, setHeat] = useState(typeof dog?.heat === 'boolean' ? dog.heat : false)
     const [sterilized, setSterilized] = useState(dog?.sterilized)
@@ -153,6 +153,7 @@ const EditDogForm = ({ dog }) => {
     const handleFileChanged = (e) => {
         const file = e.target.files[0]
         previewFile(file)
+        setUploadMessage('')
     }
 
     const uploadImage = async (base64EncodedImage) => {
@@ -230,6 +231,7 @@ const EditDogForm = ({ dog }) => {
                     name="name" 
                     id="name"
                     maxLength="30"
+                    required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
@@ -246,6 +248,7 @@ const EditDogForm = ({ dog }) => {
                         style={{ display: "none" }}
                     />
                 </span>
+                <br />
                 <br />
 
                 <button 
