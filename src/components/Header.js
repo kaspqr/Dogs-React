@@ -8,6 +8,20 @@ import HomeIcon from "../config/images/HomeIcon.png"
 
 const Header = () => {
 
+  function adjustWidthForScrollbar() {
+    const hasScrollbar = window.innerWidth > document.documentElement.clientWidth
+    const adjustedWidth = hasScrollbar ? `calc(100vw - ${window.innerWidth - document.documentElement.clientWidth}px)` : '100vw'
+  
+    const elementsToAdjust = document.querySelectorAll('#layout-header')
+    elementsToAdjust.forEach(element => {
+      element.style.width = adjustedWidth
+    })
+  }
+    
+  // Call the function initially and when the window is resized
+  adjustWidthForScrollbar()
+  window.addEventListener('resize', adjustWidthForScrollbar)
+
   const { userId, isAdmin, isSuperAdmin } = useAuth()
 
   const navigate = useNavigate()

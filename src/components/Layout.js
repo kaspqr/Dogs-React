@@ -9,7 +9,7 @@ const Layout = () => {
     const hasScrollbar = window.innerWidth > document.documentElement.clientWidth
     const adjustedWidth = hasScrollbar ? `calc(100vw - ${window.innerWidth - document.documentElement.clientWidth}px)` : '100vw'
   
-    const elementsToAdjust = document.querySelectorAll('#content, #layout-header')
+    const elementsToAdjust = document.querySelectorAll('#content')
     elementsToAdjust.forEach(element => {
       element.style.width = adjustedWidth
     })
