@@ -20,8 +20,9 @@ const EmailVerify = () => {
     })
 
     const successMsg = <>
-        <h1>Email Verified Successfully</h1>
-        <button onClick={() => navigate('/login')} className="black-button">Login</button>
+        <p>Email Verified Successfully</p>
+        <br />
+        <p><button onClick={() => navigate('/login')} className="black-button">Login</button></p>
     </>
 
     // GET all tokens
@@ -53,8 +54,9 @@ const EmailVerify = () => {
 
     if (user?.verified === true) {
         return <>
-            <h1>This account has already been verified</h1>
-            <button onClick={() => navigate('/login')} className="black-button">Login</button>
+            <p>This account has already been verified</p>
+            <br />
+            <p><button onClick={() => navigate('/login')} className="black-button">Login</button></p>
         </>
     }
 

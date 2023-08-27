@@ -65,7 +65,7 @@ const FAQ = () => {
 
             <p>
                 The information you see on a user's page will vary. If you're logged in and are on your own profile, you 
-                have an Edit Profile Button at the top. However, when another user visits your page, they will have an 
+                have an Edit Profile button at the top. However, when another user visits your page, they will have an 
                 option to message your and an option to propose transferring any of their dogs to you. In addition, if 
                 you have proposed any of your dogs to them, they will have the option to accept said dogs on your page. 
                 Other users also have the option to report your profile to the moderators of the website.
@@ -119,7 +119,7 @@ const FAQ = () => {
                 Currently the default homepage of Paw Retriever is the list of advertisements. You can view and filter 
                 through all advertisements, and if you're logged in, you have an option to Post an Advertisement. All 
                 inputs, apart from adding a picture and a region of the advertisement's location, are required. Ofcourse, 
-                when you make an advertisement for a Found or Lost dog or item, the price and currency inputs will be 
+                when you make an advertisement for a Found or Lost dog, or item, the price and currency inputs will be 
                 disabled and therefore not required either.
             </p>
             <br />
@@ -200,7 +200,6 @@ const FAQ = () => {
             <br />
 
             <h3>Essential Cookies</h3>
-            <br />
 
             <p>
                 We use essential cookies that are necessary for the proper functioning of the Website. 

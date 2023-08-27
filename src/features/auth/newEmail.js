@@ -20,8 +20,9 @@ const NewEmail = () => {
     })
 
     const successMsg = <>
-        <h1>Email Verified Successfully</h1>
-        <button onClick={() => navigate('/login')} className="black-button">Login</button>
+        <p>Email Verified Successfully</p>
+        <br />
+        <p><button onClick={() => navigate('/login')} className="black-button">Login</button></p>
     </>
 
     // GET all tokens

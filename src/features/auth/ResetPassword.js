@@ -86,13 +86,13 @@ const ResetPassword = () => {
         </form>
 
         <button 
-            title="Reset Password"
+            title="Request Link"
             onClick={handleSubmit}
             className="black-button three-hundred"
             disabled={!EMAIL_REGEX.test(email) || email !== confirmEmail}
             style={!EMAIL_REGEX.test(email) || email !== confirmEmail ? {backgroundColor: "grey", cursor: "default"} : null}
         >
-            Reset Password
+            Request Link
         </button>
         </main>
     </>
