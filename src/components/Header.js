@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
 import { useSendLogoutMutation } from "../features/auth/authApiSlice"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faComments, faUser, faDoorOpen, faFlag, faClipboardUser, faBars } from "@fortawesome/free-solid-svg-icons"
+import { faComments, faUser, faDoorOpen, faFlag, faClipboardUser, faBars, faCircleQuestion } from "@fortawesome/free-solid-svg-icons"
 import HomeIcon from "../config/images/HomeIcon.png"
 
 const Header = () => {
@@ -102,6 +102,13 @@ const Header = () => {
 
         <Link 
           className="header-link header-hover" 
+          to={'/faq'}
+        >
+          <FontAwesomeIcon icon={faCircleQuestion} />
+        </Link>
+
+        <Link 
+          className="header-link header-hover" 
           to={'/conversations'}
         >
           <FontAwesomeIcon icon={faComments} />
@@ -182,6 +189,14 @@ const Header = () => {
             <p>My Profile</p>
           </Link>
 
+          <Link 
+            className="nav-dropdown header-link header-hover" 
+            to={'/faq'}
+            onClick={onMobileLinkClicked}
+          >
+            <p>FAQ</p>
+          </Link>
+
           <a 
             className="nav-dropdown header-link header-hover" 
             onClick={onLogoutClicked}
@@ -194,6 +209,10 @@ const Header = () => {
   } else { // If not logged in
     // Contents of desktop menu
     navRight = <span className="nav-right-span">
+      <Link className="header-link header-hover" to={'/faq'}>
+        <FontAwesomeIcon icon={faCircleQuestion} />
+      </Link>
+
       <Link className="header-link header-hover" to={'/register'}>
         <FontAwesomeIcon icon={faClipboardUser} />
       </Link>
@@ -251,6 +270,14 @@ const Header = () => {
             onClick={onMobileLinkClicked}
           >
             <p>Users</p>
+          </Link>
+
+          <Link 
+            className="nav-dropdown header-link header-hover" 
+            to={'/faq'}
+            onClick={onMobileLinkClicked}
+          >
+            <p>FAQ</p>
           </Link>
 
         </div>

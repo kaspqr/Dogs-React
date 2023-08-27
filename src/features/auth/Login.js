@@ -118,7 +118,7 @@ const Login = () => {
           <br />
 
           <label htmlFor="persist">
-            <b>Trust This Device </b>
+            <b>Stay Logged In </b>
             <FontAwesomeIcon name="persist" onClick={handleToggle} size="xl" icon={persist ? faToggleOn : faToggleOff} color={persist ? 'rgb(23, 152, 207)' : 'grey'} />
           </label>
           <br />

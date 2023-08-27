@@ -53,6 +53,9 @@ import NewEmail from "./features/auth/newEmail"
 import ResetPassword from "./features/auth/ResetPassword"
 import ChoosePassword from "./features/auth/ChoosePassword"
 
+import PrivacyPolicy from "./features/policy/PrivacyPolicy"
+import FAQ from "./features/policy/Faq"
+
 function App() {
 
   useTitle('Paw Retriever')
@@ -69,6 +72,7 @@ function App() {
               <Route path="advertisements/edit/:id" element={<EditAdvertisement />} />
               <Route path="advertisements/new" element={<NewAdvertisement />} />
             </Route>
+            <Route path="faq" element={<FAQ />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<NewUserForm />} />
             <Route path="resetpassword">

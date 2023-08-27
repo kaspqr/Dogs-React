@@ -258,7 +258,7 @@ const EditDogForm = ({ dog }) => {
                     disabled={!previewSource || uploadLoading === true}
                     style={!previewSource || uploadLoading === true ? {backgroundColor: "grey", cursor: "default"} : null}
                 >
-                    Update
+                    Update Picture
                 </button>
                 <br />
 
