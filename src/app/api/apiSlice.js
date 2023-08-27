@@ -4,7 +4,7 @@ import { setCredentials } from '../../features/auth/authSlice'
 const baseQuery = fetchBaseQuery({
 
     // URL of the backend
-    baseUrl: 'http://localhost:3500',
+    baseUrl: 'https://pawretriever-api.ondrender.com',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token
