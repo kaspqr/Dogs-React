@@ -34,7 +34,7 @@ const ResetPassword = () => {
         if (isSuccess) {
             setEmail('')
             setConfirmEmail('')
-            setErrMsg('A link to reset your password has been sent to the specified email address')
+            setErrMsg('A link to reset your password has been sent to the specified email address. Please check the Spam folder if you cannot find it in your Primary emails.')
         }
     }, [isSuccess])
 

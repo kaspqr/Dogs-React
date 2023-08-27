@@ -66,7 +66,7 @@ const NewUserForm = () => {
             setCountry('')
             setRegion('')
             setBio('')
-            setSuccessMsg('A verification link has been sent to your email. You will be able to log in once your account is verified.')
+            setSuccessMsg('A verification link has been sent to your email. Please check the Spam folder if you cannot find it in your Primary emails. You will be able to log in once your account is verified.')
         }
     }, [isSuccess, navigate])
 
