@@ -206,8 +206,6 @@ const DogsList = () => {
     })
 
     setFilteredIds(filteredIds || [])
-
-    console.log(filteredIds)
     
   }
 
