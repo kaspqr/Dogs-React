@@ -53,7 +53,6 @@ import NewEmail from "./features/auth/newEmail"
 import ResetPassword from "./features/auth/ResetPassword"
 import ChoosePassword from "./features/auth/ChoosePassword"
 
-import PrivacyPolicy from "./features/policy/PrivacyPolicy"
 import FAQ from "./features/policy/Faq"
 
 function App() {
