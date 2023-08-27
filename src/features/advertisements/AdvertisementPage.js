@@ -72,7 +72,14 @@ const AdvertisementPage = () => {
             </p>
             {advertisement?.image?.length ? <><p><img className="three-hundred" src={advertisement?.image} alt="Advertisement" /></p><br /></> : null}
             <p><b>{advertisement?.type}</b></p>
-            <p>{advertisement?.type === 'Require Female Dog' || advertisement?.type === 'Require Male Dog' ? 'In need of ' + advertisement?.breed : null}</p>
+            <p>
+                {advertisement?.type === 'Require Female Dog' || advertisement?.type === 'Require Male Dog' 
+                    ? advertisement?.breed?.length 
+                        ? advertisement?.breed 
+                        : 'Any breed'
+                    : null
+                }
+            </p>
             {advertisement?.type !== "Found" && advertisement?.type !== "Lost" ? <p><b>{advertisement?.currency}{advertisement?.price}</b></p> : null}
             <br />
             <p><b>Location</b></p>
