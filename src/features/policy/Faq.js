@@ -9,6 +9,10 @@ const FAQ = () => {
             <p>Last Updated: 27th of August, 2023</p>
             <p>Contact: <a href="mailto:midendcode@gmail.com">midendcode@gmail.com</a></p>
             <br />
+            <br />
+
+            <h2>Introduction</h2>
+            <br />
 
             <p>
                 Paw Retriever is a website (and soon also an app) that allows people to search for dogs 
@@ -34,6 +38,7 @@ const FAQ = () => {
                 you have a pure breed female dog and wish for it to have a litter of the same breed? All 
                 that and more is possible in Paw Retriever.
             </p>
+            <br />
             <br />
 
             <h2>Users</h2>
