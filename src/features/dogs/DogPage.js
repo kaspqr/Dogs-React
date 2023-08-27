@@ -6,13 +6,8 @@ import { useNavigate, useParams, Link } from "react-router-dom"
 import { useState, useEffect, Fragment } from "react"
 
 import useAuth from "../../hooks/useAuth"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const DogPage = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const navigate = useNavigate()
 

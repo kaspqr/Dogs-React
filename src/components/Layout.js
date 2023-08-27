@@ -5,20 +5,6 @@ import { useGetUsersQuery } from "../features/users/usersApiSlice"
 
 const Layout = () => {
 
-  function adjustWidthForScrollbar() {
-    const hasScrollbar = window.innerWidth > document.documentElement.clientWidth
-    const adjustedWidth = hasScrollbar ? `calc(100vw - ${window.innerWidth - document.documentElement.clientWidth}px)` : '100vw'
-  
-    const elementsToAdjust = document.querySelectorAll('#content')
-    elementsToAdjust.forEach(element => {
-      element.style.width = adjustedWidth
-    })
-  }
-    
-  // Call the function initially and when the window is resized
-  adjustWidthForScrollbar()
-  window.addEventListener('resize', adjustWidthForScrollbar)
-
   const { userId } = useAuth()
 
   // GET the current user with all of it's .values

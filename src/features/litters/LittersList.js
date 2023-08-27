@@ -11,13 +11,8 @@ import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-
 import { useState, useEffect } from "react"
 import Calendar from "react-calendar"
 import '../../styles/customCalendar.css'
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const LittersList = () => {
-
-  // Call the function initially and when the window is resized
-  adjustWidth()
-  window.addEventListener('resize', adjustWidth)
 
   const { userId } = useAuth()
 
@@ -85,7 +80,6 @@ const LittersList = () => {
     } else {
       filterDiv.style.display = 'none'
     }
-    adjustWidth()
   }
 
   const handleSearchClicked = () => {

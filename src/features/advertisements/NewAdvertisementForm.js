@@ -9,13 +9,8 @@ import { AdvertisementTypes } from "../../config/advertisementTypes"
 import { Currencies } from "../../config/currencies"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUpload } from "@fortawesome/free-solid-svg-icons"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const NewAdvertisementForm = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const { userId } = useAuth()
 

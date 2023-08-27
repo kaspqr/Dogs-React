@@ -7,13 +7,8 @@ import useAuth from "../../hooks/useAuth"
 import Dog from '../dogs/Dog'
 import { useState, useEffect } from "react"
 import DogIcon from "../../config/images/DogIcon.jpg"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const LitterPage = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     // PATCH function to update a dog when added to THE litter
     const [updateDog, {

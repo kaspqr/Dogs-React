@@ -3,13 +3,8 @@ import { useGetUsersQuery } from "../users/usersApiSlice"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { useState, useEffect } from "react"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const AdvertisementPage = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const navigate = useNavigate()
 

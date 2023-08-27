@@ -8,13 +8,8 @@ import { Regions } from "../../config/regions"
 import useAuth from "../../hooks/useAuth"
 import Calendar from "react-calendar"
 import '../../styles/customCalendar.css'
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const NewLitterForm = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const { userId } = useAuth()
 

@@ -1,13 +1,8 @@
 import useAuth from "../../hooks/useAuth"
 import { useState, useEffect } from "react"
 import { useAddNewResetTokenMutation } from "./resetTokensApiSlice"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const ResetPassword = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const { userId } = useAuth()
     const [email, setEmail] = useState('')

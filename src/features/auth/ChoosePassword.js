@@ -3,13 +3,8 @@ import { useState, useEffect } from "react"
 import { useGetResetTokensQuery } from "./resetTokensApiSlice"
 import { useResetPasswordMutation, useGetUsersQuery } from "../users/usersApiSlice"
 import { useParams, useNavigate } from "react-router-dom"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const ResetPassword = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const navigate = useNavigate()
 

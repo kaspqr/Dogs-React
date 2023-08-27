@@ -3,13 +3,8 @@ import { useParams } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { useState, useEffect } from "react"
 import { useAddNewMessageReportMutation } from "./messageReportsApiSlice"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const MessageReportPage = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const { userId } = useAuth()
     const { messageid } = useParams()

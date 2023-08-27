@@ -5,13 +5,8 @@ import useAuth from "../../hooks/useAuth"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const NewUserForm = () => {
-
-    // Call the function initially and when the window is resized
-    adjustWidth()
-    window.addEventListener('resize', adjustWidth)
 
     const USERNAME_REGEX = /^[A-z0-9]{6,20}$/
     const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/

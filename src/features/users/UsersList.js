@@ -6,13 +6,8 @@ import { useState, useEffect } from "react"
 import { Countries } from "../../config/countries"
 import { bigCountries } from "../../config/bigCountries"
 import { Regions } from "../../config/regions"
-import { adjustWidth } from "../../utils/adjustWidth"
 
 const UsersList = () => {
-
-  // Call the function initially and when the window is resized
-  adjustWidth()
-  window.addEventListener('resize', adjustWidth)
 
   const [username, setUsername] = useState('')
   const [country, setCountry] = useState('')
@@ -50,7 +45,6 @@ const UsersList = () => {
     } else {
       filterDiv.style.display = 'none'
     }
-    adjustWidth()
   }
 
   // GET all the users
