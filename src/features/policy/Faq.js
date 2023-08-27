@@ -219,6 +219,7 @@ const FAQ = () => {
                 in this Privacy Policy.
             </p>
             <br />
+            <br />
 
             <h2>Cookies</h2>
             <br />
@@ -292,7 +293,7 @@ const FAQ = () => {
             <br />
             <br />
 
-            <h2>6. Contact Us</h2>
+            <h2>Contact Us</h2>
             <br />
 
             <p>
