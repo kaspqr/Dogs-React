@@ -53,6 +53,7 @@ const NewAdvertisementForm = () => {
             setCurrency('$')
             setCountry('Argentina')
             setRegion('')
+            setBreed('')
             setInfo('')
             navigate('/')
         }

@@ -10,6 +10,7 @@ import { Currencies } from "../../config/currencies"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { useState, useEffect } from "react"
+import { Breeds } from "../../config/breeds"
 
 const AdvertisementsList = () => {
 
@@ -22,12 +23,18 @@ const AdvertisementsList = () => {
   const [country, setCountry] = useState('')
   const [region, setRegion] = useState('')
   const [currency, setCurrency] = useState('')
+  const [breed, setBreed] = useState('')
   const [lowestPrice, setLowestPrice] = useState('')
   const [highestPrice, setHighestPrice] = useState('')
   const [filteredIds, setFilteredIds] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [newPage, setNewPage] = useState('')
   const [sort, setSort] = useState('')
+
+  const breeds = [ ...Object.values(Breeds) ]
+  const breedOptions = breeds.map(breed => (
+      <option key={breed} value={breed}>{breed}</option>
+  ))
 
   const currencyDisabled = type === 'Found' || type === 'Lost' || type === ''
 
@@ -84,6 +91,11 @@ const AdvertisementsList = () => {
       setHighestPrice('')
       setSort('')
     }
+
+    if (e.target.value !== 'Require Female Dog' && e.target.value !== 'Require Male Dog') {
+      setBreed('')
+    }
+
     setType(e.target.value)
   }
 
@@ -126,12 +138,18 @@ const AdvertisementsList = () => {
         return ad.type === type
       })
       : filteredAdsCountry
-  
-    const filteredAdsCurrency = currency?.length
+
+    const filteredAdsBreed = breed?.length
       ? filteredAdsType?.filter((ad) => {
-        return ad.currency === currency
+        return ad.breed === breed
       })
       : filteredAdsType
+  
+    const filteredAdsCurrency = currency?.length
+      ? filteredAdsBreed?.filter((ad) => {
+        return ad.currency === currency
+      })
+      : filteredAdsBreed
   
     const filteredAdsLowestPrice = lowestPrice?.length
       ? filteredAdsCurrency?.filter((ad) => {
@@ -239,6 +257,22 @@ const AdvertisementsList = () => {
                   >
                     <option value="">--</option>
                     {AdvertisementTypes}
+                  </select>
+                  <br />
+
+                  <label className="top-spacer" htmlFor="breed">
+                    <b>Breed Required</b>
+                  </label>
+                  <br />
+                  <select 
+                      disabled={type !== 'Require Female Dog' && type !== 'Require Male Dog'}
+                      id="breed"
+                      name="breed"
+                      value={breed}
+                      onChange={(e) => setBreed(e.target.value)}
+                  >
+                      <option value="">--</option>
+                      {breedOptions}
                   </select>
                   <br />
                   
