@@ -127,7 +127,7 @@ const EditUserForm = ({ user }) => {
 
         try {
             setUploadMessage('')
-            await fetch('http://localhost:3500/userimages', {
+            await fetch('https://pawretriever-api.onrender.com/userimages', {
                 method: 'POST',
                 body: JSON.stringify({ 
                     data: base64EncodedImage,

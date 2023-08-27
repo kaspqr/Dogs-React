@@ -28,8 +28,8 @@ const Advertisement = ({ advertisementId }) => {
         <div className="advertisement-div">
             <div className="advertisement-div-image">
                 {advertisement?.image?.length 
-                    ? <img width="150px" height="150px" className="advertisement-picture" src={advertisement?.image} alt="Advertisement" />
-                    : <img width="150px" height="150px" className="advertisement-picture" src={AdIcon} alt="Advertisement" />
+                    ? <img className="advertisement-picture" src={advertisement?.image} alt="Advertisement" />
+                    : <img className="advertisement-picture" src={AdIcon} alt="Advertisement" />
                 }
             </div>
             <div className="advertisement-div-info">

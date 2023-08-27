@@ -161,7 +161,7 @@ const EditDogForm = ({ dog }) => {
 
         try {
             setUploadMessage('')
-            await fetch('http://localhost:3500/dogimages', {
+            await fetch('https://pawretriever-api.onrender.com/dogimages', {
                 method: 'POST',
                 body: JSON.stringify({ 
                     data: base64EncodedImage,

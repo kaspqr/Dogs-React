@@ -145,7 +145,7 @@ const NewAdvertisementForm = () => {
 
                 {previewSource && <>
                     <br />
-                    <img height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <img className="three-hundred" src={previewSource} alt="chosen" />
                     <br />
                 </>}
 

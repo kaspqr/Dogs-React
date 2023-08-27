@@ -203,6 +203,8 @@ input {
 
 .advertisement-picture {
   border-radius: 7px;
+  max-width: 150px;
+  max-height: 150px;
 }
 
 input[type="file"] {

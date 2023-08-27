@@ -86,7 +86,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
         try {
             setUploadMessage('')
-            await fetch('http://localhost:3500/advertisementimages', {
+            await fetch('https://pawretriever-api.onrender.com/advertisementimages', {
                 method: 'POST',
                 body: JSON.stringify({ 
                     data: base64EncodedImage,
@@ -177,7 +177,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
                 {previewSource && <>
                     <br />
-                    <img height="300px" width="300px" src={previewSource} alt="chosen" />
+                    <img className="three-hundred" src={previewSource} alt="chosen" />
                     <br />
                 </>}
 

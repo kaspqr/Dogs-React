@@ -38,7 +38,7 @@ const NewEmail = () => {
 
     const verifyEmailUrl = async () => {
         try {
-            const response = await fetch(`http://localhost:3500/users/${params.id}/verifyemail/${params.emailtoken}`)
+            const response = await fetch(`https://pawretriever-api.onrender.com/users/${params.id}/verifyemail/${params.emailtoken}`)
 
             if (response.status === 200) {
                 return successMsg
