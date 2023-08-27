@@ -9,10 +9,16 @@ import { AdvertisementTypes } from "../../config/advertisementTypes"
 import { Currencies } from "../../config/currencies"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUpload } from "@fortawesome/free-solid-svg-icons"
+import { Breeds } from "../../config/breeds"
 
 const NewAdvertisementForm = () => {
 
     const { userId } = useAuth()
+
+    const breeds = [ ...Object.values(Breeds) ]
+    const breedOptions = breeds.map(breed => (
+        <option key={breed} value={breed}>{breed}</option>
+    ))
 
     // POST method for a new advertisement
     const [addNewAdvertisement, {
@@ -33,6 +39,7 @@ const NewAdvertisementForm = () => {
     const [currency, setCurrency] = useState('$')
     const [country, setCountry] = useState('Argentina')
     const [region, setRegion] = useState('')
+    const [breed, setBreed] = useState('')
     const [info, setInfo] = useState('')
     const [previewSource, setPreviewSource] = useState()
     const fileInputRef = useRef(null)
@@ -83,7 +90,7 @@ const NewAdvertisementForm = () => {
         e.preventDefault()
         if (canSave) {
             // POST method for an advertisement
-            await addNewAdvertisement({ poster: userId, title, price, type, info, currency, country, region, image: previewSource })
+            await addNewAdvertisement({ poster: userId, title, price, type, info, currency, country, region, breed, image: previewSource })
         }
     }
 
@@ -101,6 +108,11 @@ const NewAdvertisementForm = () => {
         } else if (currency === '') {
             setCurrency('$')
         }
+
+        if (e.target.value !== 'Require Female Dog' && e.target.value !== 'Require Male Dog') {
+            setBreed('')
+        }
+
         setType(e.target.value)
     }
 
@@ -160,6 +172,22 @@ const NewAdvertisementForm = () => {
                     onChange={handleTypeChanged}
                 >
                     {AdvertisementTypes}
+                </select>
+                <br />
+
+                <label className="top-spacer" htmlFor="breed">
+                    <b>Breed Required</b>
+                </label>
+                <br />
+                <select 
+                    disabled={type !== 'Require Female Dog' && type !== 'Require Male Dog'}
+                    id="breed"
+                    name="breed"
+                    value={breed}
+                    onChange={(e) => setBreed(e.target.value)}
+                >
+                    <option value="">--</option>
+                    {breedOptions}
                 </select>
                 <br />
                 

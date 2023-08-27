@@ -10,6 +10,32 @@ const FAQ = () => {
             <p>Contact: <a href="mailto:midendcode@gmail.com">midendcode@gmail.com</a></p>
             <br />
 
+            <p>
+                Paw Retriever is a website (and soon also an app) that allows people to search for dogs 
+                all around the world. With it's ability to filter through set inputs, you would be able 
+                to track down a German Shepherd in your region if you ever saw one roaming around freely 
+                on the street, then open it's administrative user's profile page and message them about it.
+            </p>
+            <br />
+
+            <p>
+                Ever wished it was possible to create a family tree for your dog? Paw Retriever's litters 
+                have you covered. You can create one if you've added the litter's mother to our database. 
+                After doing so, you can add a father and puppies to it. Simultaneously, other users are 
+                able to propose their dogs as the father and as puppies of the litter, which you could 
+                then accept. Each dog's instant family tree is listed on their profile page, which also 
+                includes all other provided information about them - even socials, such as links to the 
+                dog's own instagram, facebook, youtube and tiktok.
+            </p>
+            <br />
+
+            <p>
+                In addition, you can make and look through advertisements. Looking to buy or sell a dog? Perhaps 
+                you have a pure breed female dog and wish for it to have a litter of the same breed? All 
+                that and more is possible in Paw Retriever.
+            </p>
+            <br />
+
             <h2>Users</h2>
             <br />
 

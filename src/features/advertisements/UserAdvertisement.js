@@ -28,7 +28,8 @@ const UserAdvertisement = ({ advertisementId }) => {
                 <p><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></p>
                 <br />
                 <p><b>{advertisement?.type}</b></p>
-                <p>{advertisement?.type !== 'Found' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</p>
+                <p>{advertisement?.type === 'Require Female Dog' || advertisement?.type === 'Require Male Dog' ? advertisement?.breed : null}</p>
+                <p>{advertisement?.type !== 'Found' && advertisement?.type !== 'Lost' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</p>
                 <p>{advertisement?.region?.length && advertisement?.region !== 'none ' ? `${advertisement?.region}, ` : null}{advertisement?.country}</p>
             </div>
         </div>

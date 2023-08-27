@@ -154,7 +154,6 @@ const NewDogForm = () => {
                     value={breed}
                     onChange={handleBreedChanged}
                 >
-                    <option value="" disabled={true}>Breed</option>
                     {breedOptions}
                 </select>
                 <br />
