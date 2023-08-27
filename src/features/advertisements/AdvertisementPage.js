@@ -75,7 +75,7 @@ const AdvertisementPage = () => {
                 {windowWidth > 600 ? null : <br />}
                 <span className={windowWidth > 600 ? "nav-right" : null}><b>Posted by <Link className="orange-link" to={`/users/${user?.id}`}>{user?.username}</Link></b></span>
             </p>
-            {advertisement?.image?.length ? <><p><img width="300" height="300" src={advertisement?.image} alt="Advertisement" /></p><br /></> : null}
+            {advertisement?.image?.length ? <><p><img className="three-hundred" src={advertisement?.image} alt="Advertisement" /></p><br /></> : null}
             <p><b>{advertisement?.type}</b></p>
             {advertisement?.type !== "Found" ? <p><b>{advertisement?.currency}{advertisement?.price}</b></p> : null}
             <br />

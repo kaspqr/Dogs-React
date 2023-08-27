@@ -20,6 +20,7 @@ const ReportedUserPage = () => {
 
     // DELETE method to delete the user report
     const [deleteUserReport, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
@@ -42,6 +43,7 @@ const ReportedUserPage = () => {
         await deleteUserReport({ id: userReport?.id })
     }
 
+    if (isDelLoading) return <p>Loading...</p>
     if (isDelSuccess) navigate('/userreports')
     if (isDelError) return <p>{delerror?.data?.message}</p>
 

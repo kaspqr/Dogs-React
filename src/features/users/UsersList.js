@@ -50,6 +50,7 @@ const UsersList = () => {
     } else {
       filterDiv.style.display = 'none'
     }
+    adjustWidth()
   }
 
   // GET all the users

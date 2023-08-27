@@ -21,6 +21,7 @@ const ReportedAdvertisementPage = () => {
 
     // DELETE method to delete the advertisement report
     const [deleteAdvertisementReport, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
@@ -50,6 +51,7 @@ const ReportedAdvertisementPage = () => {
         await deleteAdvertisementReport({ id: advertisementReport?.id })
     }
 
+    if (isDelLoading) return <p>Loading...</p>
     if (isDelSuccess) navigate('/advertisementreports')
     if (isDelError) return <p>{delerror?.data?.message}</p>
 

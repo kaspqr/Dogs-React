@@ -99,6 +99,7 @@ const DogsList = () => {
     } else {
       filterDiv.style.display = 'none'
     }
+    adjustWidth()
   }
 
   const handleSearchClicked = () => {

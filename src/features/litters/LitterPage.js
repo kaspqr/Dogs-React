@@ -25,6 +25,7 @@ const LitterPage = () => {
 
     // DELETE function for THE litter
     const [deleteLitter, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delError
@@ -32,6 +33,7 @@ const LitterPage = () => {
 
     // POST function for THE father proposal
     const [addNewFatherPropose, {
+        isLoading: isAddFatherProposeLoading,
         isSuccess: isAddFatherProposeSuccess,
         isError: isAddFatherProposeError,
         error: addFatherProposeError
@@ -39,6 +41,7 @@ const LitterPage = () => {
 
     // POST function for THE puppy proposal
     const [addNewPuppyPropose, {
+        isLoading: isAddPuppyProposeLoading,
         isSuccess: isAddPuppyProposeSuccess,
         isError: isAddPuppyProposeError,
         error: addPuppyProposeError
@@ -142,8 +145,8 @@ const LitterPage = () => {
     let filteredDogs
     let filteredUserDogs
     
-    if (isLoading || isUpdateLoading || isLitterLoading || isAllFatherProposesLoading 
-        || isAllPuppyProposesLoading) dogContent = <p>Loading...</p>
+    if (isLoading || isDelLoading || isUpdateLoading || isLitterLoading || isAllFatherProposesLoading 
+        || isAddFatherProposeLoading || isAddPuppyProposeLoading || isAllPuppyProposesLoading) dogContent = <p>Loading...</p>
     
     if (isError) dogContent = <p>{error?.data?.message}</p>
     if (isUpdateError) dogContent = <p>{updateError?.data?.message}</p>

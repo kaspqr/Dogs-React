@@ -69,7 +69,7 @@ const Header = () => {
 
   const onLogoutClicked = () => {
     sendLogout()
-    if (!windowWidth > 600) {
+    if (windowWidth <= 600) {
       onMobileLinkClicked()
     }
   }

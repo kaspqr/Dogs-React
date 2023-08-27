@@ -21,6 +21,7 @@ const ReportedMessagePage = () => {
 
     // DELETE method to delete the message report
     const [deleteMessageReport, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
@@ -50,6 +51,7 @@ const ReportedMessagePage = () => {
         await deleteMessageReport({ id: messageReport?.id })
     }
 
+    if (isDelLoading) return <p>Loading...</p>
     if (isDelSuccess) navigate('/messagereports')
     if (isDelError) return <p>{delerror?.data?.message}</p>
 

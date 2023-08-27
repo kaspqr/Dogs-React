@@ -21,6 +21,7 @@ const ReportedDogPage = () => {
 
     // DELETE method to delete the dog report
     const [deleteDogReport, {
+        isLoading: isDelLoading,
         isSuccess: isDelSuccess,
         isError: isDelError,
         error: delerror
@@ -50,6 +51,7 @@ const ReportedDogPage = () => {
         await deleteDogReport({ id: dogReport?.id })
     }
 
+    if (isDelLoading) return <p>Loading...</p>
     if (isDelSuccess) navigate('/dogreports')
     if (isDelError) return <p>{delerror?.data?.message}</p>
 

@@ -9,7 +9,7 @@ export function adjustWidth() {
             ? "300px"
             : `calc(100vw - 40px)`
   
-    const elementsThreeHundred = document.querySelectorAll(".three-hundred, select")
+    const elementsThreeHundred = document.querySelectorAll(".three-hundred, select, .react-calendar")
     elementsThreeHundred.forEach((element) => {
         element.style.width = adjustedThreeHundredWidth
     })

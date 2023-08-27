@@ -85,6 +85,7 @@ const LittersList = () => {
     } else {
       filterDiv.style.display = 'none'
     }
+    adjustWidth()
   }
 
   const handleSearchClicked = () => {
