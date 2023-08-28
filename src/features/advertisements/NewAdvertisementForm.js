@@ -34,7 +34,7 @@ const NewAdvertisementForm = () => {
     const TITLE_REGEX = /^(?!^\s*$)(?:[\w.,!?:]+(?:\s|$))+$/
 
     const [title, setTitle] = useState('')
-    const [type, setType] = useState('Sell')
+    const [type, setType] = useState('For Sale')
     const [price, setPrice] = useState('')
     const [currency, setCurrency] = useState('$')
     const [country, setCountry] = useState('Argentina')
@@ -48,7 +48,7 @@ const NewAdvertisementForm = () => {
         // Once POSTed, set everything back to default
         if (isAdvertisementSuccess) {
             setTitle('')
-            setType('Sell')
+            setType('For Sale')
             setPrice('')
             setCurrency('$')
             setCountry('Argentina')
