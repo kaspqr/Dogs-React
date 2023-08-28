@@ -101,11 +101,6 @@ input[type=number] {
   background-color: rgb(255, 248, 240);
 }
 
-.header-hover:hover {
-  color: rgb(235, 155, 52);
-  cursor: pointer;
-}
-
 .orange-background {
   color: black;
   padding: 10px;
@@ -113,11 +108,6 @@ input[type=number] {
   padding-bottom: 6px;
   border-radius: 20px;
   border: 2px solid transparent;
-}
-
-.orange-background:hover {
-  border: 2px solid rgb(235, 155, 52);
-  color: rgb(235, 155, 52);
 }
 
 .content {
@@ -271,10 +261,6 @@ input[type="file"] {
   text-decoration: none;
 }
 
-.eye-view:hover {
-  color: rgb(235, 155, 52);
-}
-
 .dog-div, 
 .user-div,
 .advertisement-div,
@@ -298,15 +284,6 @@ input[type="file"] {
 
 .report-div-reporter {
   text-align: right;
-}
-
-.dog-div:hover, 
-.advertisement-div:hover,
-.litter-div:hover,
-.conversation-div:hover,
-.user-div:hover,
-.report-div:hover {
-  background-color: rgb(255, 248, 240);
 }
 
 .litter-div-info {
@@ -373,10 +350,6 @@ input[type="file"] {
   font-weight: bold;
   cursor: pointer;
   border-radius: 3px;
-}
-
-.black-button:hover {
-  background-color: rgb(235, 155, 52);
 }
 
 .edit-advertisement-delete-button,
@@ -493,5 +466,34 @@ select {
 @media (max-width: 440px) {
   select, .three-hundred {
     width: calc(100vw - 40px);
+  }
+}
+
+@media (hover: hover) {
+  .header-hover:hover {
+    color: rgb(235, 155, 52);
+    cursor: pointer;
+  }
+
+  .black-button:hover {
+    background-color: rgb(235, 155, 52);
+  }
+
+  .orange-background:hover {
+    border: 2px solid rgb(235, 155, 52);
+    color: rgb(235, 155, 52);
+  }
+
+  .dog-div:hover, 
+  .advertisement-div:hover,
+  .litter-div:hover,
+  .conversation-div:hover,
+  .user-div:hover,
+  .report-div:hover {
+    background-color: rgb(255, 248, 240);
+  }
+
+  .eye-view:hover {
+    color: rgb(235, 155, 52);
   }
 }
