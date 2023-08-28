@@ -7,7 +7,7 @@ const FAQ = () => {
             <br />
 
             <p>Last Updated: 27th of August, 2023</p>
-            <p>Contact: <a href="mailto:midendcode@gmail.com">midendcode@gmail.com</a></p>
+            <p>Contact: <a href="mailto:info@pawretriever.com">info@pawretriever.com</a></p>
             <br />
             <br />
 
@@ -297,7 +297,7 @@ const FAQ = () => {
             <br />
 
             <p>
-                If you have any questions about this Privacy Policy or your privacy rights, please contact us at <a href="mailto:midendcode@gmail.com">midendcode@gmail.com</a>.
+                If you have any questions about this Privacy Policy or your privacy rights, please contact us at <a href="mailto:info@pawretriever.com">info@pawretriever.com</a>.
             </p>
 
         </div>
