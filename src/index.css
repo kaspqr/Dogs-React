@@ -452,6 +452,33 @@ select {
   border-bottom: 2px solid lightgray;
 }
 
+.header-hover:hover {
+  color: rgb(235, 155, 52);
+  cursor: pointer;
+}
+
+.black-button:hover {
+  background-color: rgb(235, 155, 52);
+}
+
+.orange-background:hover {
+  border: 2px solid rgb(235, 155, 52);
+  color: rgb(235, 155, 52);
+}
+
+.dog-div:hover, 
+.advertisement-div:hover,
+.litter-div:hover,
+.conversation-div:hover,
+.user-div:hover,
+.report-div:hover {
+  background-color: rgb(255, 248, 240);
+}
+
+.eye-view:hover {
+  color: rgb(235, 155, 52);
+}
+
 @media (max-width: 1000px) {
   .content {
     grid-template-columns: none;
@@ -466,34 +493,5 @@ select {
 @media (max-width: 440px) {
   select, .three-hundred {
     width: calc(100vw - 40px);
-  }
-}
-
-@media (hover: hover) {
-  .header-hover:hover {
-    color: rgb(235, 155, 52);
-    cursor: pointer;
-  }
-
-  .black-button:hover {
-    background-color: rgb(235, 155, 52);
-  }
-
-  .orange-background:hover {
-    border: 2px solid rgb(235, 155, 52);
-    color: rgb(235, 155, 52);
-  }
-
-  .dog-div:hover, 
-  .advertisement-div:hover,
-  .litter-div:hover,
-  .conversation-div:hover,
-  .user-div:hover,
-  .report-div:hover {
-    background-color: rgb(255, 248, 240);
-  }
-
-  .eye-view:hover {
-    color: rgb(235, 155, 52);
   }
 }
