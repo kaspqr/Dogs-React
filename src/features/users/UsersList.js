@@ -15,6 +15,7 @@ const UsersList = () => {
   const [filteredIds, setFilteredIds] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [newPage, setNewPage] = useState('')
+  const [inputsVisible, setInputsVisible] = useState(false)
 
   // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
@@ -38,14 +39,7 @@ const UsersList = () => {
     setCountry(e.target.value)
   }
 
-  const handleToggleFilterView = () => {
-    const filterDiv = document.getElementById('user-filter-div')
-    if (filterDiv?.style?.display === 'none') {
-      filterDiv.style.display = 'block'
-    } else {
-      filterDiv.style.display = 'none'
-    }
-  }
+  const handleToggleFilterView = () => setInputsVisible(!inputsVisible)
 
   // GET all the users
   const {
@@ -141,7 +135,7 @@ const UsersList = () => {
         <br />
         <br />
 
-        <div id="user-filter-div" style={{display: "none"}}>
+        <div style={{display: inputsVisible ? 'block' : 'none'}}>
           <form onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="user-username-search-input"><b>Username</b></label>
             <br />

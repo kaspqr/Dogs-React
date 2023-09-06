@@ -30,6 +30,7 @@ const AdvertisementsList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [newPage, setNewPage] = useState('')
   const [sort, setSort] = useState('')
+  const [inputsVisible, setInputsVisible] = useState(false)
 
   const breeds = [ ...Object.values(Breeds) ]
   const breedOptions = breeds.map(breed => (
@@ -99,14 +100,7 @@ const AdvertisementsList = () => {
     setType(e.target.value)
   }
 
-  const handleToggleFilterView = () => {
-    const filterDiv = document.getElementById('ad-filter-div')
-    if (filterDiv?.style?.display === 'none') {
-      filterDiv.style.display = 'block'
-    } else {
-      filterDiv.style.display = 'none'
-    }
-  }
+  const handleToggleFilterView = () => setInputsVisible(!inputsVisible)
 
   const handleSearchClicked = () => {
 
@@ -234,7 +228,7 @@ const AdvertisementsList = () => {
               <br />
               <br />
 
-              <div id="ad-filter-div" style={{display: "none"}}>
+              <div style={{display: inputsVisible ? 'block' : 'none'}}>
                 <form onSubmit={(e) => e.preventDefault()}>
                   <label htmlFor="advertisement-title-search-input"><b>Title</b></label>
                   <br />

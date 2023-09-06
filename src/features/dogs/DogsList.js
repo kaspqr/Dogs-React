@@ -31,6 +31,8 @@ const DogsList = () => {
   const [filteredIds, setFilteredIds] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [newPage, setNewPage] = useState('')
+  const [inputsVisible, setInputsVisible] = useState(false)
+
 
   const breeds = [ ...Object.values(Breeds) ]
   const breedOptions = breeds.map(breed => (
@@ -87,14 +89,7 @@ const DogsList = () => {
     setGender(e.target.value)
   }
 
-  const handleToggleFilterView = () => {
-    const filterDiv = document.getElementById('dog-filter-div')
-    if (filterDiv?.style?.display === 'none') {
-      filterDiv.style.display = 'block'
-    } else {
-      filterDiv.style.display = 'none'
-    }
-  }
+  const handleToggleFilterView = () => setInputsVisible(!inputsVisible)
 
   const handleSearchClicked = () => {
 
@@ -266,7 +261,7 @@ const DogsList = () => {
         <br />
         <br />
 
-        <div id="dog-filter-div" style={{display: "none"}}>
+        <div style={{display: inputsVisible ? 'block' : 'none'}}>
           <form onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="dog-name-search-input"><b>Name</b></label>
             <br />

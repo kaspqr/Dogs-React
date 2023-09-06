@@ -26,22 +26,47 @@ const Advertisement = ({ advertisementId }) => {
 
     return (
         <div className="advertisement-div">
+
             <div className="advertisement-div-image">
-                {advertisement?.image?.length 
-                    ? <img className="advertisement-picture" src={advertisement?.image} alt="Advertisement" />
-                    : <img className="advertisement-picture" src={AdIcon} alt="Advertisement" />
-                }
+                <img 
+                    className="advertisement-picture" 
+                    src={advertisement?.image?.length ? advertisement?.image : AdIcon} 
+                    alt="Advertisement" 
+                />
             </div>
+
             <div className="advertisement-div-info">
                 <p><Link className="orange-link" to={`/advertisements/${advertisementId}`}><b>{advertisement?.title}</b></Link></p>
+
                 <br />
+
                 <p><b>{advertisement?.type}</b></p>
-                <p>{advertisement?.type === 'Require Female Dog' || advertisement?.type === 'Require Male Dog' ? advertisement?.breed : null}</p>
-                <p>{advertisement?.type !== 'Found' && advertisement?.type !== 'Lost' ? <>{advertisement?.currency}{advertisement?.price}</> : null}</p>
-                <p>{advertisement?.region?.length && advertisement?.region !== 'none ' ? `${advertisement?.region}, ` : null}{advertisement?.country}</p>
+
+                <p>
+                    {advertisement?.type === 'Require Female Dog' || advertisement?.type === 'Require Male Dog' 
+                        ? advertisement?.breed : null
+                    }
+                </p>
+
+                <p>
+                    {advertisement?.type !== 'Found' && advertisement?.type !== 'Lost' 
+                        ? <>{advertisement?.currency}{advertisement?.price}</> : null
+                    }
+                </p>
+
+                <p>
+                    {advertisement?.region?.length && advertisement?.region !== 'none ' 
+                        ? `${advertisement?.region}, ` : null}
+                    {advertisement?.country}
+                </p>
+                
                 <br />
-                <p className="advertisement-div-admin">Posted by <Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></p>
+
+                <p className="advertisement-div-admin">
+                    Posted by <Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link>
+                </p>
             </div>
+
         </div>
     )
 }

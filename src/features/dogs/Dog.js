@@ -24,21 +24,35 @@ const Dog = ({ dogId }) => {
 
     return (
         <div className="dog-div">
+
             <div className="dog-div-image">
-                {dog?.image?.length 
-                    ? <img width="150px" height="150px" className="dog-profile-picture" src={dog?.image} alt="Dog" />
-                    : <img width="150px" height="150px" className="dog-profile-picture" src={DogIcon} alt="Dog" />
-                }
+                <img 
+                    width="150px" 
+                    height="150px" 
+                    className="dog-profile-picture" 
+                    src={dog?.image?.length ? dog?.image : DogIcon} 
+                    alt="Dog" 
+                />
             </div>
+
             <div className="dog-div-info">
                 <p><Link className="orange-link" to={`/dogs/${dogId}`}><b>{dog.name}</b></Link></p>
+
                 <br />
+
                 <p>{dog.breed}</p>
-                <p>{dog.female === true ? 'Good Girl' : 'Good Boy'}</p>
+                <p>Good{dog.female === true ? ' Girl' : ' Boy'}</p>
                 <p>Born {dog.birth?.split(' ').slice(1, 4).join(' ')}</p>
+
                 <br />
-                <p className="dog-div-admin"><span>Administered by <Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link></span></p>
+
+                <p className="dog-div-admin">
+                    <span>
+                        Administered by <Link className="orange-link" to={`/users/${user?.id}`}><b>{user?.username}</b></Link>
+                    </span>
+                </p>
             </div>
+
         </div>
     )
 }

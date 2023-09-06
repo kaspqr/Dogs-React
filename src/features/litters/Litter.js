@@ -35,6 +35,7 @@ const Litter = ({ litterId }) => {
     return (
         <div className="litter-div">
             <div className="litter-div-info">
+                
                 <p>Mother <Link className="orange-link" to={`/dogs/${mother?.id}`}><b>{mother?.name}</b></Link></p>
                 {father 
                     ? <p>Father <Link className="orange-link" to={`/dogs/${father?.id}`}><b>{father?.name}</b></Link></p>

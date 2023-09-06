@@ -28,6 +28,7 @@ const LittersList = () => {
   const [country, setCountry] = useState('')
   const [region, setRegion] = useState('')
   const [breed, setBreed] = useState('')
+  const [inputsVisible, setInputsVisible] = useState(false)
 
   const breeds = [ ...Object.values(Breeds) ]
   const breedOptions = breeds.map(breed => (
@@ -73,14 +74,7 @@ const LittersList = () => {
     setCountry(e.target.value)
   }
 
-  const handleToggleFilterView = () => {
-    const filterDiv = document.getElementById('litter-filter-div')
-    if (filterDiv?.style?.display === 'none') {
-      filterDiv.style.display = 'block'
-    } else {
-      filterDiv.style.display = 'none'
-    }
-  }
+  const handleToggleFilterView = () => setInputsVisible(!inputsVisible)
 
   const handleSearchClicked = () => {
     if (lowestPuppies?.length && highestPuppies?.length && highestPuppies < lowestPuppies) {
@@ -202,7 +196,7 @@ const LittersList = () => {
         <br />
         <br />
 
-        <div id="litter-filter-div" style={{display: "none"}}>
+        <div style={{display: inputsVisible ? 'block' : 'none'}}>
           <form onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="born-at-earliest"><b>Born at Earliest</b></label>
             <br />
