@@ -79,7 +79,7 @@ const DogsList = () => {
 
   const handleChippedChanged = (e) => {
     // Clear chipnumber if dog is not chipped, as the input will be disabled
-    if (e.target.value !== 'Yes') setChipnumber('')
+    if (e.target.value !== 'yes') setChipnumber('')
     setChipped(e.target.value)
   }
 
