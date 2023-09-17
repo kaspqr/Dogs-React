@@ -15,7 +15,7 @@ const FAQ = () => {
             <br />
 
             <p>
-                Paw Retriever is a website (and soon also an app) that allows people to search for dogs 
+                Paw Retriever is a website and an app that allows people to search for dogs 
                 all around the world. With it's ability to filter through set inputs, you would be able 
                 to track down a German Shepherd in your region if you ever saw one roaming around freely 
                 on the street, then open it's administrative user's profile page and message them about it.
