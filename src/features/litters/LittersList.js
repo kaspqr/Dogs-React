@@ -83,6 +83,8 @@ const LittersList = () => {
 
     setCurrentPage(1)
 
+    // NO POINT IN FILLING REDUX STORE WITH THE ENTIRE DATABASE? - IMPLEMENT FILTERING AND PAGINATION IN THE BACKEND
+
     const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
 
     // Go through all the filters

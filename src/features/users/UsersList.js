@@ -58,6 +58,8 @@ const UsersList = () => {
 
     setCurrentPage(1)
 
+    // NO POINT IN FILLING REDUX STORE WITH THE ENTIRE DATABASE? - IMPLEMENT FILTERING AND PAGINATION IN THE BACKEND
+
     // Go through all the filters
     const filteredUsers = username?.length
       ? Object.values(users?.entities)?.filter((user) => {

@@ -95,6 +95,8 @@ const DogsList = () => {
 
     setCurrentPage(1)
 
+    // NO POINT IN FILLING REDUX STORE WITH THE ENTIRE DATABASE? - IMPLEMENT FILTERING AND PAGINATION IN THE BACKEND
+
     // Go through all filters
     const finalBornEarliest = bornEarliest !== '' ? new Date(bornEarliest) : ''
 

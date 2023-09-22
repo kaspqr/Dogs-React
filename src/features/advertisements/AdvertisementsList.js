@@ -110,6 +110,8 @@ const AdvertisementsList = () => {
 
     setCurrentPage(1)
   
+    // NO POINT IN FILLING REDUX STORE WITH THE ENTIRE DATABASE? - IMPLEMENT FILTERING AND PAGINATION IN THE BACKEND
+
     // Go through each filter
     const filteredAdsTitle = Object.values(advertisements?.entities)?.filter((ad) => {
       return ad.title?.includes(title)
