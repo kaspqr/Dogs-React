@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { setCredentials } from '../../features/auth/auth-slices/authSlice'
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://pawretriever-api.onrender.com',
+  baseUrl: `${process.env.BACKEND_URL}`,
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.token
