@@ -1,4 +1,4 @@
-export const Countries = <>
+export const COUNTRIES = <>
     <option value="Argentina">Argentina</option>
     <option value="Australia">Australia</option>
     <option value="Austria">Austria</option>

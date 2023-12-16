@@ -1,4 +1,4 @@
-export const Regions = { 
+export const REGIONS = {
     "Argentina": <>
         <option value="Buenos Aires">Buenos Aires</option>
         <option value="Catamarca">Catamarca</option>

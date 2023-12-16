@@ -1,4 +1,4 @@
-export const Currencies = <>
+export const CURRENCIES = <>
     <option value="$">USD $</option>
     <option value="€">EUR €</option>
     <option value="£">GBP £</option>
