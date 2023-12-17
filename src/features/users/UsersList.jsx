@@ -1,15 +1,20 @@
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+
 import { useGetUsersQuery } from "./user-slices/usersApiSlice";
 import User from "./User";
+import { COUNTRIES } from "../../config/countries";
+import { BIG_COUNTRIES } from "../../config/bigCountries";
+import { REGIONS } from "../../config/regions";
+import { filterUsers } from "../utils/users.utils";
+import { alerts } from "../../components/alerts";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faArrowLeft,
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
-import { COUNTRIES } from "../../config/countries";
-import { BIG_COUNTRIES } from "../../config/bigCountries";
-import { REGIONS } from "../../config/regions";
 
 const UsersList = () => {
   const [username, setUsername] = useState("");
@@ -19,32 +24,17 @@ const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [newPage, setNewPage] = useState("");
   const [inputsVisible, setInputsVisible] = useState(false);
-
-  // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  // Function for handling the resizing of screen
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
+  const handleResize = () => setWindowWidth(window.innerWidth);
 
-  // Always check if a window is being resized
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  const handleCountryChanged = (e) => {
-    setRegion("");
-    setCountry(e.target.value);
-  };
-
-  const handleToggleFilterView = () => setInputsVisible(!inputsVisible);
-
-  // GET all the users
   const {
     data: users,
     isLoading,
@@ -57,54 +47,23 @@ const UsersList = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const handleSearchClicked = () => {
-    setCurrentPage(1);
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Loading advertisements", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
 
-    // NO POINT IN FILLING REDUX STORE WITH THE ENTIRE DATABASE? - IMPLEMENT FILTERING AND PAGINATION IN THE BACKEND
-
-    // Go through all the filters
-    const filteredUsers = username?.length
-      ? Object.values(users?.entities)?.filter((user) => {
-          return user.username.includes(username);
-        })
-      : Object.values(users?.entities);
-
-    const filteredRegion = region?.length
-      ? filteredUsers?.filter((user) => {
-          return user.region === region;
-        })
-      : filteredUsers;
-
-    const filteredCountry = country?.length
-      ? filteredRegion?.filter((user) => {
-          return user.country === country;
-        })
-      : filteredRegion;
-
-    if (!filteredCountry?.length)
-      alert("Unfortunately, no matching user has been found");
-
-    const filteredIds = filteredCountry?.reverse().map((user) => {
-      return user._id;
-    });
-
-    setFilteredIds(filteredIds || []);
-  };
-
-  // Variable for storing errors and content
-  let content;
-
-  if (isLoading) content = <p>Loading...</p>;
-
-  if (isError) content = <p>{error?.data?.message}</p>;
+  if (isError)
+    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Users");
 
   if (isSuccess) {
-    // Newer users first
     const reversedNewIds = Object.values(users?.entities)
       ?.reverse()
       .map((user) => {
         return user._id;
       });
+
+    if (!reversedNewIds?.length)
+      return <p>There are currently no active users</p>;
 
     const itemsPerPage = 20;
 
@@ -116,36 +75,28 @@ const UsersList = () => {
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
+    const goToPageButtonDisabled =
+      newPage < 1 || newPage > maxPage || parseInt(newPage) === currentPage;
 
-    // Users to display on current page
     const usersToDisplay = filteredIds?.length
       ? filteredIds.slice(startIndex, endIndex)
       : reversedNewIds.slice(startIndex, endIndex);
 
-    const goToPageButtonDisabled =
-      newPage < 1 || newPage > maxPage || parseInt(newPage) === currentPage;
-
-    // User component for each user
     const tableContent = usersToDisplay.map((userId) => (
       <User key={userId} userId={userId} />
     ));
 
-    if (!reversedNewIds?.length)
-      return <p>There are currently no active users</p>;
-
-    content = (
+    return (
       <>
         <button
           title="Toggle Search View"
           className="black-button three-hundred"
-          onClick={handleToggleFilterView}
+          onClick={() => setInputsVisible(!inputsVisible)}
         >
           Toggle Search View
         </button>
-
         <br />
         <br />
-
         <div style={{ display: inputsVisible ? "block" : "none" }}>
           <form onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="user-username-search-input">
@@ -160,9 +111,7 @@ const UsersList = () => {
               id="user-username-search-input"
               onChange={(e) => setUsername(e.target.value)}
             />
-
             <br />
-
             <label className="top-spacer" htmlFor="user-country">
               <b>Country</b>
             </label>
@@ -171,13 +120,15 @@ const UsersList = () => {
               value={country}
               name="user-country"
               id="user-country"
-              onChange={handleCountryChanged}
+              onChange={(e) => {
+                setRegion("");
+                setCountry(e.target.value);
+              }}
             >
               <option value="">--</option>
               {COUNTRIES}
             </select>
             <br />
-
             <label className="top-spacer" htmlFor="user-region">
               <b>Region</b>
             </label>
@@ -197,7 +148,16 @@ const UsersList = () => {
           </form>
           <button
             title="Search"
-            onClick={handleSearchClicked}
+            onClick={() => {
+              setCurrentPage(1);
+              const filteredUserIds = filterUsers({
+                users,
+                username,
+                region,
+                country,
+              });
+              setFilteredIds(filteredUserIds || []);
+            }}
             className="black-button search-button three-hundred"
           >
             Search{" "}
@@ -209,7 +169,6 @@ const UsersList = () => {
           <br />
           <br />
         </div>
-
         <p>
           <button
             title="Go to Previous Page"
@@ -222,9 +181,7 @@ const UsersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
           </button>
-
           {` Page ${currentPage} of ${maxPage} `}
-
           <button
             title="Go to Next Page"
             className="pagination-button"
@@ -236,14 +193,12 @@ const UsersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
-
           {windowWidth > 600 || maxPage === 1 ? null : (
             <>
               <br />
               <br />
             </>
           )}
-
           <span
             className="new-page-input-span"
             style={
@@ -284,13 +239,9 @@ const UsersList = () => {
             </button>
           </span>
         </p>
-
         <br />
-
         {tableContent}
-
         <br />
-
         <p>
           <button
             title="Go to Previous Page"
@@ -303,9 +254,7 @@ const UsersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
           </button>
-
           {` Page ${currentPage} of ${maxPage} `}
-
           <button
             title="Go to Next Page"
             className="pagination-button"
@@ -317,14 +266,12 @@ const UsersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
-
           {windowWidth > 600 || maxPage === 1 ? null : (
             <>
               <br />
               <br />
             </>
           )}
-
           <span
             className="new-page-input-span"
             style={
@@ -368,8 +315,6 @@ const UsersList = () => {
       </>
     );
   }
-
-  return content;
 };
 
 export default UsersList;

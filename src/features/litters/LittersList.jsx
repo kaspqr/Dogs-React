@@ -1,25 +1,28 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import Calendar from "react-calendar";
+import Swal from "sweetalert2";
+
 import { useGetLittersQuery } from "./litter-slices/littersApiSlice";
 import Litter from "./Litter";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
 import { COUNTRIES } from "../../config/countries";
 import { BIG_COUNTRIES } from "../../config/bigCountries";
 import { REGIONS } from "../../config/regions";
 import { BREEDS } from "../../config/breeds";
+import "../../styles/customCalendar.css";
+import { filterLitters } from "../utils/litters.utils";
+import { alerts } from "../../components/alerts";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faArrowLeft,
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
-import Calendar from "react-calendar";
-import "../../styles/customCalendar.css";
 
 const LittersList = () => {
   const { userId } = useAuth();
-
-  const PUPPIES_AMOUNT_REGEX = /^[1-9]\d{0,1}$/;
 
   const [bornEarliest, setBornEarliest] = useState("");
   const [bornLatest, setBornLatest] = useState("");
@@ -32,25 +35,19 @@ const LittersList = () => {
   const [region, setRegion] = useState("");
   const [breed, setBreed] = useState("");
   const [inputsVisible, setInputsVisible] = useState(false);
-
-  // State for checking how wide is the user's screen
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  // Function for handling the resizing of screen
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
+  const PUPPIES_AMOUNT_REGEX = /^[1-9]\d{0,1}$/;
 
-  // Always check if a window is being resized
+  const handleResize = () => setWindowWidth(window.innerWidth);
+
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // GET all the litters
   const {
     data: litters,
     isLoading,
@@ -63,101 +60,30 @@ const LittersList = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const handleBornEarliestChanged = (date) => setBornEarliest(date);
-  const handleBornLatestChanged = (date) => setBornLatest(date);
-
-  const handleCountryChanged = (e) => {
-    setRegion("");
-    setCountry(e.target.value);
-  };
-
-  const handleToggleFilterView = () => setInputsVisible(!inputsVisible);
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Loading advertisements", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
 
   const handleSearchClicked = () => {
-    if (
-      lowestPuppies?.length &&
-      highestPuppies?.length &&
-      highestPuppies < lowestPuppies
-    ) {
-      return alert(
-        "Highest amount of puppies cannot be lower than lowest amount of puppies"
-      );
-    }
-
     setCurrentPage(1);
-
-    // NO POINT IN FILLING REDUX STORE WITH THE ENTIRE DATABASE? - IMPLEMENT FILTERING AND PAGINATION IN THE BACKEND
-
-    const finalBornEarliest = bornEarliest !== "" ? new Date(bornEarliest) : "";
-
-    // Go through all the filters
-    const filteredLittersBornEarliest =
-      finalBornEarliest !== ""
-        ? Object.values(litters?.entities)?.filter((litter) => {
-            return new Date(litter.born) >= finalBornEarliest;
-          })
-        : Object.values(litters?.entities);
-
-    const finalBornLatest = bornLatest !== "" ? new Date(bornLatest) : "";
-
-    const filteredLittersBornLatest =
-      finalBornLatest !== ""
-        ? filteredLittersBornEarliest?.filter((litter) => {
-            return new Date(litter.born) <= finalBornLatest;
-          })
-        : filteredLittersBornEarliest;
-
-    const filteredLittersRegion = region?.length
-      ? filteredLittersBornLatest?.filter((litter) => {
-          return litter.region === region;
-        })
-      : filteredLittersBornLatest;
-
-    const filteredLittersCountry = country?.length
-      ? filteredLittersRegion?.filter((litter) => {
-          return litter.country === country;
-        })
-      : filteredLittersRegion;
-
-    const filteredLittersLowestPuppies = lowestPuppies?.length
-      ? filteredLittersCountry?.filter((litter) => {
-          return litter.children >= parseInt(lowestPuppies);
-        })
-      : filteredLittersCountry;
-
-    const filteredLittersBreed = breed?.length
-      ? filteredLittersLowestPuppies?.filter((litter) => {
-          return litter.breed === breed;
-        })
-      : filteredLittersLowestPuppies;
-
-    const filteredLittersHighestPuppies = highestPuppies?.length
-      ? filteredLittersBreed?.filter((litter) => {
-          return litter.children <= parseInt(highestPuppies);
-        })
-      : filteredLittersBreed;
-
-    const finalFilteredLitters = filteredLittersHighestPuppies;
-
-    if (!finalFilteredLitters?.length)
-      alert("Unfortunately, no matching litter has been found");
-
-    // Reverse to get newest to oldest
-    const filteredIds = finalFilteredLitters?.reverse().map((litter) => {
-      return litter._id;
+    const filteredLitterIds = filterLitters({
+      litters,
+      bornEarliest,
+      bornLatest,
+      region,
+      country,
+      lowestPuppies,
+      breed,
+      highestPuppies,
     });
-
-    setFilteredIds(filteredIds || []);
+    setFilteredIds(filteredLitterIds || []);
   };
 
-  // Variable for error messages and content
-  let content;
-
-  if (isLoading) content = <p>Loading...</p>;
-  if (isError) content = <p>{error?.data?.message}</p>;
+  if (isError)
+    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Litters");
 
   if (isSuccess) {
-    // Reverse original ids (without filters) to have newest come first
     const reversedNewIds = Object.values(litters?.entities)
       ?.reverse()
       .map((litter) => {
@@ -175,7 +101,6 @@ const LittersList = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
-    // Litters to display on the current page
     const littersToDisplay = filteredIds?.length
       ? filteredIds.slice(startIndex, endIndex)
       : reversedNewIds.slice(startIndex, endIndex);
@@ -183,61 +108,46 @@ const LittersList = () => {
     const goToPageButtonDisabled =
       newPage < 1 || newPage > maxPage || parseInt(newPage) === currentPage;
 
-    // Litter component for each litter
     const tableContent = littersToDisplay.map((litterId) => (
       <Litter key={litterId} litterId={litterId} />
     ));
 
+    const addNewLitterContent = (
+      <>
+        <Link to={"/litters/new"}>
+          <button
+            title="Add a New Litter"
+            className="black-button three-hundred"
+          >
+            Add a New Litter
+          </button>
+        </Link>
+        <br />
+        <br />
+      </>
+    );
+
     if (!reversedNewIds?.length) {
       return (
         <>
-          {userId?.length ? (
-            <>
-              <Link to={"/litters/new"}>
-                <button
-                  title="Add a New Litter"
-                  className="black-button three-hundred"
-                >
-                  Add a New Litter
-                </button>
-              </Link>
-              <br />
-              <br />
-            </>
-          ) : null}
+          {userId?.length && addNewLitterContent}
           <p>There are currently no litters in the database</p>
         </>
       );
     }
 
-    content = (
+    return (
       <>
-        {userId?.length ? (
-          <>
-            <Link to={"/litters/new"}>
-              <button
-                title="Add a New Litter"
-                className="black-button three-hundred"
-              >
-                Add a New Litter
-              </button>
-            </Link>
-            <br />
-            <br />
-          </>
-        ) : null}
-
+        {userId?.length && addNewLitterContent}
         <button
           title="Toggle Search View"
           className="black-button three-hundred"
-          onClick={handleToggleFilterView}
+          onClick={() => setInputsVisible(!inputsVisible)}
         >
           Toggle Search View
         </button>
-
         <br />
         <br />
-
         <div style={{ display: inputsVisible ? "block" : "none" }}>
           <form onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="born-at-earliest">
@@ -247,7 +157,7 @@ const LittersList = () => {
             <Calendar
               name="born-at-earliest"
               maxDate={bornLatest || new Date()}
-              onChange={handleBornEarliestChanged}
+              onChange={(date) => setBornEarliest(date)}
               value={bornEarliest}
             />
             <button
@@ -263,9 +173,7 @@ const LittersList = () => {
             >
               Clear Date
             </button>
-
             <br />
-
             <label className="top-spacer" htmlFor="born-at-latest">
               <b>Born at Latest</b>
             </label>
@@ -274,7 +182,7 @@ const LittersList = () => {
               name="born-at-latest"
               minDate={bornEarliest || null}
               maxDate={new Date()}
-              onChange={handleBornLatestChanged}
+              onChange={(date) => setBornLatest(date)}
               value={bornLatest}
             />
             <button
@@ -290,9 +198,7 @@ const LittersList = () => {
             >
               Clear Date
             </button>
-
             <br />
-
             <label className="top-spacer" htmlFor="dogs-filter-breed-select">
               <b>Breed</b>
             </label>
@@ -307,7 +213,6 @@ const LittersList = () => {
               {BREEDS}
             </select>
             <br />
-
             <label className="top-spacer" htmlFor="litter-country">
               <b>Country</b>
             </label>
@@ -316,13 +221,15 @@ const LittersList = () => {
               value={country}
               name="litter-country"
               id="litter-country"
-              onChange={handleCountryChanged}
+              onChange={(e) => {
+                setRegion("");
+                setCountry(e.target.value);
+              }}
             >
               <option value="">--</option>
               {COUNTRIES}
             </select>
             <br />
-
             <label className="top-spacer" htmlFor="litter-region">
               <b>Region</b>
             </label>
@@ -338,7 +245,6 @@ const LittersList = () => {
               {BIG_COUNTRIES?.includes(country) ? REGIONS[country] : null}
             </select>
             <br />
-
             <label
               className="top-spacer"
               htmlFor="litter-lowest-puppies-search-input"
@@ -361,9 +267,7 @@ const LittersList = () => {
                 }
               }}
             />
-
             <br />
-
             <label
               className="top-spacer"
               htmlFor="litter-highest-puppies-search-input"
@@ -386,10 +290,8 @@ const LittersList = () => {
                 }
               }}
             />
-
             <br />
             <br />
-
             <button
               title="Search"
               onClick={handleSearchClicked}
@@ -417,7 +319,6 @@ const LittersList = () => {
             <br />
           </form>
         </div>
-
         <p>
           <button
             title="Go to Previous Page"
@@ -430,9 +331,7 @@ const LittersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
           </button>
-
           {` Page ${currentPage} of ${maxPage} `}
-
           <button
             title="Go to Next Page"
             className="pagination-button"
@@ -444,14 +343,12 @@ const LittersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
-
           {windowWidth > 600 || maxPage === 1 ? null : (
             <>
               <br />
               <br />
             </>
           )}
-
           <span
             className="new-page-input-span"
             style={
@@ -492,13 +389,9 @@ const LittersList = () => {
             </button>
           </span>
         </p>
-
         <br />
-
         {tableContent}
-
         <br />
-
         <p>
           <button
             title="Go to Previous Page"
@@ -511,9 +404,7 @@ const LittersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
           </button>
-
           {` Page ${currentPage} of ${maxPage} `}
-
           <button
             title="Go to Next Page"
             className="pagination-button"
@@ -525,14 +416,12 @@ const LittersList = () => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
-
           {windowWidth > 600 || maxPage === 1 ? null : (
             <>
               <br />
               <br />
             </>
           )}
-
           <span
             className="new-page-input-span"
             style={
@@ -576,8 +465,6 @@ const LittersList = () => {
       </>
     );
   }
-
-  return content;
 };
 
 export default LittersList;

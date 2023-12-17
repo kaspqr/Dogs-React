@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -18,6 +18,7 @@ import { alerts } from "../../components/alerts";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { filterAdvertisements } from "../utils/advertisements.utils";
 
 const AdvertisementsList = () => {
   const { userId } = useAuth();
@@ -47,6 +48,11 @@ const AdvertisementsList = () => {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
+
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Loading advertisements", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
 
   const PRICE_REGEX = /^[1-9]\d{0,11}$/;
   const currencyDisabled = type === "Found" || type === "Lost" || type === "";
@@ -83,83 +89,35 @@ const AdvertisementsList = () => {
       highestPrice?.length &&
       highestPrice < lowestPrice
     ) {
-      alerts.noResultsAlert("Highest price cannot be lower than lowest price");
+      alerts.errorAlert("Highest price cannot be lower than lowest price");
       return;
     }
 
     setCurrentPage(1);
 
-    const filteredAdsTitle = Object.values(advertisements?.entities)?.filter(
-      (ad) => {
-        return ad.title?.includes(title);
-      }
-    );
-
-    const filteredAdsRegion = region?.length
-      ? filteredAdsTitle?.filter((ad) => {
-          return ad.region === region;
-        })
-      : filteredAdsTitle;
-
-    const filteredAdsCountry = country?.length
-      ? filteredAdsRegion?.filter((ad) => {
-          return ad.country === country;
-        })
-      : filteredAdsRegion;
-
-    const filteredAdsType = type?.length
-      ? filteredAdsCountry?.filter((ad) => {
-          return ad.type === type;
-        })
-      : filteredAdsCountry;
-
-    const filteredAdsBreed = breed?.length
-      ? filteredAdsType?.filter((ad) => {
-          return ad.breed === breed;
-        })
-      : filteredAdsType;
-
-    const filteredAdsCurrency = currency?.length
-      ? filteredAdsBreed?.filter((ad) => {
-          return ad.currency === currency;
-        })
-      : filteredAdsBreed;
-
-    const filteredAdsLowestPrice = lowestPrice?.length
-      ? filteredAdsCurrency?.filter((ad) => {
-          return ad.price >= parseInt(lowestPrice);
-        })
-      : filteredAdsCurrency;
-
-    const filteredAdsHighestPrice = highestPrice?.length
-      ? filteredAdsLowestPrice?.filter((ad) => {
-          return ad.price <= parseInt(highestPrice);
-        })
-      : filteredAdsLowestPrice;
-
-    const finalFilteredAds = !sort?.length
-      ? filteredAdsHighestPrice
-      : sort === "ascending"
-      ? filteredAdsHighestPrice.sort((a, b) => b.price - a.price)
-      : sort === "descending"
-      ? filteredAdsHighestPrice.sort((a, b) => a.price - b.price)
-      : filteredAdsHighestPrice;
-
-    if (!finalFilteredAds?.length)
-      alert("Unfortunately, no matching advertisement has been found");
-
-    const filteredIds = finalFilteredAds?.reverse().map((ad) => {
-      return ad._id;
+    const filteredAdvertisementIds = filterAdvertisements({
+      advertisements,
+      title,
+      region,
+      country,
+      type,
+      breed,
+      currency,
+      lowestPrice,
+      highestPrice,
+      sort,
     });
 
-    setFilteredIds(filteredIds || []);
+    setFilteredIds(filteredAdvertisementIds || []);
   };
 
-  if (isLoading) alerts.loadingAlert("Loading advertisements");
-  if (isError) alerts.errorAlert(error?.data?.message);
+  if (isError)
+    alerts.errorAlert(
+      `${error?.data?.message}`,
+      "Error Fetching Advertisements"
+    );
 
   if (isSuccess) {
-    Swal.close();
     const reversedNewIds = Object.values(advertisements?.entities)
       ?.reverse()
       .map((ad) => {
