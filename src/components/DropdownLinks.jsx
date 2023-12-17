@@ -1,81 +1,90 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
-import useAuth from '../hooks/useAuth'
+import useAuth from "../hooks/useAuth";
+import MenuButton from "../config/images/Menu.png";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars } from "@fortawesome/free-solid-svg-icons"
+const DropdownLinks = ({
+  dropdownVisible,
+  onMobileLinkClicked,
+  onBarsClicked,
+  onLogoutClicked,
+}) => {
+  const { userId, isAdmin, isSuperAdmin } = useAuth();
 
-const DropdownLinks = ({ dropdownVisible, onMobileLinkClicked, onBarsClicked, onLogoutClicked }) => {
-  const { userId, isAdmin, isSuperAdmin } = useAuth()
-
-  if (userId) return (
-    <>
-      <span onClick={onBarsClicked} className="nav-right-span header-link header-hover">
-        <FontAwesomeIcon icon={faBars} className="menu-icons" />
-      </span>
-      <div style={dropdownVisible ? null : { display: "none" }} className="dropdown-links">
-        <Link
-          className="nav-dropdown header-link header-hover"
-          to={'/conversations'}
-          onClick={onMobileLinkClicked}
+  if (userId)
+    return (
+      <>
+        <span
+          onClick={onBarsClicked}
+          className="nav-right-span header-link header-hover"
         >
-          <p>Inbox</p>
-        </Link>
-        <Link
-          className="nav-dropdown header-link header-hover"
-          to={'/dogs'}
-          onClick={onMobileLinkClicked}
+          <img src={MenuButton} className="menu-icons" alt="menu-icon" />
+        </span>
+        <div
+          style={dropdownVisible ? null : { display: "none" }}
+          className="dropdown-links"
         >
-          <p>Dogs</p>
-        </Link>
-        <Link
-          className="nav-dropdown header-link header-hover"
-          to={'/litters'}
-          onClick={onMobileLinkClicked}
-        >
-          <p>Litters</p>
-        </Link>
-        <Link
-          className="nav-dropdown header-link header-hover"
-          to={'/users'}
-          onClick={onMobileLinkClicked}
-        >
-          <p>Users</p>
-        </Link>
-        {isAdmin || isSuperAdmin
-          ? <Link
+          <Link
             className="nav-dropdown header-link header-hover"
-            to={'/adminpage'}
+            to={"/conversations"}
             onClick={onMobileLinkClicked}
           >
-            <p>Admin Panel</p>
+            <p>Inbox</p>
           </Link>
-          : null
-        }
-        <Link
-          className="nav-dropdown header-link header-hover"
-          to={`/users/${userId}`}
-          onClick={onMobileLinkClicked}
-        >
-          <p>My Profile</p>
-        </Link>
-        <Link
-          className="nav-dropdown header-link header-hover"
-          to={'/faq'}
-          onClick={onMobileLinkClicked}
-        >
-          <p>FAQ</p>
-        </Link>
-        <span
-          className="nav-dropdown header-link header-hover"
-          onClick={onLogoutClicked}
-        >
-          <p>Logout</p>
-        </span>
-      </div>
-    </>
-  )
+          <Link
+            className="nav-dropdown header-link header-hover"
+            to={"/dogs"}
+            onClick={onMobileLinkClicked}
+          >
+            <p>Dogs</p>
+          </Link>
+          <Link
+            className="nav-dropdown header-link header-hover"
+            to={"/litters"}
+            onClick={onMobileLinkClicked}
+          >
+            <p>Litters</p>
+          </Link>
+          <Link
+            className="nav-dropdown header-link header-hover"
+            to={"/users"}
+            onClick={onMobileLinkClicked}
+          >
+            <p>Users</p>
+          </Link>
+          {isAdmin || isSuperAdmin ? (
+            <Link
+              className="nav-dropdown header-link header-hover"
+              to={"/adminpage"}
+              onClick={onMobileLinkClicked}
+            >
+              <p>Admin Panel</p>
+            </Link>
+          ) : null}
+          <Link
+            className="nav-dropdown header-link header-hover"
+            to={`/users/${userId}`}
+            onClick={onMobileLinkClicked}
+          >
+            <p>My Profile</p>
+          </Link>
+          <Link
+            className="nav-dropdown header-link header-hover"
+            to={"/faq"}
+            onClick={onMobileLinkClicked}
+          >
+            <p>FAQ</p>
+          </Link>
+          <span
+            className="nav-dropdown header-link header-hover"
+            onClick={onLogoutClicked}
+          >
+            <p>Logout</p>
+          </span>
+        </div>
+      </>
+    );
 
   return (
     <>
@@ -83,54 +92,57 @@ const DropdownLinks = ({ dropdownVisible, onMobileLinkClicked, onBarsClicked, on
         onClick={onBarsClicked}
         className="nav-right-span header-link header-hover"
       >
-        <FontAwesomeIcon icon={faBars} className="menu-icons" />
+        <img src={MenuButton} className="menu-icons" alt="menu-icon" />
       </span>
-      <div style={dropdownVisible ? null : { display: "none" }} className="dropdown-links">
+      <div
+        style={dropdownVisible ? null : { display: "none" }}
+        className="dropdown-links"
+      >
         <Link
           className="nav-dropdown header-link header-hover"
-          to={'/login'}
+          to={"/login"}
           onClick={onMobileLinkClicked}
         >
           <p>Login</p>
         </Link>
         <Link
           className="nav-dropdown header-link header-hover"
-          to={'/register'}
+          to={"/register"}
           onClick={onMobileLinkClicked}
         >
           <p>Register</p>
         </Link>
         <Link
           className="nav-dropdown header-link header-hover"
-          to={'/dogs'}
+          to={"/dogs"}
           onClick={onMobileLinkClicked}
         >
           <p>Dogs</p>
         </Link>
         <Link
           className="nav-dropdown header-link header-hover"
-          to={'/litters'}
+          to={"/litters"}
           onClick={onMobileLinkClicked}
         >
           <p>Litters</p>
         </Link>
         <Link
           className="nav-dropdown header-link header-hover"
-          to={'/users'}
+          to={"/users"}
           onClick={onMobileLinkClicked}
         >
           <p>Users</p>
         </Link>
         <Link
           className="nav-dropdown header-link header-hover"
-          to={'/faq'}
+          to={"/faq"}
           onClick={onMobileLinkClicked}
         >
           <p>FAQ</p>
         </Link>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default DropdownLinks
+export default DropdownLinks;

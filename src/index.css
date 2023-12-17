@@ -70,7 +70,8 @@ input[type=number] {
 }
 
 .menu-icons {
-  font-size: 23px;
+  height: 35px;
+  width: 35px;
 }
 
 .new-page-input {
