@@ -14,7 +14,7 @@ const EditUser = () => {
     }),
   });
 
-  if (!user) return <p>Loading...</p>;
+  if (!user) return;
   if (id !== userId) return <p>This is not your account</p>;
 
   return <EditUserForm user={user} />;

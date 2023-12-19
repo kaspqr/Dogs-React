@@ -1,4 +1,5 @@
 import React from "react";
+
 import { useDeleteDogProposeMutation } from "../../dogs/dog-slices/proposeDogApiSlice";
 import {
   useDeleteFatherProposeMutation,
@@ -80,18 +81,6 @@ const DeleteProposals = ({
       "Error Fetching Proposals"
     );
 
-  const handleDeleteDogProposal = async (proposal) => {
-    await deleteDogPropose({ id: proposal });
-  };
-
-  const handleDeleteFatherProposal = async (proposal) => {
-    await deleteFatherPropose({ id: proposal });
-  };
-
-  const handleDeletePuppyProposal = async (proposal) => {
-    await deletePuppyPropose({ id: proposal });
-  };
-
   if (isFatherProposeSuccess && isPuppyProposeSuccess) {
     const { ids: fatherProposeIds, entities: fatherProposeEntities } =
       fatherproposes;
@@ -127,8 +116,8 @@ const DeleteProposals = ({
               title="Delete Dog Transfer Proposals Made by Me"
               className="black-button three-hundred"
               onClick={() =>
-                filteredMadeDogProposes?.forEach((proposal) => {
-                  handleDeleteDogProposal(proposal);
+                filteredMadeDogProposes?.forEach(async (proposal) => {
+                  await deleteDogPropose({ id: proposal });
                 })
               }
             >
@@ -144,8 +133,8 @@ const DeleteProposals = ({
               title="Delete Father Proposals Made by Me"
               className="black-button three-hundred"
               onClick={() =>
-                filteredMadeFatherProposes?.forEach((proposal) => {
-                  handleDeleteFatherProposal(proposal);
+                filteredMadeFatherProposes?.forEach(async (proposal) => {
+                  await deleteFatherPropose({ id: proposal });
                 })
               }
             >
@@ -161,8 +150,8 @@ const DeleteProposals = ({
               title="Delete Puppy Proposals Made by Me"
               className="black-button three-hundred"
               onClick={() =>
-                filteredMadePuppyProposes?.forEach((proposal) => {
-                  handleDeletePuppyProposal(proposal);
+                filteredMadePuppyProposes?.forEach(async (proposal) => {
+                  await deletePuppyPropose({ id: proposal });
                 })
               }
             >

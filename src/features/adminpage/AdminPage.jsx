@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -14,7 +15,6 @@ const AdminPage = () => {
   const {
     data: advertisementReports,
     isLoading,
-    isSuccess,
     isError,
     error,
   } = useGetAdvertisementReportsQuery("advertisementReportsList", {
@@ -28,7 +28,6 @@ const AdminPage = () => {
   const {
     data: messageReports,
     isLoading: isMsgLoading,
-    isSuccess: isMsgSuccess,
     isError: isMsgError,
     error: msgError,
   } = useGetMessageReportsQuery("messageReportsList", {
@@ -42,7 +41,6 @@ const AdminPage = () => {
   const {
     data: dogReports,
     isLoading: isDogLoading,
-    isSuccess: isDogSuccess,
     isError: isDogError,
     error: dogError,
   } = useGetDogReportsQuery("dogReportsList", {
@@ -56,7 +54,6 @@ const AdminPage = () => {
   const {
     data: userReports,
     isLoading: isUserLoading,
-    isSuccess: isUserSuccess,
     isError: isUserError,
     error: userError,
   } = useGetUserReportsQuery("userReportsList", {
@@ -65,19 +62,36 @@ const AdminPage = () => {
     refetchOnMountOrArgChange: true,
   });
 
+  useEffect(() => {
+    if (isLoading || isMsgLoading || isDogLoading || isUserLoading)
+      alerts.loadingAlert("Fetching Reports", "Loading...");
+    else Swal.close();
+  }, [isLoading, isMsgLoading, isDogLoading, isUserLoading]);
+
   const amountOfUserReports = userReports?.ids?.length;
 
   if (!isAdmin && !isSuperAdmin) return <p>You're not logged in as an admin</p>;
 
-  if (isLoading || isMsgLoading || isDogLoading || isUserLoading)
-    alerts.loadingAlert("Looking for reports");
-
-  if (isError) alerts.errorAlert(error?.data?.message);
-  if (isMsgError) alerts.errorAlert(msgError?.data?.message);
-  if (isDogError) alerts.errorAlert(dogError?.data?.message);
-  if (isUserError) alerts.errorAlert(userError?.data?.message);
-
-  if (isSuccess && isMsgSuccess && isDogSuccess && isUserSuccess) Swal.close();
+  if (isError)
+    alerts.errorAlert(
+      `${error?.data?.message}`,
+      "Error Fetching Advertisement Reports"
+    );
+  if (isMsgError)
+    alerts.errorAlert(
+      `${msgError?.data?.message}`,
+      "Error Fetching Message Reports"
+    );
+  if (isDogError)
+    alerts.errorAlert(
+      `${dogError?.data?.message}`,
+      "Error Fetching Dog Reports"
+    );
+  if (isUserError)
+    alerts.errorAlert(
+      `${userError?.data?.message}`,
+      "Error Fetching User Reports"
+    );
 
   return (
     <>

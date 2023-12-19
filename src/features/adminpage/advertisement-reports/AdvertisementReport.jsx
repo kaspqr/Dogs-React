@@ -1,9 +1,8 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 
 import { useGetAdvertisementReportsQuery } from "../../advertisementreports/advertisementReportsApiSlice";
 import { useGetUsersQuery } from "../../users/user-slices/usersApiSlice";
-
-import { memo } from "react";
 
 const AdvertisementReport = ({ advertisementReportId }) => {
   const { advertisementReport } = useGetAdvertisementReportsQuery(

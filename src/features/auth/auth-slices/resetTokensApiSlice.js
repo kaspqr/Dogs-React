@@ -50,19 +50,15 @@ export const {
     useAddNewResetTokenMutation,
 } = resetTokensApiSlice
 
-// Returns the query result object
 export const selectResetTokensResult = resetTokensApiSlice.endpoints.getResetTokens.select()
 
-// Creates memoized selector
 const selectResetTokensData = createSelector(
     selectResetTokensResult,
-    resetTokensResult => resetTokensResult.data // Normalized state object with ids & entities
+    resetTokensResult => resetTokensResult.data
 )
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllResetTokens,
     selectById: selectResetTokenById,
     selectIds: selectResetTokenIds
-    // Pass in a selector that returns the resetTokens slice of state
 } = resetTokensAdapter.getSelectors(state => selectResetTokensData(state) ?? initialState)

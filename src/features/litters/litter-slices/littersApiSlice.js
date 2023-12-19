@@ -74,19 +74,15 @@ export const {
     useDeleteLitterMutation,
 } = littersApiSlice
 
-// Returns the query result object
 export const selectLittersResult = littersApiSlice.endpoints.getLitters.select()
 
-// Creates memoized selector
 const selectLittersData = createSelector(
     selectLittersResult,
-    littersResult => littersResult.data // Normalized state object with ids & entities
+    littersResult => littersResult.data
 )
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllLitters,
     selectById: selectLitterById,
     selectIds: selectLitterIds
-    // Pass in a selector that returns the litters slice of state
 } = littersAdapter.getSelectors(state => selectLittersData(state) ?? initialState)

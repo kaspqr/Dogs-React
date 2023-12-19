@@ -77,11 +77,14 @@ const EditDogForm = ({ dog }) => {
   ] = useDeleteDogMutation();
 
   useEffect(() => {
-    if (isSuccess) {
-      Swal.close();
-      navigate(`/dogs/${dog?.id}`);
-    }
+    if (isSuccess) navigate(`/dogs/${dog?.id}`);
   }, [isSuccess, navigate, dog?.id]);
+
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Updating Dog", "Loading...");
+    if (isDelLoading) alerts.loadingAlert("Deleting Dog", "Loading...");
+    if (!isLoading && !isDelLoading) Swal.close();
+  }, [isLoading, isDelLoading]);
 
   const handleSaveDogClicked = async () => {
     if (!instagram?.length) setInstagram("none ");
@@ -122,16 +125,11 @@ const EditDogForm = ({ dog }) => {
     };
   };
 
-  if (isLoading) alerts.loadingAlert("Updating dog");
-  if (isDelLoading) alerts.loadingAlert("Deleting dog");
   if (isError)
     alerts.errorAlert(`${error?.data?.message}`, "Error Updating Dog");
   if (isDelError)
     alerts.errorAlert(`${delError?.data?.message}`, "Error Deleting Dog");
-  if (isDelSuccess) {
-    Swal.close();
-    navigate("/dogs");
-  }
+  if (isDelSuccess) navigate("/dogs");
 
   const canSave = !isLoading && NAME_REGEX.test(name);
 

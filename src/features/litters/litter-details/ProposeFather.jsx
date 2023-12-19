@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+
 import { alerts } from "../../../components/alerts";
 import { useAddNewFatherProposeMutation } from "../litter-slices/fatherProposesApiSlice";
 import { useUpdateLitterMutation } from "../litter-slices/littersApiSlice";
@@ -24,7 +25,6 @@ const ProposeFather = ({
     addNewFatherPropose,
     {
       isLoading: isAddFatherProposeLoading,
-      isSuccess: isAddFatherProposeSuccess,
       isError: isAddFatherProposeError,
       error: addFatherProposeError,
     },
@@ -32,13 +32,14 @@ const ProposeFather = ({
 
   const [
     updateLitter,
-    {
-      isLoading: isLitterLoading,
-      isSuccess: isLitterSuccess,
-      isError: isLitterError,
-      error: litterError,
-    },
+    { isLoading: isLitterLoading, isError: isLitterError, error: litterError },
   ] = useUpdateLitterMutation();
+
+  useEffect(() => {
+    if (isAddFatherProposeLoading || isLitterLoading)
+      alerts.loadingAlert("Updating Litter", "Loading...");
+    else Swal.close();
+  }, [isAddFatherProposeLoading, isLitterLoading]);
 
   const fatherIds = ids?.filter(
     (dogId) =>
@@ -59,8 +60,6 @@ const ProposeFather = ({
       !currentLitterDogsIds.includes(entities[dogId].id)
   );
 
-  if (isAddFatherProposeLoading || isLitterLoading)
-    alerts.loadingAlert("Updating Litter", "Loading...");
   if (isLitterError)
     alerts.errorAlert(`${litterError?.data?.message}`, "Error Updating Litter");
   if (isAddFatherProposeError)
@@ -68,14 +67,10 @@ const ProposeFather = ({
       `${addFatherProposeError?.data?.message}`,
       "Error Proposing Father"
     );
-  if (isAddFatherProposeSuccess || isLitterSuccess) Swal.close();
 
   if (father?.id?.length || !fatherIds?.length) return;
 
   const canSaveFather = selectedFather?.length && !isLoading;
-  const fatherButtonStyle = !canSaveFather
-    ? { backgroundColor: "grey", cursor: "default" }
-    : null;
 
   return (
     <>
@@ -104,7 +99,11 @@ const ProposeFather = ({
         <button
           title={userId === mother?.user ? "Add Father" : "Propose Father"}
           className="black-button three-hundred"
-          style={fatherButtonStyle}
+          style={
+            !canSaveFather
+              ? { backgroundColor: "grey", cursor: "default" }
+              : null
+          }
           disabled={!canSaveFather}
           onClick={
             userId === mother?.user

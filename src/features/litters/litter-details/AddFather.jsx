@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 import { useUpdateLitterMutation } from "../litter-slices/littersApiSlice";
@@ -9,21 +9,19 @@ const AddFather = ({ fatherProposals, entities, litterId, father }) => {
 
   const [
     updateLitter,
-    {
-      isLoading: isLitterLoading,
-      isSuccess: isLitterSuccess,
-      isError: isLitterError,
-      error: litterError,
-    },
+    { isLoading: isLitterLoading, isError: isLitterError, error: litterError },
   ] = useUpdateLitterMutation();
+
+  useEffect(() => {
+    if (isLitterLoading) alerts.loadingAlert("Updating Litter", "Loading...");
+    else Swal.close();
+  }, [isLitterLoading]);
 
   if (father?.id?.length) return;
   if (!fatherProposals?.length) return;
 
-  if (isLitterLoading) alerts.loadingAlert("Updating Litter", "Loading...");
   if (isLitterError)
     alerts.errorAlert(`${litterError?.data?.message}`, "Error Updating Litter");
-  if (isLitterSuccess) Swal.close();
 
   return (
     <>

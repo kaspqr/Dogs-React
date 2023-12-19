@@ -15,11 +15,6 @@ const ReceivedProposals = ({
 
   const [updateDog, { isError, error }] = useUpdateDogMutation();
 
-  const handleAcceptDog = async () => {
-    await updateDog({ id: selectedAcceptDog, user: userId });
-    setSelectedAcceptDog("");
-  };
-
   const filteredMyProposeIds =
     userId !== user?.id
       ? proposeIds?.filter(
@@ -75,7 +70,10 @@ const ReceivedProposals = ({
               ? { backgroundColor: "grey", cursor: "default" }
               : null
           }
-          onClick={handleAcceptDog}
+          onClick={async () => {
+            await updateDog({ id: selectedAcceptDog, user: userId });
+            setSelectedAcceptDog("");
+          }}
         >
           Accept Dog
         </button>

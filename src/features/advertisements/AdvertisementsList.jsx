@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 import { useGetAdvertisementsQuery } from "./advertisement-slices/advertisementsApiSlice";
 import Advertisement from "./components/Advertisement";
-import Pagination from "./components/Pagination";
+import Pagination from "../../components/Pagination";
 import useAuth from "../../hooks/useAuth";
 import { ADVERTISEMENT_TYPES } from "../../config/advertisementTypes";
 import { COUNTRIES } from "../../config/countries";
@@ -15,10 +15,10 @@ import { BREEDS } from "../../config/breeds";
 import { PRICELESS_TYPES, BREEDING_TYPES } from "../../config/consts";
 import { regexInputEmptyChanged } from "../../config/utils";
 import { alerts } from "../../components/alerts";
+import { filterAdvertisements } from "../utils/advertisements.utils";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { filterAdvertisements } from "../utils/advertisements.utils";
 
 const AdvertisementsList = () => {
   const { userId } = useAuth();
@@ -55,33 +55,6 @@ const AdvertisementsList = () => {
   }, [isLoading]);
 
   const PRICE_REGEX = /^[1-9]\d{0,11}$/;
-  const currencyDisabled = type === "Found" || type === "Lost" || type === "";
-
-  const handleCountryChanged = (e) => {
-    setRegion("");
-    setCountry(e.target.value);
-  };
-
-  const handleCurrencyChanged = (e) => {
-    if (e.target.value === "") {
-      setLowestPrice("");
-      setHighestPrice("");
-      setSort("");
-    }
-    setCurrency(e.target.value);
-  };
-
-  const handleTypeChanged = (e) => {
-    const newType = e.target.value;
-    if (newType === "" || PRICELESS_TYPES.includes(newType)) {
-      setCurrency("");
-      setLowestPrice("");
-      setHighestPrice("");
-      setSort("");
-    }
-    if (!BREEDING_TYPES.includes(newType)) setBreed("");
-    setType(newType);
-  };
 
   const handleSearchClicked = () => {
     if (
@@ -155,7 +128,6 @@ const AdvertisementsList = () => {
                 Post an Advertisement
               </button>
             </Link>
-
             <br />
             <br />
           </>
@@ -195,7 +167,17 @@ const AdvertisementsList = () => {
                   value={type}
                   name="advertisement-type"
                   id="advertisement-type"
-                  onChange={handleTypeChanged}
+                  onChange={(e) => {
+                    const newType = e.target.value;
+                    if (newType === "" || PRICELESS_TYPES.includes(newType)) {
+                      setCurrency("");
+                      setLowestPrice("");
+                      setHighestPrice("");
+                      setSort("");
+                    }
+                    if (!BREEDING_TYPES.includes(newType)) setBreed("");
+                    setType(newType);
+                  }}
                 >
                   <option value="">--</option>
                   {ADVERTISEMENT_TYPES}
@@ -224,7 +206,10 @@ const AdvertisementsList = () => {
                   value={country}
                   name="advertisement-country"
                   id="advertisement-country"
-                  onChange={handleCountryChanged}
+                  onChange={(e) => {
+                    setRegion("");
+                    setCountry(e.target.value);
+                  }}
                 >
                   <option value="">--</option>
                   {COUNTRIES}
@@ -253,8 +238,15 @@ const AdvertisementsList = () => {
                   value={currency}
                   name="advertisement-currency"
                   id="advertisement-currency"
-                  onChange={handleCurrencyChanged}
-                  disabled={currencyDisabled}
+                  onChange={(e) => {
+                    if (e.target.value === "") {
+                      setLowestPrice("");
+                      setHighestPrice("");
+                      setSort("");
+                    }
+                    setCurrency(e.target.value);
+                  }}
+                  disabled={type === "Found" || type === "Lost" || type === ""}
                 >
                   <option value="">--</option>
                   {CURRENCIES}

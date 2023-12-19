@@ -21,13 +21,14 @@ const DeleteLitter = ({ litterId }) => {
   ] = useDeleteLitterMutation();
 
   useEffect(() => {
-    if (isDelSuccess) {
-      Swal.close();
-      navigate("/litters");
-    }
+    if (isDelSuccess) navigate("/litters");
   }, [isDelSuccess, navigate]);
 
-  if (isDelLoading) alerts.loadingAlert("Deleting Litter", "Loading...");
+  useEffect(() => {
+    if (isDelLoading) alerts.loadingAlert("Deleting Litter", "Loading...");
+    else Swal.close();
+  }, [isDelLoading]);
+
   if (isDelError)
     alerts.errorAlert(`${delError?.data?.message}`, "Error Deleting Litter");
 

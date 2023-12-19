@@ -43,7 +43,7 @@ const ResetPassword = () => {
 
   if (userId?.length)
     return <p>You need to be logged out before resetting your password</p>;
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return;
 
   return (
     <>

@@ -13,6 +13,22 @@ import { REGIONS } from "../../../config/regions";
 const EditUserForm = ({ user }) => {
   const navigate = useNavigate();
 
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [bio, setBio] = useState(user.bio !== "none " ? user.bio : "");
+  const [country, setCountry] = useState(user.country);
+  const [region, setRegion] = useState(user.region?.length ? user.region : "");
+  const [changePasswordError, setChangePasswordError] = useState("");
+  const [previewSource, setPreviewSource] = useState();
+  const [confirmDelete, setConfirmDelete] = useState("");
+  const [deletionVisible, setDeletionVisible] = useState(false);
+
+  const fileInputRef = useRef(null);
+
   const [updateUser, { isLoading, isSuccess, isError, error }] =
     useUpdateUserMutation();
 
@@ -36,21 +52,6 @@ const EditUserForm = ({ user }) => {
     },
   ] = useSendLogoutMutation();
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState("");
-  const [confirmEmail, setConfirmEmail] = useState("");
-  const [bio, setBio] = useState(user.bio !== "none " ? user.bio : "");
-  const [country, setCountry] = useState(user.country);
-  const [region, setRegion] = useState(user.region?.length ? user.region : "");
-  const [changePasswordError, setChangePasswordError] = useState("");
-  const [previewSource, setPreviewSource] = useState();
-  const [confirmDelete, setConfirmDelete] = useState("");
-  const [deletionVisible, setDeletionVisible] = useState(false);
-  const fileInputRef = useRef(null);
-
   const NAME_REGEX = /^(?=.{1,30}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/;
   const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/;
@@ -68,20 +69,9 @@ const EditUserForm = ({ user }) => {
     }
   }, [isSuccess, isDelSuccess, navigate]);
 
-  const handlePasswordChanged = (e) => setPassword(e.target.value);
-  const handleConfirmPasswordChanged = (e) =>
-    setConfirmPassword(e.target.value);
-  const handleCurrentPasswordChanged = (e) =>
-    setCurrentPassword(e.target.value);
-  const handleNameChanged = (e) => setName(e.target.value);
-  const handleEmailChanged = (e) => setEmail(e.target.value);
-  const handleConfirmEmailChanged = (e) => setConfirmEmail(e.target.value);
-  const handleBioChanged = (e) => setBio(e.target.value);
-
-  const handleCountryChanged = (e) => {
-    setRegion("none ");
-    setCountry(e.target.value);
-  };
+  useEffect(() => {
+    if (isLogoutSuccess) navigate("/");
+  }, [isLogoutSuccess, navigate]);
 
   const handleSaveUserClicked = async () => {
     setChangePasswordError("");
@@ -118,11 +108,6 @@ const EditUserForm = ({ user }) => {
     }
   };
 
-  const handleDeleteUserClicked = async () => {
-    const response = await deleteUser({ id: user.id, currentPassword });
-    if (!response?.error) sendLogout();
-  };
-
   const previewFile = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -131,11 +116,7 @@ const EditUserForm = ({ user }) => {
     };
   };
 
-  useEffect(() => {
-    if (isLogoutSuccess) navigate("/");
-  }, [isLogoutSuccess, navigate]);
-
-  if (isLoading || isDelLoading || isLogoutLoading) return <p>Loading...</p>;
+  if (isLoading || isDelLoading || isLogoutLoading) return;
 
   const errContent = isError
     ? error?.data?.message
@@ -153,7 +134,7 @@ const EditUserForm = ({ user }) => {
     ((!password?.length && !confirmPassword?.length) ||
       (PASSWORD_REGEX.test(password) && password === confirmPassword));
 
-  const content = (
+  return (
     <>
       {changePasswordError?.length ? <p>{changePasswordError}</p> : null}
       {errContent?.length ? <p>{errContent}</p> : null}
@@ -214,7 +195,7 @@ const EditUserForm = ({ user }) => {
           id="current-password"
           name="current-password"
           value={currentPassword}
-          onChange={handleCurrentPasswordChanged}
+          onChange={(e) => setCurrentPassword(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="password">
@@ -227,7 +208,7 @@ const EditUserForm = ({ user }) => {
           id="password"
           name="password"
           value={password}
-          onChange={handlePasswordChanged}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="confirm-password">
@@ -240,7 +221,7 @@ const EditUserForm = ({ user }) => {
           id="confirm-password"
           name="confirm-password"
           value={confirmPassword}
-          onChange={handleConfirmPasswordChanged}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="email">
@@ -253,7 +234,7 @@ const EditUserForm = ({ user }) => {
           id="email"
           name="email"
           value={email}
-          onChange={handleEmailChanged}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="confirm-email">
@@ -266,7 +247,7 @@ const EditUserForm = ({ user }) => {
           id="confirm-email"
           name="confirm-email"
           value={confirmEmail}
-          onChange={handleConfirmEmailChanged}
+          onChange={(e) => setConfirmEmail(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="name">
@@ -279,7 +260,7 @@ const EditUserForm = ({ user }) => {
           id="name"
           name="name"
           value={name}
-          onChange={handleNameChanged}
+          onChange={(e) => setName(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="country">
@@ -291,7 +272,10 @@ const EditUserForm = ({ user }) => {
           id="country"
           name="country"
           value={country}
-          onChange={handleCountryChanged}
+          onChange={(e) => {
+            setRegion("none ");
+            setCountry(e.target.value);
+          }}
         >
           {COUNTRIES}
         </select>
@@ -323,7 +307,7 @@ const EditUserForm = ({ user }) => {
           name="bio"
           id="bio"
           value={bio}
-          onChange={handleBioChanged}
+          onChange={(e) => setBio(e.target.value)}
         />
         <br />
         <br />
@@ -386,7 +370,13 @@ const EditUserForm = ({ user }) => {
                     ? { backgroundColor: "grey", cursor: "default" }
                     : null
                 }
-                onClick={handleDeleteUserClicked}
+                onClick={async () => {
+                  const response = await deleteUser({
+                    id: user.id,
+                    currentPassword,
+                  });
+                  if (!response?.error) sendLogout();
+                }}
               >
                 Confirm Deletion
               </button>
@@ -396,8 +386,6 @@ const EditUserForm = ({ user }) => {
       </form>
     </>
   );
-
-  return content;
 };
 
 export default EditUserForm;

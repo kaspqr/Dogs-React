@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -11,7 +12,6 @@ import { alerts } from "../../../components/alerts";
 
 const ReportedUserPage = () => {
   const navigate = useNavigate();
-
   const { isAdmin, isSuperAdmin } = useAuth();
   const { userreportid } = useParams();
 
@@ -27,7 +27,7 @@ const ReportedUserPage = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteUserReportMutation();
 
@@ -37,20 +37,18 @@ const ReportedUserPage = () => {
     }),
   });
 
+  useEffect(() => {
+    if (isDelLoading) alerts.loadingAlert("Deleting Report", "Loading...");
+    else Swal.close();
+  }, [isDelLoading]);
+
   if (!isAdmin && !isSuperAdmin)
     return <p>You are not logged in as an admin.</p>;
   if (!userReport) return;
 
-  const handleDelete = async () =>
-    await deleteUserReport({ id: userReport?.id });
-
-  if (isDelLoading) alerts.loadingAlert("Deleting report");
-  if (isDelError) alerts.errorAlert(delerror?.data?.message);
-
-  if (isDelSuccess) {
-    Swal.close();
-    navigate("/userreports");
-  }
+  if (isDelError)
+    alerts.errorAlert(`${delError?.data?.message}`, "Error Deleting Report");
+  if (isDelSuccess) navigate("/userreports");
 
   return (
     <>
@@ -70,7 +68,12 @@ const ReportedUserPage = () => {
       </p>
       <p>{userReport?.text}</p>
       <br />
-      <button onClick={handleDelete} className="black-button">
+      <button
+        onClick={async () => {
+          await deleteUserReport({ id: userReport?.id });
+        }}
+        className="black-button"
+      >
         Delete Report
       </button>
     </>

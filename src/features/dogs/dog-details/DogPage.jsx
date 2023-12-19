@@ -86,24 +86,22 @@ const DogPage = () => {
     }),
   });
 
-  const handleAdminDelete = async () => await deleteDog({ id: dog?.id });
+  useEffect(() => {
+    if (isDogsLoading) alerts.loadingAlert("Fetching Dogs", "Loading...");
+    if (isDelLoading) alerts.loadingAlert("Deleting Dog", "Loading...");
+    if (!isDogsLoading && !isDelLoading) Swal.close();
+  }, [isDogsLoading, isDelLoading]);
 
   if (!dog) return;
-
-  if (isDogsLoading) alerts.loadingAlert("Looking for dogs");
-  if (isDelLoading) alerts.loadingAlert("Deleting dog");
   if (isDelError) alerts.errorAlert(delerror?.data?.message);
   if (isDogsError) alerts.errorAlert(dogsError?.data?.message);
 
   if (isDelSuccess) {
-    Swal.close();
-    alerts.successAlert("Dog deleted");
+    alerts.successAlert("Dog Deleted");
     navigate("/dogs");
   }
 
   if (isDogsSuccess) {
-    Swal.close();
-
     const { ids: dogIds, entities: dogEntities } = dogs;
 
     return (
@@ -328,7 +326,7 @@ const DogPage = () => {
             <button
               title="Delete as Admin"
               className="black-button three-hundred"
-              onClick={handleAdminDelete}
+              onClick={async () => await deleteDog({ id: dog?.id })}
             >
               Delete as Admin
             </button>

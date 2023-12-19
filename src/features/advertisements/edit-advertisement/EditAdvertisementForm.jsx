@@ -20,19 +20,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 
 const EditAdvertisementForm = ({ advertisement }) => {
-  const [updateAdvertisement, { isLoading, isSuccess, isError, error }] =
-    useUpdateAdvertisementMutation();
-
-  const [
-    deleteAdvertisement,
-    {
-      isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
-      isError: isDelError,
-      error: delError,
-    },
-  ] = useDeleteAdvertisementMutation();
-
   const navigate = useNavigate();
 
   const [title, setTitle] = useState(advertisement?.title);
@@ -46,36 +33,38 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
   const fileInputRef = useRef(null);
 
+  const [updateAdvertisement, { isLoading, isSuccess, isError, error }] =
+    useUpdateAdvertisementMutation();
+
+  const [
+    deleteAdvertisement,
+    {
+      isLoading: isDelLoading,
+      isSuccess: isDelSuccess,
+      isError: isDelError,
+      error: delError,
+    },
+  ] = useDeleteAdvertisementMutation();
+
   useEffect(() => {
     setValidPrice(PRICE_REGEX.test(price));
   }, [price]);
 
   useEffect(() => {
     if (isDelSuccess) {
-      Swal.close();
-      alerts.successAlert("Advertisement deleted");
+      alerts.successAlert("Advertisement Deleted");
       navigate("/");
     } else if (isSuccess) {
-      Swal.close();
       navigate(`/advertisements/${advertisement?.id}`);
     }
   }, [isSuccess, isDelSuccess, navigate, advertisement?.id]);
 
-  const handleSaveAdvertisementClicked = async () =>
-    await updateAdvertisement({
-      id: advertisement.id,
-      title,
-      info,
-      price,
-      currency,
-      image: previewSource,
-    });
-
-  const handleDeleteAdvertisementClicked = async () => {
-    await deleteAdvertisement({ id: advertisement.id });
-    setDeletionVisible(false);
-    setConfirmDelete("");
-  };
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Updating Advertisement", "Loading...");
+    if (isDelLoading)
+      alerts.loadingAlert("Deleting Advertisement", "Loading...");
+    if (!isLoading && !isDelLoading) Swal.close();
+  }, [isLoading, isDelLoading]);
 
   const previewFile = (file) => {
     const reader = new FileReader();
@@ -90,31 +79,22 @@ const EditAdvertisementForm = ({ advertisement }) => {
     previewFile(file);
   };
 
-  const handleFileClicked = () => fileInputRef.current.click();
-
-  const handleChangePrice = (e) => {
-    if (PRICE_REGEX.test(e.target.value) || e.target.value === "") {
-      setPrice(e.target.value);
-    }
-  };
-
+  const confirmDeleteButtonDisabled = confirmDelete !== "confirmdelete";
   const validPriceOrPricelessType =
     validPrice || PRICELESS_TYPES.includes(advertisement?.type);
-
   const canSave =
     title?.length && info?.length && validPriceOrPricelessType && !isLoading;
 
-  const advertisementHasPrice = !PRICELESS_TYPES.includes(advertisement?.type);
-  const confirmDeleteButtonDisabled = confirmDelete !== "confirmdelete";
-  const saveButtonStyle = !canSave ? DISABLED_BUTTON_STYLE : null;
-  const confirmDeleteButtonStyle = confirmDeleteButtonDisabled
-    ? DISABLED_BUTTON_STYLE
-    : null;
-
-  if (isLoading) alerts.loadingAlert("Updating advertisement");
-  if (isDelLoading) alerts.loadingAlert("Deleting advertisement");
-  if (isError) alerts.errorAlert(error?.data?.message);
-  if (isDelError) alerts.errorAlert(delError?.data?.message);
+  if (isError)
+    alerts.errorAlert(
+      `${error?.data?.message}`,
+      "Error Updating Advertisement"
+    );
+  if (isDelError)
+    alerts.errorAlert(
+      `${delError?.data?.message}`,
+      "Error Deleting Advertisement"
+    );
 
   return (
     <>
@@ -138,7 +118,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
         <br />
         <span
           className="top-spacer label-file-input"
-          onClick={handleFileClicked}
+          onClick={() => fileInputRef.current.click()}
           htmlFor="advertisement-image"
         >
           <b>Browse Picture</b>
@@ -163,7 +143,7 @@ const EditAdvertisementForm = ({ advertisement }) => {
             <br />
           </>
         )}
-        {advertisementHasPrice && (
+        {!PRICELESS_TYPES.includes(advertisement?.type) && (
           <>
             <label className="top-spacer" htmlFor="price">
               <b>Price</b>
@@ -176,7 +156,11 @@ const EditAdvertisementForm = ({ advertisement }) => {
               name="price"
               maxLength="12"
               value={price}
-              onChange={(e) => handleChangePrice(e)}
+              onChange={(e) => {
+                if (PRICE_REGEX.test(e.target.value) || e.target.value === "") {
+                  setPrice(e.target.value);
+                }
+              }}
             />
             <br />
             <label className="top-spacer" htmlFor="currency">
@@ -214,9 +198,18 @@ const EditAdvertisementForm = ({ advertisement }) => {
         <button
           title="Save"
           className="black-button three-hundred"
-          onClick={handleSaveAdvertisementClicked}
+          onClick={async () => {
+            await updateAdvertisement({
+              id: advertisement.id,
+              title,
+              info,
+              price,
+              currency,
+              image: previewSource,
+            });
+          }}
           disabled={!canSave}
-          style={saveButtonStyle}
+          style={!canSave ? DISABLED_BUTTON_STYLE : null}
         >
           Save
         </button>
@@ -253,8 +246,12 @@ const EditAdvertisementForm = ({ advertisement }) => {
               className="black-button three-hundred"
               title="Confirm Deletion"
               disabled={confirmDeleteButtonDisabled}
-              style={confirmDeleteButtonStyle}
-              onClick={handleDeleteAdvertisementClicked}
+              style={confirmDeleteButtonDisabled ? DISABLED_BUTTON_STYLE : null}
+              onClick={async () => {
+                await deleteAdvertisement({ id: advertisement.id });
+                setDeletionVisible(false);
+                setConfirmDelete("");
+              }}
             >
               Confirm Deletion
             </button>

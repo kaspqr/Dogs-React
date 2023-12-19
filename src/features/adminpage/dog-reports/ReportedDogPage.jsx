@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -12,7 +13,6 @@ import { alerts } from "../../../components/alerts";
 
 const ReportedDogPage = () => {
   const navigate = useNavigate();
-
   const { isAdmin, isSuperAdmin } = useAuth();
   const { dogreportid } = useParams();
 
@@ -28,7 +28,7 @@ const ReportedDogPage = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteDogReportMutation();
 
@@ -44,19 +44,17 @@ const ReportedDogPage = () => {
     }),
   });
 
+  useEffect(() => {
+    if (isDelLoading) alerts.loadingAlert("Deleting Report", "Loading...");
+    else Swal.close();
+  }, [isDelLoading]);
+
   if (!isAdmin && !isSuperAdmin)
     return <p>You are not logged in as an admin.</p>;
   if (!dogReport) return;
 
-  const handleDelete = async () => await deleteDogReport({ id: dogReport?.id });
-
-  if (isDelLoading) alerts.loadingAlert("Deleting report");
-  if (isDelError) alerts.errorAlert(delerror?.data?.message);
-
-  if (isDelSuccess) {
-    Swal.close();
-    navigate("/dogreports");
-  }
+  if (isDelError) alerts.errorAlert(`${delError?.data?.message}`);
+  if (isDelSuccess) navigate("/dogreports");
 
   return (
     <>
@@ -84,7 +82,12 @@ const ReportedDogPage = () => {
       </p>
       <p>{dogReport?.text}</p>
       <br />
-      <button onClick={handleDelete} className="black-button">
+      <button
+        onClick={async () => {
+          await deleteDogReport({ id: dogReport?.id });
+        }}
+        className="black-button"
+      >
         Delete Report
       </button>
     </>

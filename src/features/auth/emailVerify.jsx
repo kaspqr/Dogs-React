@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -8,9 +9,7 @@ import { alerts } from "../../components/alerts";
 
 const EmailVerify = () => {
   const { userId } = useAuth();
-
   const navigate = useNavigate();
-
   const params = useParams();
 
   const { user } = useGetUsersQuery("usersList", {
@@ -18,18 +17,6 @@ const EmailVerify = () => {
       user: data?.entities[params.id],
     }),
   });
-
-  const successMsg = (
-    <>
-      <p>Email Verified Successfully</p>
-      <br />
-      <p>
-        <button onClick={() => navigate("/login")} className="black-button">
-          Login
-        </button>
-      </p>
-    </>
-  );
 
   const {
     data: tokens,
@@ -42,6 +29,11 @@ const EmailVerify = () => {
     refetchOnMountOrArgChange: true,
   });
 
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Fetching Tokens", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
+
   const verifyEmailUrl = async () => {
     try {
       const response = await fetch(
@@ -53,6 +45,18 @@ const EmailVerify = () => {
       console.log(error);
     }
   };
+
+  const successMsg = (
+    <>
+      <p>Email Verified Successfully</p>
+      <br />
+      <p>
+        <button onClick={() => navigate("/login")} className="black-button">
+          Login
+        </button>
+      </p>
+    </>
+  );
 
   if (userId?.length) return <h1>Please logout before verifying an account</h1>;
 
@@ -70,12 +74,10 @@ const EmailVerify = () => {
     );
   }
 
-  if (isLoading) alerts.loadingAlert("Looking for tokens");
-  if (isError) alerts.errorAlert(error?.data?.message);
+  if (isError)
+    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Tokens");
 
   if (isSuccess) {
-    Swal.close();
-
     const { ids, entities } = tokens;
 
     const filteredId = ids.find((tokenId) => {

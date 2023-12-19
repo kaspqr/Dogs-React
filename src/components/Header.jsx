@@ -6,6 +6,7 @@ import HomeIcon from "../config/images/HomeIcon.png";
 import NavRight from "./NavRight";
 import DropdownLinks from "./DropdownLinks";
 import WidescreenLinks from "./WidescreenLinks";
+import { alerts } from "./alerts";
 
 const Header = ({ dropdownVisible, setDropdownVisible, windowWidth }) => {
   const navigate = useNavigate();
@@ -18,26 +19,26 @@ const Header = ({ dropdownVisible, setDropdownVisible, windowWidth }) => {
   }, [isSuccess, navigate]);
 
   const onMobileLinkClicked = () => setDropdownVisible(false);
-  const onHomeIconClicked = () =>
-    windowWidth > 600 ? null : onMobileLinkClicked();
   const onLogoutClicked = () => {
     sendLogout();
     if (windowWidth <= 600) onMobileLinkClicked();
   };
 
-  const headerStyle =
-    dropdownVisible === true ? { position: "fixed", width: "100%" } : null;
-
   if (isLoading) return;
-  if (isError) return <p>Error: {error.data?.message}</p>;
+  if (isError) alerts.errorAlert(`${error.data?.message}`, "Error Logging Out");
 
   return (
-    <header style={headerStyle} id="layout-header">
+    <header
+      style={
+        dropdownVisible === true ? { position: "fixed", width: "100%" } : null
+      }
+      id="layout-header"
+    >
       <nav id="header-nav">
         <Link
           className="header-link header-hover"
           to={"/"}
-          onClick={onHomeIconClicked}
+          onClick={() => (windowWidth > 600 ? null : onMobileLinkClicked())}
         >
           <img width="50" height="50" src={HomeIcon} alt="Home" />
         </Link>

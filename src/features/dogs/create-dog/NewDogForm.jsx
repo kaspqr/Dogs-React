@@ -18,12 +18,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 
 const NewDogForm = () => {
+  const navigate = useNavigate();
   const { userId } = useAuth();
 
   const NAME_REGEX = /^(?!^\s*$)(?:[a-zA-Z']+(\s|$))+$/;
   const CHIPNUMBER_REGEX = /^(?!^\s)(?!.*\s{2,})[\s\S]*$/;
-
-  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [heat, setHeat] = useState(false);
@@ -44,7 +43,6 @@ const NewDogForm = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      Swal.close();
       alerts.successAlert("Dog created");
       setName("");
       setSterilized(false);
@@ -63,7 +61,11 @@ const NewDogForm = () => {
     }
   }, [isSuccess, navigate]);
 
-  if (isLoading) alerts.loadingAlert("Creating dog");
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Creating Dog", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
+
   if (isError)
     alerts.errorAlert(`${error?.data?.message}`, "Error Creating Dog");
 
@@ -101,8 +103,6 @@ const NewDogForm = () => {
       });
     }
   };
-
-  const saveColor = !canSave ? DISABLED_BUTTON_STYLE : null;
 
   return (
     <>
@@ -303,7 +303,7 @@ const NewDogForm = () => {
         <div>
           <button
             className="black-button three-hundred"
-            style={saveColor}
+            style={!canSave ? DISABLED_BUTTON_STYLE : null}
             title="Save"
             disabled={!canSave}
           >

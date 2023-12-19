@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -12,7 +13,6 @@ import { alerts } from "../../../components/alerts";
 
 const ReportedMessagePage = () => {
   const navigate = useNavigate();
-
   const { isAdmin, isSuperAdmin } = useAuth();
   const { messagereportid } = useParams();
 
@@ -28,7 +28,7 @@ const ReportedMessagePage = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteMessageReportMutation();
 
@@ -44,20 +44,18 @@ const ReportedMessagePage = () => {
     }),
   });
 
+  useEffect(() => {
+    if (isDelLoading) alerts.loadingAlert("Deleting Report", "Loading...");
+    else Swal.close();
+  }, [isDelLoading]);
+
   if (!isAdmin && !isSuperAdmin)
     return <p>You are not logged in as an admin.</p>;
   if (!messageReport) return;
 
-  const handleDelete = async () =>
-    await deleteMessageReport({ id: messageReport?.id });
-
-  if (isDelLoading) alerts.loadingAlert("Deleting report");
-  if (isDelError) alerts.errorAlert(delerror?.data?.message);
-
-  if (isDelSuccess) {
-    Swal.close();
-    navigate("/messagereports");
-  }
+  if (isDelError)
+    alerts.errorAlert(`${delError?.data?.message}`, "Error Deleting Report");
+  if (isDelSuccess) navigate("/messagereports");
 
   return (
     <>
@@ -82,7 +80,12 @@ const ReportedMessagePage = () => {
       </p>
       <p>{messageReport?.text}</p>
       <br />
-      <button onClick={handleDelete} className="black-button">
+      <button
+        onClick={async () => {
+          await deleteMessageReport({ id: messageReport?.id });
+        }}
+        className="black-button"
+      >
         Delete Report
       </button>
     </>

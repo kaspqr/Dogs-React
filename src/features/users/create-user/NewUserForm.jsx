@@ -67,19 +67,6 @@ const NewUserForm = () => {
     }
   }, [isSuccess, navigate]);
 
-  const handleUsernameChanged = (e) => setUsername(e.target.value);
-  const handlePasswordChanged = (e) => setPassword(e.target.value);
-  const handleConfirmPasswordChanged = (e) =>
-    setConfirmPassword(e.target.value);
-  const handleNameChanged = (e) => setName(e.target.value);
-  const handleEmailChanged = (e) => setEmail(e.target.value);
-  const handleBioChanged = (e) => setBio(e.target.value);
-
-  const handleCountryChanged = (e) => {
-    setRegion("");
-    setCountry(e.target.value);
-  };
-
   const canSave =
     [validUsername, validPassword, validName, validEmail].every(Boolean) &&
     password === confirmPassword &&
@@ -109,7 +96,7 @@ const NewUserForm = () => {
     );
   }
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return;
 
   const content = successMsg?.length ? (
     <p>{successMsg}</p>
@@ -135,7 +122,7 @@ const NewUserForm = () => {
           name="username"
           autoComplete="off"
           value={username}
-          onChange={handleUsernameChanged}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="password">
@@ -148,7 +135,7 @@ const NewUserForm = () => {
           id="password"
           name="password"
           value={password}
-          onChange={handlePasswordChanged}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="confirm-password">
@@ -161,7 +148,7 @@ const NewUserForm = () => {
           id="confirm-password"
           name="confirm-password"
           value={confirmPassword}
-          onChange={handleConfirmPasswordChanged}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="email">
@@ -174,7 +161,7 @@ const NewUserForm = () => {
           id="email"
           name="email"
           value={email}
-          onChange={handleEmailChanged}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="name">
@@ -187,7 +174,7 @@ const NewUserForm = () => {
           id="name"
           name="name"
           value={name}
-          onChange={handleNameChanged}
+          onChange={(e) => setName(e.target.value)}
         />
         <br />
         <label className="top-spacer" htmlFor="country">
@@ -199,7 +186,10 @@ const NewUserForm = () => {
           id="country"
           name="country"
           value={country}
-          onChange={handleCountryChanged}
+          onChange={(e) => {
+            setRegion("");
+            setCountry(e.target.value);
+          }}
         >
           {COUNTRIES}
         </select>
@@ -231,7 +221,7 @@ const NewUserForm = () => {
           name="bio"
           id="bio"
           value={bio}
-          onChange={handleBioChanged}
+          onChange={(e) => setBio(e.target.value)}
         />
         <br />
         <br />

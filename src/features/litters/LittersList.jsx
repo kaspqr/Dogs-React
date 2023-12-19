@@ -13,13 +13,10 @@ import { BREEDS } from "../../config/breeds";
 import "../../styles/customCalendar.css";
 import { filterLitters } from "../utils/litters.utils";
 import { alerts } from "../../components/alerts";
+import Pagination from "../../components/Pagination";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMagnifyingGlass,
-  faArrowLeft,
-  faArrowRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const LittersList = () => {
   const { userId } = useAuth();
@@ -35,18 +32,8 @@ const LittersList = () => {
   const [region, setRegion] = useState("");
   const [breed, setBreed] = useState("");
   const [inputsVisible, setInputsVisible] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const PUPPIES_AMOUNT_REGEX = /^[1-9]\d{0,1}$/;
-
-  const handleResize = () => setWindowWidth(window.innerWidth);
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const {
     data: litters,
@@ -104,9 +91,6 @@ const LittersList = () => {
     const littersToDisplay = filteredIds?.length
       ? filteredIds.slice(startIndex, endIndex)
       : reversedNewIds.slice(startIndex, endIndex);
-
-    const goToPageButtonDisabled =
-      newPage < 1 || newPage > maxPage || parseInt(newPage) === currentPage;
 
     const tableContent = littersToDisplay.map((litterId) => (
       <Litter key={litterId} litterId={litterId} />
@@ -319,149 +303,25 @@ const LittersList = () => {
             <br />
           </form>
         </div>
-        <p>
-          <button
-            title="Go to Previous Page"
-            style={currentPage === 1 ? { display: "none" } : null}
-            disabled={currentPage === 1}
-            className="pagination-button"
-            onClick={() => {
-              setCurrentPage(currentPage - 1);
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
-          </button>
-          {` Page ${currentPage} of ${maxPage} `}
-          <button
-            title="Go to Next Page"
-            className="pagination-button"
-            style={currentPage === maxPage ? { display: "none" } : null}
-            disabled={currentPage === maxPage}
-            onClick={() => {
-              setCurrentPage(currentPage + 1);
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
-          </button>
-          {windowWidth > 600 || maxPage === 1 ? null : (
-            <>
-              <br />
-              <br />
-            </>
-          )}
-          <span
-            className="new-page-input-span"
-            style={
-              maxPage === 1
-                ? { display: "none" }
-                : windowWidth > 600
-                ? null
-                : { float: "none" }
-            }
-          >
-            <label htmlFor="page-number" className="off-screen">
-              Page Number
-            </label>
-            <input
-              name="page-number"
-              onChange={(e) => setNewPage(e.target.value)}
-              value={newPage}
-              type="number"
-              className="new-page-input"
-              placeholder="Page no."
-            />
-            <button
-              title="Go to the Specified Page"
-              style={
-                goToPageButtonDisabled
-                  ? { backgroundColor: "grey", cursor: "default" }
-                  : null
-              }
-              disabled={goToPageButtonDisabled}
-              onClick={() => {
-                if (newPage >= 1 && newPage <= maxPage) {
-                  setCurrentPage(parseInt(newPage));
-                }
-              }}
-              className="black-button"
-            >
-              Go to Page
-            </button>
-          </span>
-        </p>
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          newPage={newPage}
+          setNewPage={setNewPage}
+          maxPage={maxPage}
+          topPosition={true}
+        />
         <br />
         {tableContent}
         <br />
-        <p>
-          <button
-            title="Go to Previous Page"
-            style={currentPage === 1 ? { display: "none" } : null}
-            disabled={currentPage === 1}
-            className="pagination-button"
-            onClick={() => {
-              setCurrentPage(currentPage - 1);
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
-          </button>
-          {` Page ${currentPage} of ${maxPage} `}
-          <button
-            title="Go to Next Page"
-            className="pagination-button"
-            style={currentPage === maxPage ? { display: "none" } : null}
-            disabled={currentPage === maxPage}
-            onClick={() => {
-              setCurrentPage(currentPage + 1);
-            }}
-          >
-            <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
-          </button>
-          {windowWidth > 600 || maxPage === 1 ? null : (
-            <>
-              <br />
-              <br />
-            </>
-          )}
-          <span
-            className="new-page-input-span"
-            style={
-              maxPage === 1
-                ? { display: "none" }
-                : windowWidth > 600
-                ? null
-                : { float: "none" }
-            }
-          >
-            <label htmlFor="another-page-number" className="off-screen">
-              Page Number
-            </label>
-            <input
-              name="another-page-number"
-              onChange={(e) => setNewPage(e.target.value)}
-              value={newPage}
-              type="number"
-              className="new-page-input"
-              placeholder="Page no."
-            />
-            <button
-              title="Go to the Specified Page"
-              style={
-                goToPageButtonDisabled
-                  ? { backgroundColor: "grey", cursor: "default" }
-                  : null
-              }
-              disabled={goToPageButtonDisabled}
-              onClick={() => {
-                if (newPage >= 1 && newPage <= maxPage) {
-                  setCurrentPage(parseInt(newPage));
-                }
-              }}
-              className="black-button"
-            >
-              Go to Page
-            </button>
-          </span>
-        </p>
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          newPage={newPage}
+          setNewPage={setNewPage}
+          maxPage={maxPage}
+          topPosition={false}
+        />
       </>
     );
   }

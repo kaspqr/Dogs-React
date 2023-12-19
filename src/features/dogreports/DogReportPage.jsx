@@ -26,11 +26,15 @@ const DogReportPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      Swal.close();
       setReport("");
       setSuccessMsg("Thank You! We have received your report.");
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Reporting Dog", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
 
   if (dog?.user === userId) return <p>You cannot report your own dog.</p>;
 
@@ -40,8 +44,8 @@ const DogReportPage = () => {
   const buttonDisabled = report?.length < 1;
   const buttonStyle = buttonDisabled ? DISABLED_BUTTON_STYLE : null;
 
-  if (isLoading) alerts.loadingAlert("Reporting dog");
-  if (isError) alerts.errorAlert(error?.data?.message);
+  if (isError)
+    alerts.errorAlert(`${error?.data?.message}`, "Error Reporting Dog");
 
   if (successMsg?.length) return <p>{successMsg}</p>;
 

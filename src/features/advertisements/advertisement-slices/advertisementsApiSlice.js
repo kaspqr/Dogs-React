@@ -74,19 +74,15 @@ export const {
     useDeleteAdvertisementMutation,
 } = advertisementsApiSlice
 
-// Returns the query result object
 export const selectAdvertisementsResult = advertisementsApiSlice.endpoints.getAdvertisements.select()
 
-// Creates memoized selector
 const selectAdvertisementsData = createSelector(
     selectAdvertisementsResult,
-    advertisementsResult => advertisementsResult.data // Normalized state object with ids & entities
+    advertisementsResult => advertisementsResult.data
 )
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllAdvertisements,
     selectById: selectAdvertisementById,
     selectIds: selectAdvertisementIds
-    // Pass in a selector that returns the advertisements slice of state
 } = advertisementsAdapter.getSelectors(state => selectAdvertisementsData(state) ?? initialState)

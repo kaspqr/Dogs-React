@@ -17,7 +17,7 @@ const DogLitter = ({ litter, parentDogs, allChildren, dog }) => {
         >
           <b>Litter</b>
         </Link>
-        {hasTwoParents ? " with " : null}
+        {hasTwoParents && " with "}
         <Link
           key={otherParentId}
           className="orange-link"
@@ -27,18 +27,18 @@ const DogLitter = ({ litter, parentDogs, allChildren, dog }) => {
             {parentDogs?.find((parent) => parent?.id === otherParentId)?.name}
           </b>
         </Link>
-        {litter?.born?.length ? (
+        {litter?.born?.length && (
           <>
             {" "}
             born on <b>{litter?.born?.split(" ").slice(1, 4).join(" ")}</b>
           </>
-        ) : null}
-        {!allChildren?.length ? (
+        )}
+        {!allChildren?.length && (
           <>
             <br />
             This litter doesn't have any puppies added to it
           </>
-        ) : null}
+        )}
         {allChildren?.map((child) =>
           child?.litter === litter?.id ? (
             <Fragment key={child.id}>

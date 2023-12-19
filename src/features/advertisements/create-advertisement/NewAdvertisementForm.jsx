@@ -24,7 +24,6 @@ import { faUpload } from "@fortawesome/free-solid-svg-icons";
 
 const NewAdvertisementForm = () => {
   const navigate = useNavigate();
-
   const { userId } = useAuth();
 
   const [title, setTitle] = useState("");
@@ -57,7 +56,11 @@ const NewAdvertisementForm = () => {
     }
   }, [isSuccess, navigate]);
 
-  if (isError) alerts.errorAlert(error?.data?.message);
+  if (isError)
+    alerts.errorAlert(
+      `${error?.data?.message}`,
+      "Error Creating Advertisement"
+    );
 
   const canSave =
     title?.length &&
@@ -77,8 +80,6 @@ const NewAdvertisementForm = () => {
     previewFile(file);
   };
 
-  const handleFileClicked = () => fileInputRef.current.click();
-
   const handleSaveAdvertisementClicked = async (e) => {
     e.preventDefault();
 
@@ -96,24 +97,6 @@ const NewAdvertisementForm = () => {
         image: previewSource,
       });
     }
-  };
-
-  const handleCountryChanged = (e) => {
-    setRegion("");
-    setCountry(e.target.value);
-  };
-
-  const handleTypeChanged = (e) => {
-    const newType = e.target.value;
-
-    if (PRICELESS_TYPES.includes(newType)) {
-      setPrice("");
-      setCurrency("");
-    } else if (currency === "") setCurrency("$");
-
-    if (!BREEDING_TYPES.includes(newType)) setBreed("");
-
-    setType(newType);
   };
 
   return (
@@ -138,7 +121,7 @@ const NewAdvertisementForm = () => {
         <br />
         <span
           className="top-spacer label-file-input"
-          onClick={handleFileClicked}
+          onClick={() => fileInputRef.current.click()}
           htmlFor="advertisement-image"
         >
           <b>Browse Picture</b>
@@ -167,7 +150,20 @@ const NewAdvertisementForm = () => {
           <b>Type</b>
         </label>
         <br />
-        <select id="type" name="type" value={type} onChange={handleTypeChanged}>
+        <select
+          id="type"
+          name="type"
+          value={type}
+          onChange={(e) => {
+            const newType = e.target.value;
+            if (PRICELESS_TYPES.includes(newType)) {
+              setPrice("");
+              setCurrency("");
+            } else if (currency === "") setCurrency("$");
+            if (!BREEDING_TYPES.includes(newType)) setBreed("");
+            setType(newType);
+          }}
+        >
           {ADVERTISEMENT_TYPES}
         </select>
         <br />
@@ -225,7 +221,10 @@ const NewAdvertisementForm = () => {
           name="country"
           id="country"
           value={country}
-          onChange={handleCountryChanged}
+          onChange={(e) => {
+            setRegion("");
+            setCountry(e.target.value);
+          }}
         >
           {COUNTRIES}
         </select>

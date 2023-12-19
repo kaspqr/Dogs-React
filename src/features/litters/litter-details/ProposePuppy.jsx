@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useUpdateDogMutation } from "../../dogs/dog-slices/dogsApiSlice";
 import { alerts } from "../../../components/alerts";
@@ -22,23 +22,23 @@ const ProposePuppy = ({
 
   const [
     updateDog,
-    {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
+    { isLoading: isUpdateLoading, isError: isUpdateError, error: updateError },
   ] = useUpdateDogMutation();
 
   const [
     addNewPuppyPropose,
     {
       isLoading: isAddPuppyProposeLoading,
-      isSuccess: isAddPuppyProposeSuccess,
       isError: isAddPuppyProposeError,
       error: addPuppyProposeError,
     },
   ] = useAddNewPuppyProposeMutation();
+
+  useEffect(() => {
+    if (isUpdateLoading || isAddPuppyProposeLoading)
+      alerts.loadingAlert("Updating Litter", "Loading...");
+    else Swal.close();
+  }, [isUpdateLoading, isAddPuppyProposeLoading]);
 
   const filteredUserDogIds = ids.filter(
     (dogId) =>
@@ -61,8 +61,6 @@ const ProposePuppy = ({
   )
     return;
 
-  if (isUpdateLoading || isAddPuppyProposeLoading)
-    alerts.loadingAlert("Updating Litter", "Loading...");
   if (isUpdateError)
     alerts.errorAlert(`${updateError?.data?.message}`, "Error Updating Dog");
   if (isAddPuppyProposeError)
@@ -70,7 +68,6 @@ const ProposePuppy = ({
       `${addPuppyProposeError?.data?.message}`,
       "Error Proposing Puppy"
     );
-  if (isUpdateSuccess || isAddPuppyProposeSuccess) Swal.close();
 
   return (
     <>

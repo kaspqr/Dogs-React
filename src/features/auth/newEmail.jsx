@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -28,6 +29,11 @@ const NewEmail = () => {
     refetchOnMountOrArgChange: true,
   });
 
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Fetching Tokens", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
+
   const successMsg = (
     <>
       <p>Email Verified Successfully</p>
@@ -56,12 +62,10 @@ const NewEmail = () => {
 
   if (!user) return <h1>Invalid Link</h1>;
   if (userId?.length) return <h1>Please logout before verifying an account</h1>;
-  if (isLoading) alerts.loadingAlert("Looking for tokens");
-  if (isError) alerts.errorAlert(error?.data?.message);
+  if (isError)
+    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Tokens");
 
   if (isSuccess) {
-    Swal.close();
-
     const { ids, entities } = emailtokens;
 
     const filteredId = ids.find((tokenId) => {

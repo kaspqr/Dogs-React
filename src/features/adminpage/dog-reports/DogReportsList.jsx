@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Swal from "sweetalert2";
 
 import { useGetDogReportsQuery } from "../../dogreports/dogReportsApiSlice";
@@ -17,12 +18,15 @@ const DogReportsList = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  if (isLoading) alerts.loadingAlert("Fetching advertisement reports");
-  if (isError) alerts.errorAlert(error?.data?.message);
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Fetching Dog Reports", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
+
+  if (isError)
+    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Dog Reports");
 
   if (isSuccess) {
-    Swal.close();
-
     const { ids } = dogReports;
 
     const tableContent = ids?.length

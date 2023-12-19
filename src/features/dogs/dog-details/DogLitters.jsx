@@ -1,6 +1,3 @@
-import React from "react";
-import Swal from "sweetalert2";
-
 import DogLitter from "./DogLitter";
 import { useGetLittersQuery } from "../../litters/litter-slices/littersApiSlice";
 import { alerts } from "../../../components/alerts";
@@ -9,7 +6,6 @@ const DogLitters = ({ dog, dogIds, dogEntities }) => {
   const {
     data: litters,
     isLoading,
-    isSuccess,
     isError,
     error,
   } = useGetLittersQuery("littersList", {
@@ -21,7 +17,6 @@ const DogLitters = ({ dog, dogIds, dogEntities }) => {
   if (isError)
     alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Litters");
   if (isLoading) return;
-  if (isSuccess) Swal.close();
 
   const { ids: childrenLitterIds, entities: litterEntities } = litters;
 

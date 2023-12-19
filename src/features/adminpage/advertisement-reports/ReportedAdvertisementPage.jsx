@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -12,7 +13,6 @@ import { alerts } from "../../../components/alerts";
 
 const ReportedAdvertisementPage = () => {
   const navigate = useNavigate();
-
   const { isAdmin, isSuperAdmin } = useAuth();
   const { advertisementreportid } = useParams();
 
@@ -47,21 +47,18 @@ const ReportedAdvertisementPage = () => {
     }),
   });
 
+  useEffect(() => {
+    if (isDelLoading) alerts.loadingAlert("Deleting Report", "Loading...");
+    else Swal.close();
+  }, [isDelLoading]);
+
   if (!isAdmin && !isSuperAdmin)
     return <p>You are not logged in as an admin.</p>;
   if (!advertisementReport) return;
 
-  const handleDelete = async () =>
-    await deleteAdvertisementReport({ id: advertisementReport?.id });
-
-  if (isDelLoading) alerts.loadingAlert("Deleting report");
-  if (isDelError) alerts.errorAlert(delerror?.data?.message);
-
-  if (isDelSuccess) {
-    Swal.close();
-    alerts.successAlert("Report deleted");
-    navigate("/advertisementreports");
-  }
+  if (isDelError)
+    alerts.errorAlert(`${delerror?.data?.message}`, "Error Deleting Report");
+  if (isDelSuccess) navigate("/advertisementreports");
 
   return (
     <>
@@ -92,7 +89,12 @@ const ReportedAdvertisementPage = () => {
       </p>
       <p>{advertisementReport?.text}</p>
       <br />
-      <button onClick={handleDelete} className="black-button">
+      <button
+        onClick={async () => {
+          await deleteAdvertisementReport({ id: advertisementReport?.id });
+        }}
+        className="black-button"
+      >
         Delete Report
       </button>
     </>

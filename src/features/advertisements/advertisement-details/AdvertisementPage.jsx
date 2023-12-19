@@ -13,7 +13,6 @@ import { BREEDING_TYPES, PRICELESS_TYPES } from "../../../config/consts";
 
 const AdvertisementPage = () => {
   const navigate = useNavigate();
-
   const { userId, isAdmin, isSuperAdmin } = useAuth();
   const { advertisementid } = useParams();
 
@@ -23,7 +22,6 @@ const AdvertisementPage = () => {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -47,33 +45,33 @@ const AdvertisementPage = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteAdvertisementMutation();
 
+  useEffect(() => {
+    if (isDelLoading)
+      alerts.loadingAlert("Deleting Advertisement", "Loading...");
+    else Swal.close();
+  }, [isDelLoading]);
+
   const handleResize = () => setWindowWidth(window.innerWidth);
 
-  const handleAdminDelete = async () => {
-    await deleteAdvertisement({ id: advertisement?.id });
-  };
-
-  const navRightClass = widescreen ? "nav-right" : null;
-
   if (!advertisement) return;
-  if (isDelLoading) alerts.loadingAlert("Deleting advertisement");
-  if (isDelError) alerts.errorAlert(delerror?.data?.message);
 
-  if (isDelSuccess) {
-    Swal.close();
-    navigate("/");
-  }
+  if (isDelError)
+    alerts.errorAlert(
+      `${delError?.data?.message}`,
+      "Error Deleting Advertisement"
+    );
+  if (isDelSuccess) navigate("/");
 
   return (
     <>
       <p className="advertisement-title-p">
         <span className="advertisement-page-title">{advertisement?.title}</span>
         {widescreen ? null : <br />}
-        <span className={navRightClass}>
+        <span className={widescreen ? "nav-right" : null}>
           <b>
             Posted by{" "}
             <Link className="orange-link" to={`/users/${user?.id}`}>
@@ -156,7 +154,9 @@ const AdvertisementPage = () => {
         <button
           title="Delete as Admin"
           className="black-button three-hundred"
-          onClick={handleAdminDelete}
+          onClick={async () => {
+            await deleteAdvertisement({ id: advertisement?.id });
+          }}
         >
           Delete as Admin
         </button>

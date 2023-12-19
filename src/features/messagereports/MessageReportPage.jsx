@@ -39,7 +39,7 @@ const MessageReportPage = () => {
     });
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return;
   if (isError) return <p>{error?.data?.message}</p>;
 
   const content = successMsg?.length ? (

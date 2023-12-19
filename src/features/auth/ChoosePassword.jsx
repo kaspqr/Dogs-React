@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -13,9 +13,7 @@ import { DISABLED_BUTTON_STYLE } from "../../config/consts";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-
   const { id, resettoken } = useParams();
-
   const { userId } = useAuth();
 
   const [password, setPassword] = useState("");
@@ -49,31 +47,28 @@ const ResetPassword = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await resetPassword({ id: id, password: password });
-  };
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Checking Token", "Loading...");
+    if (isUpdateLoading) alerts.loadingAlert("Updating password", "Loading...");
+    if (!isLoading && !isUpdateLoading) Swal.close();
+  }, [isLoading, isUpdateLoading]);
 
-  if (isError) alerts.errorAlert(error?.data?.message);
-  if (isUpdateError) alerts.errorAlert(updateError?.data?.message);
+  if (isError) alerts.errorAlert(`${error?.data?.message}`, "Error");
+  if (isUpdateError)
+    alerts.errorAlert(
+      `${updateError?.data?.message}`,
+      "Error Resetting Password"
+    );
 
   const PASSWORD_REGEX = /^[A-z0-9!@#%]{8,20}$/;
   const validPassword =
     PASSWORD_REGEX.test(password) && password === confirmPassword;
-  const changePasswordButtonStyle = !validPassword
-    ? DISABLED_BUTTON_STYLE
-    : null;
 
   if (userId?.length)
     return <p>You need to be logged out before resetting your password</p>;
   if (!user) return <p>Invalid Link</p>;
 
-  if (isLoading) alerts.loadingAlert("Checking token");
-  if (isUpdateLoading) alerts.loadingAlert("Updating password");
-
   if (isSuccess) {
-    Swal.close();
-
     const { ids, entities } = resettokens;
 
     const filteredId = ids.find((tokenId) => {
@@ -87,8 +82,6 @@ const ResetPassword = () => {
   }
 
   if (isUpdateSuccess) {
-    Swal.close();
-
     return (
       <>
         <p>Your password has been updated. You may now login.</p>
@@ -144,10 +137,13 @@ const ResetPassword = () => {
         </form>
         <button
           title="Change Password"
-          onClick={handleSubmit}
+          onClick={async (e) => {
+            e.preventDefault();
+            await resetPassword({ id: id, password: password });
+          }}
           className="black-button three-hundred"
           disabled={!validPassword}
-          style={changePasswordButtonStyle}
+          style={!validPassword ? DISABLED_BUTTON_STYLE : null}
         >
           Change Password
         </button>

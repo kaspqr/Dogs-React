@@ -15,6 +15,7 @@ import AddPuppy from "./AddPuppy";
 import RemoveFather from "./RemoveFather";
 import AddFather from "./AddFather";
 import { useGetFatherProposesQuery } from "../litter-slices/fatherProposesApiSlice";
+import { useEffect } from "react";
 
 const LitterPage = () => {
   const { userId } = useAuth();
@@ -74,9 +75,13 @@ const LitterPage = () => {
     }),
   });
 
+  useEffect(() => {
+    if (isLoading || isAllPuppyProposesLoading || isAllFatherProposesLoading)
+      alerts.loadingAlert("Updating data", "Loading...");
+    else Swal.close();
+  }, [isLoading, isAllPuppyProposesLoading, isAllFatherProposesLoading]);
+
   if (!litter || !mother) return;
-  if (isLoading || isAllPuppyProposesLoading || isAllFatherProposesLoading)
-    alerts.loadingAlert("Updating data", "Loading...");
   if (isError) alerts.errorAlert(`${error?.data?.message}`, "Error");
   if (isAllPuppyProposesError)
     alerts.errorAlert(`${allPuppyProposesError?.data?.message}`, "Error");
@@ -84,8 +89,6 @@ const LitterPage = () => {
     alerts.errorAlert(`${allFatherProposesError?.data?.message}`, "Error");
 
   if (isSuccess && isAllPuppyProposesSuccess && isAllFatherProposesSuccess) {
-    Swal.close();
-
     const { ids, entities } = dogs;
     const { ids: puppyProposalIds, entities: puppyProposalEntities } =
       puppyProposes;

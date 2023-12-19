@@ -5,7 +5,7 @@ import UserDog from "../../dogs/dog-components/UserDog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-const DogsTable = ({ filteredIds, windowWidth, user, userId }) => {
+const DogsTable = ({ filteredIds, windowWidth, user }) => {
   const [currentDogPage, setCurrentDogPage] = useState(1);
   const [newDogPage, setNewDogPage] = useState("");
 
@@ -57,9 +57,7 @@ const DogsTable = ({ filteredIds, windowWidth, user, userId }) => {
         >
           <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
         </button>
-
         {` Page ${currentDogPage} of ${maxDogPage} `}
-
         <button
           title="Go to Next Dog Page"
           className="pagination-button"
@@ -71,14 +69,12 @@ const DogsTable = ({ filteredIds, windowWidth, user, userId }) => {
         >
           <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
         </button>
-
         {windowWidth > 600 || maxDogPage === 1 ? null : (
           <>
             <br />
             <br />
           </>
         )}
-
         <span
           className="new-page-input-span"
           style={
@@ -119,7 +115,6 @@ const DogsTable = ({ filteredIds, windowWidth, user, userId }) => {
           </button>
         </span>
       </p>
-
       <br />
       {tableDogContent}
       <br />

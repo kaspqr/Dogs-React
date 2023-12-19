@@ -7,7 +7,7 @@ import { alerts } from "../../../components/alerts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-const AdvertisementsTable = ({ userId, user, windowWidth }) => {
+const AdvertisementsTable = ({ user, windowWidth }) => {
   const [currentAdvertisementPage, setCurrentAdvertisementPage] = useState(1);
   const [newAdvertisementPage, setNewAdvertisementPage] = useState("");
 
@@ -79,7 +79,7 @@ const AdvertisementsTable = ({ userId, user, windowWidth }) => {
         <p>
           <b>
             {filteredAdvertisementIds?.length} Active Advertisement
-            {filteredAdvertisementIds?.length === 1 ? null : "s"}
+            {filteredAdvertisementIds?.length !== 1 && "s"}
           </b>
         </p>
         <br />
@@ -95,9 +95,7 @@ const AdvertisementsTable = ({ userId, user, windowWidth }) => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
           </button>
-
           {` Page ${currentAdvertisementPage} of ${maxAdvertisementPage} `}
-
           <button
             title="Go to Next Advertisement Page"
             className="pagination-button"
@@ -113,14 +111,12 @@ const AdvertisementsTable = ({ userId, user, windowWidth }) => {
           >
             <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowRight} />
           </button>
-
           {windowWidth > 600 || maxAdvertisementPage === 1 ? null : (
             <>
               <br />
               <br />
             </>
           )}
-
           <span
             className="new-page-input-span"
             style={
@@ -167,7 +163,6 @@ const AdvertisementsTable = ({ userId, user, windowWidth }) => {
             </button>
           </span>
         </p>
-
         <br />
         {tableAdvertisementContent}
         <br />

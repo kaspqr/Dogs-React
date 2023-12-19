@@ -1,86 +1,95 @@
-import { memo } from "react"
-import { Link } from "react-router-dom"
-import Swal from "sweetalert2"
+import { memo, useEffect } from "react";
+import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
-import { useGetConversationsQuery } from "./conversationsApiSlice"
-import { useGetUsersQuery } from "../users/user-slices/usersApiSlice"
-import { useGetMessagesQuery } from "../messages/messagesApiSlice"
-import useAuth from "../../hooks/useAuth"
-import { alerts } from "../../components/alerts"
+import { useGetConversationsQuery } from "./conversationsApiSlice";
+import { useGetUsersQuery } from "../users/user-slices/usersApiSlice";
+import { useGetMessagesQuery } from "../messages/messagesApiSlice";
+import useAuth from "../../hooks/useAuth";
+import { alerts } from "../../components/alerts";
 
 const Conversation = ({ conversationId }) => {
-  const { userId } = useAuth()
+  const { userId } = useAuth();
 
   const { conversation } = useGetConversationsQuery("conversationsList", {
     selectFromResult: ({ data }) => ({
-      conversation: data?.entities[conversationId]
+      conversation: data?.entities[conversationId],
     }),
-  })
+  });
 
   const { receiver } = useGetUsersQuery("usersList", {
     selectFromResult: ({ data }) => ({
-      receiver: data?.entities[conversation?.receiver]
+      receiver: data?.entities[conversation?.receiver],
     }),
-  })
+  });
 
   const { sender } = useGetUsersQuery("usersList", {
     selectFromResult: ({ data }) => ({
-      sender: data?.entities[conversation?.sender]
+      sender: data?.entities[conversation?.sender],
     }),
-  })
+  });
 
   const {
     data: messages,
     isLoading,
     isSuccess,
     isError,
-    error
-  } = useGetMessagesQuery('messagesList', {
+    error,
+  } = useGetMessagesQuery("messagesList", {
     pollingInterval: 75000,
     refetchOnFocus: true,
-    refetchOnMountOrArgChange: true
-  })
+    refetchOnMountOrArgChange: true,
+  });
 
-  if (isLoading) alerts.loadingAlert("Looking for messages")
-  if (isError) alerts.errorAlert(error?.data?.message)
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Fetching Messages", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
 
-  if (!conversation || !receiver || !sender) return
+  if (isError)
+    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Messages");
+
+  if (!conversation || !receiver || !sender) return;
 
   if (isSuccess) {
-    Swal.close()
+    const { entities } = messages;
 
-    const { entities } = messages
-
-    const currentConversationMessages = Object.values(entities)?.filter(message => {
-      return message.conversation === conversationId
-    })
+    const currentConversationMessages = Object.values(entities)?.filter(
+      (message) => {
+        return message.conversation === conversationId;
+      }
+    );
 
     const lastMessage = currentConversationMessages?.length
       ? currentConversationMessages[currentConversationMessages.length - 1]
-      : null
+      : null;
 
-    const otherUser = receiver?.id === userId ? sender : receiver
+    const otherUser = receiver?.id === userId ? sender : receiver;
 
     return (
-      <Link className="conversation-link" to={`/conversations/${conversation.id}`}>
+      <Link
+        className="conversation-link"
+        to={`/conversations/${conversation.id}`}
+      >
         <div className="conversation-div">
-          <span><b>{otherUser.username}</b></span>
+          <span>
+            <b>{otherUser.username}</b>
+          </span>
           <span className="conversation-message-span">
-            {lastMessage?.sender ?
-              lastMessage?.text?.length > 12
+            {lastMessage?.sender
+              ? lastMessage?.text?.length > 12
                 ? `${lastMessage?.text?.slice(0, 12)}...`
                 : `${lastMessage?.text}`
-              : null
-            }
+              : null}
           </span>
         </div>
       </Link>
-    )
+    );
   }
 
-  return
-}
+  return;
+};
 
-const memoizedConversation = memo(Conversation)
+const memoizedConversation = memo(Conversation);
 
-export default memoizedConversation
+export default memoizedConversation;

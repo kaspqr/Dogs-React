@@ -1,10 +1,12 @@
+import { memo } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { useGetMessagesQuery } from "./messagesApiSlice";
 import { useGetUsersQuery } from "../users/user-slices/usersApiSlice";
-import { memo } from "react";
 import useAuth from "../../hooks/useAuth";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 
 const Message = ({ messageId }) => {
   const navigate = useNavigate();
@@ -22,7 +24,7 @@ const Message = ({ messageId }) => {
     }),
   });
 
-  if (!message || !sender) return null;
+  if (!message || !sender) return;
 
   const timeId = `time-${message?.id}`;
   const msgId = `message-${message?.id}`;

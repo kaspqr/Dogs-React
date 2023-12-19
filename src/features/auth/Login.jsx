@@ -65,7 +65,6 @@ const Login = () => {
   };
 
   const canLogin = username?.length && password?.length;
-  const loginButtonStyle = !canLogin ? DISABLED_BUTTON_STYLE : null;
 
   if (isLoading) return;
   if (auth?.username?.length) return <p>You are already logged in.</p>;
@@ -127,7 +126,7 @@ const Login = () => {
             type="submit"
             className="black-button three-hundred"
             disabled={!canLogin}
-            style={loginButtonStyle}
+            style={!canLogin ? DISABLED_BUTTON_STYLE : null}
           >
             Sign In
           </button>

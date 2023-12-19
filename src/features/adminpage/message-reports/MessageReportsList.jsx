@@ -1,8 +1,9 @@
-import Swal from "sweetalert2"
+import { useEffect } from "react";
+import Swal from "sweetalert2";
 
-import { useGetMessageReportsQuery } from "../../messagereports/messageReportsApiSlice"
-import MessageReport from "./MessageReport"
-import { alerts } from "../../../components/alerts"
+import { useGetMessageReportsQuery } from "../../messagereports/messageReportsApiSlice";
+import MessageReport from "./MessageReport";
+import { alerts } from "../../../components/alerts";
 
 const MessageReportsList = () => {
   const {
@@ -10,33 +11,47 @@ const MessageReportsList = () => {
     isLoading,
     isSuccess,
     isError,
-    error
-  } = useGetMessageReportsQuery('messageReportsList', {
+    error,
+  } = useGetMessageReportsQuery("messageReportsList", {
     pollingInterval: 75000,
     refetchOnFocus: true,
-    refetchOnMountOrArgChange: true
-  })
+    refetchOnMountOrArgChange: true,
+  });
 
-  if (isLoading) alerts.loadingAlert("Fetching advertisement reports")
-  if (isError) alerts.errorAlert(error?.data?.message)
+  useEffect(() => {
+    if (isLoading)
+      alerts.loadingAlert("Fetching Message Reports", "Loading...");
+    else Swal.close();
+  }, [isLoading]);
+
+  if (isError)
+    alerts.errorAlert(
+      `${error?.data?.message}`,
+      "Error Fetching Message Reports"
+    );
 
   if (isSuccess) {
-    Swal.close()
-
-    const { ids } = messageReports
+    const { ids } = messageReports;
 
     const tableContent = ids?.length
-      ? ids.map(messageReportId => <MessageReport key={messageReportId} messageReportId={messageReportId} />)
-      : null
+      ? ids.map((messageReportId) => (
+          <MessageReport
+            key={messageReportId}
+            messageReportId={messageReportId}
+          />
+        ))
+      : null;
 
-    const content = ids?.length
-      ? tableContent
-      : <p>There are no message reports</p>
+    const content = ids?.length ? (
+      tableContent
+    ) : (
+      <p>There are no message reports</p>
+    );
 
-    return content
+    return content;
   }
 
-  return
-}
+  return;
+};
 
-export default MessageReportsList
+export default MessageReportsList;

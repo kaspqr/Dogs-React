@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 
 import { useGetLittersQuery } from "./litter-slices/littersApiSlice";
 import { useGetDogsQuery } from "../dogs/dog-slices/dogsApiSlice";
+import { hasRegion } from "../../config/utils";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
-
-import { hasRegion } from "../../config/utils";
 
 const Litter = ({ litterId }) => {
   const { litter } = useGetLittersQuery("littersList", {
@@ -39,7 +38,6 @@ const Litter = ({ litterId }) => {
             <b>{mother?.name}</b>
           </Link>
         </p>
-
         {father ? (
           <p>
             Father{" "}
@@ -50,29 +48,22 @@ const Litter = ({ litterId }) => {
         ) : (
           <p>Father Not Added</p>
         )}
-
         <p>Born {litter?.born?.split(" ").slice(1, 4).join(" ")}</p>
-
         <p>
           {hasRegion(litter) ? `${litter?.region}, ` : null}
           {litter?.country}
         </p>
-
         <p>{litter?.breed}</p>
-
         <p>
           {litter?.children} {litter?.children === 1 ? "Puppy" : "Puppies"}
         </p>
       </div>
-
       <div className="litter-div-link">
         <span className="litter-link-span">
           <p>
             <Link className="eye-view" to={`/litters/${litterId}`}>
               <FontAwesomeIcon icon={faEye} size="xl" />
-
               <br />
-
               <b>View Litter</b>
             </Link>
           </p>

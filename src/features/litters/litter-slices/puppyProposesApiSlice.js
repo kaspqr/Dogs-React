@@ -61,19 +61,15 @@ export const {
     useDeletePuppyProposeMutation,
 } = puppyProposesApiSlice
 
-// Returns the query result object
 export const selectPuppyProposesResult = puppyProposesApiSlice.endpoints.getPuppyProposes.select()
 
-// Creates memoized selector
 const selectPuppyProposesData = createSelector(
     selectPuppyProposesResult,
-    puppyProposesResult => puppyProposesResult.data // Normalized state object with ids & entities
+    puppyProposesResult => puppyProposesResult.data
 )
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllPuppyProposes,
     selectById: selectPuppyProposeById,
     selectIds: selectPuppyProposeIds
-    // Pass in a selector that returns the puppyProposes slice of state
 } = puppyProposesAdapter.getSelectors(state => selectPuppyProposesData(state) ?? initialState)

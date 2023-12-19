@@ -30,10 +30,7 @@ const UserPage = () => {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const [
@@ -121,21 +118,6 @@ const UserPage = () => {
       (dogId) => entities[dogId]?.user === user?.id
     );
 
-    const handleEdit = () => navigate(`/users/edit/${id}`);
-    const handleMessage = async () => {
-      if (usersConversationId) {
-        navigate(`/conversations/${usersConversationId}`);
-      } else {
-        const response = await addNewConversation({
-          sender: userId,
-          receiver: id,
-        });
-
-        if (response)
-          navigate(`/conversations/${response?.data?.newConversationId}`);
-      }
-    };
-
     return (
       <>
         <p className="user-page-username">
@@ -144,7 +126,7 @@ const UserPage = () => {
             <button
               title="Edit Profile"
               className="user-page-edit-button black-button"
-              onClick={handleEdit}
+              onClick={() => navigate(`/users/edit/${id}`)}
             >
               Edit Profile
             </button>
@@ -153,7 +135,21 @@ const UserPage = () => {
             <button
               title="Message User"
               className="user-page-edit-button black-button"
-              onClick={handleMessage}
+              onClick={async () => {
+                if (usersConversationId) {
+                  navigate(`/conversations/${usersConversationId}`);
+                } else {
+                  const response = await addNewConversation({
+                    sender: userId,
+                    receiver: id,
+                  });
+
+                  if (response)
+                    navigate(
+                      `/conversations/${response?.data?.newConversationId}`
+                    );
+                }
+              }}
             >
               Message
             </button>
@@ -299,16 +295,11 @@ const UserPage = () => {
             <br />
           </>
         )}
-        <AdvertisementsTable
-          userId={userId}
-          user={user}
-          windowWidth={windowWidth}
-        />
+        <AdvertisementsTable user={user} windowWidth={windowWidth} />
         <DogsTable
           filteredIds={filteredIds}
           windowWidth={windowWidth}
           user={user}
-          userId={userId}
         />
       </>
     );

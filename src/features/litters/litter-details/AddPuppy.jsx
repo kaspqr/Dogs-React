@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 import { useUpdateDogMutation } from "../../dogs/dog-slices/dogsApiSlice";
@@ -17,13 +17,13 @@ const AddPuppy = ({
 
   const [
     updateDog,
-    {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
+    { isLoading: isUpdateLoading, isError: isUpdateError, error: updateError },
   ] = useUpdateDogMutation();
+
+  useEffect(() => {
+    if (isUpdateLoading) alerts.loadingAlert("Updating Dog", "Loading...");
+    else Swal.close();
+  }, [isUpdateLoading]);
 
   if (
     litter?.children <= currentLitterDogsIds?.length ||
@@ -32,10 +32,8 @@ const AddPuppy = ({
   )
     return;
 
-  if (isUpdateLoading) alerts.loadingAlert("Updating Dog", "Loading...");
   if (isUpdateError)
     alerts.errorAlert(`${updateError?.data?.message}`, "Error Updating Dog");
-  if (isUpdateSuccess) Swal.close();
 
   return (
     <>

@@ -26,27 +26,26 @@ const AdvertisementReportPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      Swal.close();
       setReport("");
       setSuccessMsg("Thank You! We have received your report.");
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    if (isLoading) alerts.loadingAlert("Sending report");
+    else Swal.close();
+  }, [isLoading]);
+
   if (advertisement?.poster === userId)
     return <p>You cannot report your own advertisement.</p>;
 
-  const handleReportClicked = async () =>
-    await addNewAdvertisementReport({
-      advertisement: advertisementid,
-      reporter: userId,
-      text: report,
-    });
-
   const canReport = report?.length > 1;
-  const reportButtonStyle = canReport ? null : DISABLED_BUTTON_STYLE;
 
-  if (isLoading) alerts.loadingAlert("Sending report");
-  if (isError) alerts.errorAlert(error?.data?.message);
+  if (isError)
+    alerts.errorAlert(
+      `${error?.data?.message}`,
+      "Error Reporting Advertisement"
+    );
 
   const content = successMsg?.length ? (
     <p>{successMsg}</p>
@@ -81,9 +80,15 @@ const AdvertisementReportPage = () => {
         <button
           title="Report Advertisement"
           className="black-button three-hundred"
-          onClick={handleReportClicked}
+          onClick={async () =>
+            await addNewAdvertisementReport({
+              advertisement: advertisementid,
+              reporter: userId,
+              text: report,
+            })
+          }
           disabled={!canReport}
-          style={reportButtonStyle}
+          style={canReport ? null : DISABLED_BUTTON_STYLE}
         >
           Report
         </button>
