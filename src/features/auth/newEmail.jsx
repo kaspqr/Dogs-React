@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 
-import { useGetEmailTokensQuery } from "./auth-slices/emailTokensApiSlice";
-import { useGetUsersQuery } from "../users/user-slices/usersApiSlice";
+import { useGetEmailTokenQuery } from "./auth-slices/emailTokensApiSlice";
 import useAuth from "../../hooks/useAuth";
 import { alerts } from "../../components/alerts";
 
@@ -12,27 +10,24 @@ const NewEmail = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { user } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      user: data?.entities[params.id],
-    }),
-  });
-
   const {
-    data: emailtokens,
+    data: emailToken,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetEmailTokensQuery("emailTokensList", {
-    pollingInterval: 75000,
+  } = useGetEmailTokenQuery("emailTokensList", {
+    pollingInterval: 600000,
     refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Fetching Tokens", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError]);
+
+  if (isLoading) return
+
+  if (userId?.length) return <h1>Please logout before verifying an account</h1>;
 
   const successMsg = (
     <>
@@ -60,36 +55,15 @@ const NewEmail = () => {
     }
   };
 
-  if (!user) return <h1>Invalid Link</h1>;
-  if (userId?.length) return <h1>Please logout before verifying an account</h1>;
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Tokens");
-
   if (isSuccess) {
-    const { ids, entities } = emailtokens;
+    if (!emailToken) return <h1>Invalid Link</h1>;
 
-    const filteredId = ids.find((tokenId) => {
-      return (
-        entities[tokenId].emailToken === params?.emailtoken &&
-        entities[tokenId].user === params?.id
-      );
-    });
+    verifyEmailUrl();
 
-    if (!filteredId) return <h1>Invalid Link</h1>;
-
-    if (filteredId) {
-      const token = entities[filteredId];
-
-      if (!user?.id?.length || token?.user !== user?._id) {
-        return <h1>Invalid Link</h1>;
-      }
-
-      verifyEmailUrl();
-      return successMsg;
-    }
+    return successMsg;
   }
 
-  return successMsg;
+  return;
 };
 
 export default NewEmail;

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate/* , Link */ } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { setCredentials } from "./auth-slices/authSlice";
@@ -54,11 +54,7 @@ const Login = () => {
       } else if (err.status === 401) {
         setErrMsg("Unauthorized");
       } else {
-        setErrMsg(
-          "Login failed. Make sure you have clicked on the verification link on the email you've provided. " +
-            "If you haven't received the email, attempting to log in with an unverified account triggers a new " +
-            "verification email being sent to you in case you have waited at least 1 hour since the last try."
-        );
+        setErrMsg("Too many logins in a row. Try again later.");
       }
       errRef.current.focus();
     }
@@ -132,7 +128,7 @@ const Login = () => {
           </button>
         </form>
         <br />
-        <Link to={"/resetpassword"}>Forgot Password? Click here</Link>
+        {/* <Link to={"/resetpassword"}>Forgot Password? Click here</Link> */}
       </main>
     </>
   );

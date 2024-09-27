@@ -8,8 +8,31 @@ const initialState = puppyProposesAdapter.getInitialState()
 export const puppyProposesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getPuppyProposes: builder.query({
-            query: () => ({
-                url: '/puppyproposes',
+            query: ({ id }) => ({
+                url: `/puppyproposes/${id}`,
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            transformResponse: responseData => {
+                const loadedPuppyProposes = responseData.map(puppyPropose => {
+                    puppyPropose.id = puppyPropose._id
+                    return puppyPropose
+                })
+                return puppyProposesAdapter.setAll(initialState, loadedPuppyProposes)
+            },
+            providesTags: (result, error, arg) => {
+                if (result?.ids) {
+                    return [
+                        { type: 'PuppyPropose', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'PuppyPropose', id }))
+                    ]
+                } else return [{ type: 'PuppyPropose', id: 'LIST' }]
+            }
+        }),
+        getUserPuppyProposes: builder.query({
+            query: ({ id }) => ({
+                url: `/puppyproposes/user/${id}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
@@ -57,6 +80,7 @@ export const puppyProposesApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetPuppyProposesQuery,
+    useGetUserPuppyProposesQuery,
     useAddNewPuppyProposeMutation,
     useDeletePuppyProposeMutation,
 } = puppyProposesApiSlice

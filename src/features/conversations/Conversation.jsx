@@ -1,94 +1,50 @@
 import { memo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
-
-import { useGetConversationsQuery } from "./conversationsApiSlice";
-import { useGetUsersQuery } from "../users/user-slices/usersApiSlice";
-import { useGetMessagesQuery } from "../messages/messagesApiSlice";
-import useAuth from "../../hooks/useAuth";
 import { alerts } from "../../components/alerts";
+import { useGetUserByIdQuery } from "../users/user-slices/usersApiSlice";
 
-const Conversation = ({ conversationId }) => {
-  const { userId } = useAuth();
-
-  const { conversation } = useGetConversationsQuery("conversationsList", {
-    selectFromResult: ({ data }) => ({
-      conversation: data?.entities[conversationId],
-    }),
-  });
-
-  const { receiver } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      receiver: data?.entities[conversation?.receiver],
-    }),
-  });
-
-  const { sender } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      sender: data?.entities[conversation?.sender],
-    }),
-  });
-
+const Conversation = ({ conversation, userId }) => {
   const {
-    data: messages,
+    data: otherUser,
     isLoading,
     isSuccess,
     isError,
-    error,
-  } = useGetMessagesQuery("messagesList", {
-    pollingInterval: 75000,
+    error
+  } = useGetUserByIdQuery({ id: conversation?.sender === userId ? conversation?.receiver : conversation?.sender }, {
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Fetching Messages", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`)
+  }, [isError])
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Messages");
-
-  if (!conversation || !receiver || !sender) return;
+  if (isLoading) return
 
   if (isSuccess) {
-    const { entities } = messages;
-
-    const currentConversationMessages = Object.values(entities)?.filter(
-      (message) => {
-        return message.conversation === conversationId;
-      }
-    );
-
-    const lastMessage = currentConversationMessages?.length
-      ? currentConversationMessages[currentConversationMessages.length - 1]
-      : null;
-
-    const otherUser = receiver?.id === userId ? sender : receiver;
-
     return (
       <Link
         className="conversation-link"
-        to={`/conversations/${conversation.id}`}
+        to={`/conversations/${conversation?.id}`}
       >
         <div className="conversation-div">
           <span>
             <b>{otherUser.username}</b>
           </span>
           <span className="conversation-message-span">
-            {lastMessage?.sender
-              ? lastMessage?.text?.length > 12
-                ? `${lastMessage?.text?.slice(0, 12)}...`
-                : `${lastMessage?.text}`
-              : null}
+            {!conversation?.lastMessage?.sender ? null : conversation?.lastMessage?.text?.length > 12
+              ? `${conversation?.lastMessage?.text?.slice(0, 12)}...`
+              : `${conversation?.lastMessage?.text}`
+            }
           </span>
         </div>
       </Link>
     );
   }
 
-  return;
-};
+  return
+}
 
 const memoizedConversation = memo(Conversation);
 

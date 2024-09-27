@@ -61,19 +61,15 @@ export const {
     useDeleteDogReportMutation,
 } = dogReportsApiSlice
 
-// Returns the query result object
 export const selectDogReportsResult = dogReportsApiSlice.endpoints.getDogs.select()
 
-// Creates memoized selector
 const selectDogReportsData = createSelector(
     selectDogReportsResult,
-    dogReportsResult => dogReportsResult.data // Normalized state object with ids & entities
+    dogReportsResult => dogReportsResult.data
 )
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllDogReports,
     selectById: selectDogReportById,
     selectIds: selectDogReportIds
-    // Pass in a selector that returns the dogs slice of state
 } = dogReportsAdapter.getSelectors(state => selectDogReportsData(state) ?? initialState)

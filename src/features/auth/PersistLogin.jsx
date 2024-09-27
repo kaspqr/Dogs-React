@@ -13,8 +13,7 @@ const PersistLogin = () => {
 
   const [trueSuccess, setTrueSuccess] = useState(false);
 
-  const [refresh, { isUninitialized, isLoading, isSuccess, isError, error }] =
-    useRefreshMutation();
+  const [refresh, { isUninitialized, isLoading, isSuccess, isError, error }] = useRefreshMutation();
 
   useEffect(() => {
     if (effectRan.current === true || process.env.NODE_ENV !== "development") {

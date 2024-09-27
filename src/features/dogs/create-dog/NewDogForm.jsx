@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
-import Swal from "sweetalert2";
 
 import "../../../styles/customCalendar.css";
 import { useAddNewDogMutation } from "../dog-slices/dogsApiSlice";
@@ -38,8 +37,7 @@ const NewDogForm = () => {
   const [country, setCountry] = useState("Argentina");
   const [region, setRegion] = useState("none ");
 
-  const [addNewDog, { isLoading, isSuccess, isError, error }] =
-    useAddNewDogMutation();
+  const [addNewDog, { isLoading, isSuccess, isError, error }] = useAddNewDogMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -59,54 +57,43 @@ const NewDogForm = () => {
       setFemale(true);
       navigate("/dogs");
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess]);
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Creating Dog", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError]);
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Creating Dog");
+  if (isLoading) return
 
-  const canSave =
-    NAME_REGEX.test(name) &&
-    breed.length &&
-    typeof birth === "object" &&
-    birth !== "" &&
-    ((typeof death === "object" && death.getTime() >= birth.getTime()) ||
-      death === "");
-
-  const handleSaveDogClicked = async (e) => {
-    e.preventDefault();
-    if (canSave) {
-      const finalBirth =
-        birth !== "" ? new Date(birth.getTime()).toDateString() : "";
-      const finalDeath =
-        death !== "" ? new Date(death.getTime()).toDateString() : "";
-
-      await addNewDog({
-        name,
-        country,
-        region,
-        breed,
-        heat,
-        sterilized,
-        passport,
-        microchipped,
-        chipnumber,
-        birth: finalBirth,
-        death: finalDeath,
-        info,
-        female,
-        user: userId,
-      });
-    }
-  };
+  const canSave = NAME_REGEX.test(name) && breed.length && typeof birth === "object" && birth !== "" &&
+    ((typeof death === "object" && death.getTime() >= birth.getTime()) || death === "");
 
   return (
     <>
-      <form onSubmit={handleSaveDogClicked}>
+      <form onSubmit={async (e) => {
+        e.preventDefault();
+        if (canSave) {
+          const finalBirth = birth !== "" ? new Date(birth.getTime()).toDateString() : "";
+          const finalDeath = death !== "" ? new Date(death.getTime()).toDateString() : "";
+
+          await addNewDog({
+            name,
+            country,
+            region,
+            breed,
+            heat,
+            sterilized,
+            passport,
+            microchipped,
+            chipnumber,
+            birth: finalBirth,
+            death: finalDeath,
+            info,
+            female,
+            user: userId,
+          });
+        }
+      }}>
         <div>
           <p className="register-dog-title">Register Dog</p>
         </div>
@@ -302,6 +289,7 @@ const NewDogForm = () => {
         <br />
         <div>
           <button
+            type="submit"
             className="black-button three-hundred"
             style={!canSave ? DISABLED_BUTTON_STYLE : null}
             title="Save"

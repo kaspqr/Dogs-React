@@ -1,125 +1,107 @@
-import React from "react";
+import { useEffect } from "react";
 
-import { useDeleteDogProposeMutation } from "../../dogs/dog-slices/proposeDogApiSlice";
-import {
-  useDeleteFatherProposeMutation,
-  useGetFatherProposesQuery,
-} from "../../litters/litter-slices/fatherProposesApiSlice";
-import {
-  useDeletePuppyProposeMutation,
-  useGetPuppyProposesQuery,
-} from "../../litters/litter-slices/puppyProposesApiSlice";
+import { useDeleteDogProposeMutation, useGetDogProposesQuery } from "../../dogs/dog-slices/proposeDogApiSlice";
+import { useDeleteFatherProposeMutation, useGetFatherProposesQuery } from "../../litters/litter-slices/fatherProposesApiSlice";
+import { useDeletePuppyProposeMutation, useGetUserPuppyProposesQuery } from "../../litters/litter-slices/puppyProposesApiSlice";
 import { alerts } from "../../../components/alerts";
 
-const DeleteProposals = ({
-  user,
-  userId,
-  proposeIds,
-  filteredIds,
-  proposeEntities,
-}) => {
+const DeleteProposals = ({ userId }) => {
+  const {
+    data: dogproposes,
+    isLoading: isDogProposesLoading,
+    isSuccess: isDogProposesSuccess,
+    isError: isDogProposesError,
+    error: dogProposesError,
+  } = useGetDogProposesQuery({ id: userId }, {
+    pollingInterval: 600000,
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false
+  });
+
   const {
     data: fatherproposes,
-    isSuccess: isFatherProposeSuccess,
-    isError: isFatherProposeError,
-    error: fatherProposeError,
-  } = useGetFatherProposesQuery("fatherProposesList", {
-    pollingInterval: 75000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
+    isLoading: isFatherProposesLoading,
+    isSuccess: isFatherProposesSuccess,
+    isError: isFatherProposesError,
+    error: fatherProposesError,
+  } = useGetFatherProposesQuery({ id: userId }, {
+    pollingInterval: 600000,
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false
   });
 
   const {
     data: puppyproposes,
-    isSuccess: isPuppyProposeSuccess,
-    isError: isPuppyProposeError,
-    error: puppyProposeError,
-  } = useGetPuppyProposesQuery("puppyProposesList", {
-    pollingInterval: 75000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
+    isLoading: isPuppyProposesLoading,
+    isSuccess: isPuppyProposesSuccess,
+    isError: isPuppyProposesError,
+    error: puppyProposesError,
+  } = useGetUserPuppyProposesQuery({ id: userId }, {
+    pollingInterval: 600000,
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false
   });
 
-  const [
-    deleteDogPropose,
-    { isError: isErrorDeleteDogPropose, error: errorDeleteDogPropose },
-  ] = useDeleteDogProposeMutation();
+  const [deleteDogPropose, {
+    isLoading: isDeleteDogProposeLoading,
+    isError: isDeleteDogProposeError,
+    error: deleteDogProposeError
+  }] = useDeleteDogProposeMutation();
 
-  const [
-    deleteFatherPropose,
-    { isError: isErrorDeleteFatherPropose, error: errorDeleteFatherPropose },
-  ] = useDeleteFatherProposeMutation();
+  const [deleteFatherPropose, {
+    isLoading: isDeleteFatherProposeLoading,
+    isError: isDeleteFatherProposeError,
+    error: deleteFatherProposeError
+  }] = useDeleteFatherProposeMutation();
 
-  const [
-    deletePuppyPropose,
-    { isError: isErrorDeletePuppyPropose, error: errorDeletePuppyPropose },
-  ] = useDeletePuppyProposeMutation();
+  const [deletePuppyPropose, {
+    isLoading: isDeletePuppyProposeLoading,
+    isError: isDeletePuppyProposeError,
+    error: deletePuppyProposeError
+  }] = useDeletePuppyProposeMutation();
 
-  if (isErrorDeleteDogPropose)
-    alerts.errorAlert(
-      `${errorDeleteDogPropose?.data?.message}`,
-      "Error Deleting Proposals"
-    );
-  if (isErrorDeleteFatherPropose)
-    alerts.errorAlert(
-      `${errorDeleteFatherPropose?.data?.message}`,
-      "Error Deleting Proposals"
-    );
-  if (isErrorDeletePuppyPropose)
-    alerts.errorAlert(
-      `${errorDeletePuppyPropose?.data?.message}`,
-      "Error Deleting Proposals"
-    );
-  if (isFatherProposeError)
-    alerts.errorAlert(
-      `${fatherProposeError?.data?.message}`,
-      "Error Fetching Proposals"
-    );
-  if (isPuppyProposeError)
-    alerts.errorAlert(
-      `${puppyProposeError?.data?.message}`,
-      "Error Fetching Proposals"
-    );
+  useEffect(() => {
+    if (isDogProposesError) alerts.errorAlert(`${dogProposesError?.data?.message}aaa`)
+  }, [isDogProposesError])
 
-  if (isFatherProposeSuccess && isPuppyProposeSuccess) {
-    const { ids: fatherProposeIds, entities: fatherProposeEntities } =
-      fatherproposes;
-    const { ids: puppyProposeIds, entities: puppyProposeEntities } =
-      puppyproposes;
+  useEffect(() => {
+    if (isFatherProposesError) alerts.errorAlert(`${fatherProposesError?.data?.message}bbb`)
+  }, [isFatherProposesError])
 
-    const filteredMadeDogProposes =
-      user?.id === userId
-        ? proposeIds?.filter((proposeId) =>
-            filteredIds?.includes(proposeEntities[proposeId]?.dog)
-          )
-        : null;
+  useEffect(() => {
+    if (isPuppyProposesError) alerts.errorAlert(`${puppyProposesError?.data?.message}ccc`)
+  }, [isPuppyProposesError])
 
-    const filteredMadeFatherProposes =
-      user?.id === userId
-        ? fatherProposeIds?.filter((proposeId) =>
-            filteredIds?.includes(fatherProposeEntities[proposeId]?.father)
-          )
-        : null;
+  useEffect(() => {
+    if (isDeleteDogProposeError) alerts.errorAlert(`${deleteDogProposeError?.data?.message}`)
+  }, [isDeleteDogProposeError])
 
-    const filteredMadePuppyProposes =
-      user?.id === userId
-        ? puppyProposeIds?.filter((proposeId) =>
-            filteredIds?.includes(puppyProposeEntities[proposeId]?.puppy)
-          )
-        : null;
+  useEffect(() => {
+    if (isDeleteFatherProposeError) alerts.errorAlert(`${deleteFatherProposeError?.data?.message}`)
+  }, [isDeleteFatherProposeError])
+
+  useEffect(() => {
+    if (isDeletePuppyProposeError) alerts.errorAlert(`${deletePuppyProposeError?.data?.message}`)
+  }, [isDeletePuppyProposeError])
+
+  if (isDogProposesLoading || isFatherProposesLoading || isPuppyProposesLoading ||
+    isDeleteDogProposeLoading || isDeleteFatherProposeLoading || isDeletePuppyProposeLoading) return
+
+  if (isDogProposesSuccess && isFatherProposesSuccess && isPuppyProposesSuccess) {
+    const { ids: dogProposeIds } = dogproposes;
+    const { ids: fatherProposeIds } = fatherproposes;
+    const { ids: puppyProposeIds } = puppyproposes;
 
     return (
       <>
-        {filteredMadeDogProposes?.length > 0 && (
+        {dogProposeIds?.length > 0 && (
           <>
             <button
               title="Delete Dog Transfer Proposals Made by Me"
               className="black-button three-hundred"
-              onClick={() =>
-                filteredMadeDogProposes?.forEach(async (proposal) => {
-                  await deleteDogPropose({ id: proposal });
-                })
-              }
+              onClick={() => dogProposeIds?.forEach(async (id) => {
+                await deleteDogPropose({ id });
+              })}
             >
               Delete Dog Proposals Made by Me
             </button>
@@ -127,16 +109,14 @@ const DeleteProposals = ({
             <br />
           </>
         )}
-        {filteredMadeFatherProposes?.length > 0 && (
+        {fatherProposeIds?.length > 0 && (
           <>
             <button
               title="Delete Father Proposals Made by Me"
               className="black-button three-hundred"
-              onClick={() =>
-                filteredMadeFatherProposes?.forEach(async (proposal) => {
-                  await deleteFatherPropose({ id: proposal });
-                })
-              }
+              onClick={() => fatherProposeIds?.forEach(async (id) => {
+                await deleteFatherPropose({ id });
+              })}
             >
               Delete Father Proposals Made by Me
             </button>
@@ -144,16 +124,14 @@ const DeleteProposals = ({
             <br />
           </>
         )}
-        {filteredMadePuppyProposes?.length > 0 && (
+        {puppyProposeIds?.length > 0 && (
           <>
             <button
               title="Delete Puppy Proposals Made by Me"
               className="black-button three-hundred"
-              onClick={() =>
-                filteredMadePuppyProposes?.forEach(async (proposal) => {
-                  await deletePuppyPropose({ id: proposal });
-                })
-              }
+              onClick={() => puppyProposeIds?.forEach(async (id) => {
+                await deletePuppyPropose({ id });
+              })}
             >
               Delete Puppy Proposals Made by Me
             </button>

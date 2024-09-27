@@ -61,19 +61,15 @@ export const {
     useDeleteUserReportMutation,
 } = userReportsApiSlice
 
-// Returns the query result object
 export const selectUserReportsResult = userReportsApiSlice.endpoints.getUsers.select()
 
-// Creates memoized selector
 const selectUserReportsData = createSelector(
     selectUserReportsResult,
-    userReportsResult => userReportsResult.data // Normalized state object with ids & entities
+    userReportsResult => userReportsResult.data
 )
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllUserReports,
     selectById: selectUserReportById,
     selectIds: selectUserReportIds
-    // Pass in a selector that returns the users slice of state
 } = userReportsAdapter.getSelectors(state => selectUserReportsData(state) ?? initialState)

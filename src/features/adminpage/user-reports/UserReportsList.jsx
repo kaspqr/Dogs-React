@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import Swal from "sweetalert2";
 
 import { useGetUserReportsQuery } from "../../userreports/userReportsApiSlice";
 import UserReport from "./UserReport";
@@ -13,35 +12,27 @@ const UserReportsList = () => {
     isError,
     error,
   } = useGetUserReportsQuery("userReportsList", {
-    pollingInterval: 75000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
+    pollingInterval: 600000,
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false,
   });
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Fetching User Reports", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError]);
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching User Reports");
+  if (isLoading) return
 
   if (isSuccess) {
     const { ids } = userReports;
 
-    const tableContent = ids?.length
-      ? ids.map((userReportId) => (
-          <UserReport key={userReportId} userReportId={userReportId} />
-        ))
-      : null;
+    if (!ids?.length) return <p>There are no user reports</p>
 
-    const content = ids?.length ? (
-      tableContent
-    ) : (
-      <p>There are no user reports</p>
-    );
-
-    return content;
+    return (
+      <>
+        {ids.map((id) => <UserReport key={id} userReportId={id} />)}
+      </>
+    )
   }
 
   return;

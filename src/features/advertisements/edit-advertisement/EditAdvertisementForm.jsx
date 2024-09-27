@@ -1,17 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 
-import {
-  useUpdateAdvertisementMutation,
-  useDeleteAdvertisementMutation,
-} from "../advertisement-slices/advertisementsApiSlice";
+import { useUpdateAdvertisementMutation, useDeleteAdvertisementMutation } from "../advertisement-slices/advertisementsApiSlice";
 import { CURRENCIES } from "../../../config/currencies";
-import {
-  DISABLED_BUTTON_STYLE,
-  PRICE_REGEX,
-  TITLE_REGEX,
-} from "../../../config/consts";
+import { DISABLED_BUTTON_STYLE, PRICE_REGEX, TITLE_REGEX } from "../../../config/consts";
 import { PRICELESS_TYPES } from "../../../config/consts";
 import { regexInputEmptyChanged } from "../../../config/utils";
 import { alerts } from "../../../components/alerts";
@@ -33,38 +25,36 @@ const EditAdvertisementForm = ({ advertisement }) => {
 
   const fileInputRef = useRef(null);
 
-  const [updateAdvertisement, { isLoading, isSuccess, isError, error }] =
-    useUpdateAdvertisementMutation();
+  const [updateAdvertisement, { isLoading, isSuccess, isError, error }] = useUpdateAdvertisementMutation();
 
-  const [
-    deleteAdvertisement,
-    {
-      isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
-      isError: isDelError,
-      error: delError,
-    },
-  ] = useDeleteAdvertisementMutation();
+  const [deleteAdvertisement, {
+    isLoading: isDelLoading,
+    isSuccess: isDelSuccess,
+    isError: isDelError,
+    error: delError,
+  }] = useDeleteAdvertisementMutation();
 
   useEffect(() => {
     setValidPrice(PRICE_REGEX.test(price));
   }, [price]);
 
   useEffect(() => {
-    if (isDelSuccess) {
-      alerts.successAlert("Advertisement Deleted");
-      navigate("/");
-    } else if (isSuccess) {
-      navigate(`/advertisements/${advertisement?.id}`);
-    }
-  }, [isSuccess, isDelSuccess, navigate, advertisement?.id]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Updating Advertisement", "Loading...");
-    if (isDelLoading)
-      alerts.loadingAlert("Deleting Advertisement", "Loading...");
-    if (!isLoading && !isDelLoading) Swal.close();
-  }, [isLoading, isDelLoading]);
+    if (isDelError) alerts.errorAlert(`${delError?.data?.message}`);
+  }, [isDelError])
+
+  useEffect(() => {
+    if (isDelSuccess) navigate("/");
+  }, [isDelSuccess])
+
+  useEffect(() => {
+    if (isSuccess) navigate(`/advertisements/${advertisement?.id}`);
+  }, [isSuccess, advertisement?.id]);
+
+  if (isLoading || isDelLoading) return
 
   const previewFile = (file) => {
     const reader = new FileReader();
@@ -74,27 +64,9 @@ const EditAdvertisementForm = ({ advertisement }) => {
     };
   };
 
-  const handleFileChanged = (e) => {
-    const file = e.target.files[0];
-    previewFile(file);
-  };
-
   const confirmDeleteButtonDisabled = confirmDelete !== "confirmdelete";
-  const validPriceOrPricelessType =
-    validPrice || PRICELESS_TYPES.includes(advertisement?.type);
-  const canSave =
-    title?.length && info?.length && validPriceOrPricelessType && !isLoading;
-
-  if (isError)
-    alerts.errorAlert(
-      `${error?.data?.message}`,
-      "Error Updating Advertisement"
-    );
-  if (isDelError)
-    alerts.errorAlert(
-      `${delError?.data?.message}`,
-      "Error Deleting Advertisement"
-    );
+  const validPriceOrPricelessType = validPrice || PRICELESS_TYPES.includes(advertisement?.type);
+  const canSave = title?.length && info?.length && validPriceOrPricelessType && !isLoading;
 
   return (
     <>
@@ -131,7 +103,10 @@ const EditAdvertisementForm = ({ advertisement }) => {
             type="file"
             name="advertisement-image"
             ref={fileInputRef}
-            onChange={handleFileChanged}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              previewFile(file);
+            }}
             style={{ display: "none" }}
           />
         </span>

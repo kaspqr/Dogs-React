@@ -7,28 +7,19 @@ const initialState = resetTokensAdapter.getInitialState()
 
 export const resetTokensApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
-        getResetTokens: builder.query({
-            query: () => ({
-                url: '/resettokens',
+        getResetToken: builder.query({
+            query: ({ resetToken, user }) => ({
+                url: `/resettokens/${resetToken}/${user}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
             }),
             transformResponse: responseData => {
-                const loadedResetTokens = responseData.map(resetToken => {
-                    resetToken.id = resetToken._id
-                    return resetToken
-                })
-                return resetTokensAdapter.setAll(initialState, loadedResetTokens)
+                return {
+                    ...responseData,
+                    id: responseData._id
+                }
             },
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'ResetToken', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'ResetToken', id }))
-                    ]
-                } else return [{ type: 'ResetToken', id: 'LIST' }]
-            }
         }),
         addNewResetToken: builder.mutation({
             query: initialResetToken => ({
@@ -46,19 +37,6 @@ export const resetTokensApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-    useGetResetTokensQuery,
+    useGetResetTokenQuery,
     useAddNewResetTokenMutation,
 } = resetTokensApiSlice
-
-export const selectResetTokensResult = resetTokensApiSlice.endpoints.getResetTokens.select()
-
-const selectResetTokensData = createSelector(
-    selectResetTokensResult,
-    resetTokensResult => resetTokensResult.data
-)
-
-export const {
-    selectAll: selectAllResetTokens,
-    selectById: selectResetTokenById,
-    selectIds: selectResetTokenIds
-} = resetTokensAdapter.getSelectors(state => selectResetTokensData(state) ?? initialState)

@@ -8,27 +8,26 @@ const Pagination = ({
   setCurrentPage,
   newPage,
   setNewPage,
-  maxPage,
+  totalPages,
   topPosition,
 }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [maxPage, setMaxPage] = useState(1)
+
+  useEffect(() => {
+    setMaxPage(totalPages)
+  }, [totalPages]);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [])
 
   const handleResize = () => setWindowWidth(window.innerWidth);
 
-  const goToPageButtonDisabled =
-    newPage < 1 || +newPage > maxPage || +newPage === currentPage;
+  const goToPageButtonDisabled = newPage < 1 || +newPage > maxPage || +newPage === currentPage;
   const previousPageUnavailable = currentPage === 1;
-  const previousPageButtonStyle = previousPageUnavailable
-    ? { display: "none" }
-    : null;
-
+  const previousPageButtonStyle = previousPageUnavailable ? { display: "none" } : null;
   const labelInput = topPosition ? "page-number" : "another-page-number";
 
   return (
@@ -43,7 +42,7 @@ const Pagination = ({
         >
           <FontAwesomeIcon color="rgb(235, 155, 52)" icon={faArrowLeft} />
         </button>
-        {` Page ${currentPage} of ${maxPage} `}
+        {` Page ${currentPage} of ${maxPage < 2 ? 1 : maxPage} `}
         <button
           title="Go to Next Page"
           className="pagination-button"

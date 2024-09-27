@@ -1,9 +1,8 @@
-import { useParams, Link } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-import { useGetLittersQuery } from "../litter-slices/littersApiSlice";
-import { useGetPuppyProposesQuery } from "../litter-slices/puppyProposesApiSlice";
-import { useGetDogsQuery } from "../../dogs/dog-slices/dogsApiSlice";
+import { useGetLitterByIdQuery } from "../litter-slices/littersApiSlice";
+import { useGetLitterPuppiesQuery } from "../../dogs/dog-slices/dogsApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import Dog from "../../dogs/dog-components/Dog";
 import DogIcon from "../../../config/images/DogIcon.jpg";
@@ -14,158 +13,74 @@ import ProposeFather from "./ProposeFather";
 import AddPuppy from "./AddPuppy";
 import RemoveFather from "./RemoveFather";
 import AddFather from "./AddFather";
-import { useGetFatherProposesQuery } from "../litter-slices/fatherProposesApiSlice";
-import { useEffect } from "react";
+import LitterPageParent from "./LitterPageParent";
 
 const LitterPage = () => {
   const { userId } = useAuth();
   const { litterid } = useParams();
 
   const {
-    data: dogs,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetDogsQuery("dogsList", {
-    pollingInterval: 75000,
+    data: litter,
+    isLoading: isLoading,
+    isSuccess: isSuccess,
+    isError: isError,
+    error: error,
+    refetch
+  } = useGetLitterByIdQuery({ id: litterid }, {
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
   const {
-    data: puppyProposes,
-    isLoading: isAllPuppyProposesLoading,
-    isSuccess: isAllPuppyProposesSuccess,
-    isError: isAllPuppyProposesError,
-    error: allPuppyProposesError,
-  } = useGetPuppyProposesQuery("puppyProposesList", {
-    pollingInterval: 75000,
+    data: puppies,
+    isLoading: isPuppiesLoading,
+    isSuccess: isPuppiesSuccess,
+    isError: isPuppiesError,
+    error: puppiesError,
+    refetch: refetchLitterPuppies
+  } = useGetLitterPuppiesQuery({ id: litterid }, {
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
-  });
-
-  const {
-    data: fatherProposes,
-    isLoading: isAllFatherProposesLoading,
-    isSuccess: isAllFatherProposesSuccess,
-    isError: isAllFatherProposesError,
-    error: allFatherProposesError,
-  } = useGetFatherProposesQuery("fatherProposesList", {
-    pollingInterval: 75000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const { litter } = useGetLittersQuery("littersList", {
-    selectFromResult: ({ data }) => ({
-      litter: data?.entities[litterid],
-    }),
-  });
-
-  const { mother } = useGetDogsQuery("dogsList", {
-    selectFromResult: ({ data }) => ({
-      mother: data?.entities[litter?.mother?.toString()],
-    }),
-  });
-
-  const { father } = useGetDogsQuery("dogsList", {
-    selectFromResult: ({ data }) => ({
-      father: data?.entities[litter?.father?.toString()],
-    }),
   });
 
   useEffect(() => {
-    if (isLoading || isAllPuppyProposesLoading || isAllFatherProposesLoading)
-      alerts.loadingAlert("Updating data", "Loading...");
-    else Swal.close();
-  }, [isLoading, isAllPuppyProposesLoading, isAllFatherProposesLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
 
-  if (!litter || !mother) return;
-  if (isError) alerts.errorAlert(`${error?.data?.message}`, "Error");
-  if (isAllPuppyProposesError)
-    alerts.errorAlert(`${allPuppyProposesError?.data?.message}`, "Error");
-  if (isAllFatherProposesError)
-    alerts.errorAlert(`${allFatherProposesError?.data?.message}`, "Error");
+  useEffect(() => {
+    if (isPuppiesError) alerts.errorAlert(`${puppiesError?.data?.message}`);
+  }, [isPuppiesError])
 
-  if (isSuccess && isAllPuppyProposesSuccess && isAllFatherProposesSuccess) {
-    const { ids, entities } = dogs;
-    const { ids: puppyProposalIds, entities: puppyProposalEntities } =
-      puppyProposes;
-    const { ids: fatherProposalIds, entities: fatherProposalEntities } =
-      fatherProposes;
+  if (!litter || isLoading || isPuppiesLoading) return;
 
-    const currentLitterDogsIds = ids.filter(
-      (dogId) => entities[dogId].litter === litter?.id
-    );
-
-    const filteredPuppyProposalIds = puppyProposalIds.filter(
-      (puppyProposalId) =>
-        puppyProposalEntities[puppyProposalId].litter === litter?.id
-    );
-    const filteredFatherProposalIds = fatherProposalIds.filter(
-      (fatherProposalId) =>
-        fatherProposalEntities[fatherProposalId].litter === litter?.id
-    );
-    const filteredPuppyProposals = filteredPuppyProposalIds.map(
-      (proposalId) => puppyProposalEntities[proposalId].puppy
-    );
-    const filteredFatherProposals = filteredFatherProposalIds?.map(
-      (proposalId) => fatherProposalEntities[proposalId].father
-    );
-
-    const motherImg =
-      mother?.image?.length && mother?.image !== "none "
-        ? mother?.image
-        : DogIcon;
-    const fatherImg =
-      father?.image?.length && father?.image !== "none "
-        ? father.image
-        : DogIcon;
+  if (isSuccess && isPuppiesSuccess) {
+    const { ids } = puppies
 
     return (
       <>
         <div className="litter-parents-div">
-          <div className="litter-mother-div">
-            <img
-              width="150px"
-              height="150px"
-              className="dog-profile-picture"
-              src={motherImg}
-              alt="Mother"
-            />
-            <br />
-            <span className="litter-mother-span">
-              Mother
+          <LitterPageParent parentId={litter?.mother} litterParent={"Mother"} />
+          {litter?.father
+            ? <LitterPageParent parentId={litter?.father} litterParent={"Father"} />
+            : <div className="litter-father-div">
+              <img
+                width="150px"
+                height="150px"
+                className="dog-profile-picture"
+                src={DogIcon}
+                alt="Father"
+              />
               <br />
-              <Link className="orange-link" to={`/dogs/${mother.id}`}>
-                <b>{mother?.name}</b>
-              </Link>
-              <br />
-            </span>
-          </div>
-          <div className="litter-father-div">
-            <img
-              width="150px"
-              height="150px"
-              className="dog-profile-picture"
-              src={fatherImg}
-              alt="Father"
-            />
-            <br />
-            <span className="litter-father-span">
-              Father
-              <br />
-              {father?.id?.length ? (
-                <Link className="orange-link" to={`/dogs/${father?.id}`}>
-                  <b>{father?.name}</b>
-                </Link>
-              ) : (
-                "Not Added"
-              )}
-              <br />
-            </span>
-          </div>
+              <span className="litter-father-span">
+                Father
+                <br />
+                Not Added
+                <br />
+              </span>
+            </div>
+          }
         </div>
         <p>
           <b>Puppies' Breed </b>
@@ -177,9 +92,7 @@ const LitterPage = () => {
         </p>
         <p>
           <b>In </b>
-          {litter?.region?.length &&
-            litter?.region !== "none " &&
-            `${litter?.region}, `}
+          {litter?.region?.length && litter?.region !== "none " && `${litter?.region}, `}
           {litter?.country}
         </p>
         <p>
@@ -188,68 +101,35 @@ const LitterPage = () => {
           </b>
         </p>
         <br />
-        <RemoveFather
-          litterId={litterid}
-          father={father}
-          mother={mother}
-          userId={userId}
-        />
-        <ProposeFather
-          father={father}
-          filteredFatherProposals={filteredFatherProposals}
-          entities={entities}
-          ids={ids}
-          isLoading={isLoading}
-          userId={userId}
-          mother={mother}
-          litterId={litterid}
-          litter={litter}
-          currentLitterDogsIds={currentLitterDogsIds}
-          filteredPuppyProposals={filteredPuppyProposals}
-        />
-        <AddFather
-          father={father}
-          fatherProposals={filteredFatherProposals}
-          entities={entities}
-          litterId={litterid}
-        />
-        <ProposePuppy
-          entities={entities}
-          userId={userId}
-          mother={mother}
-          litterId={litterid}
-          currentLitterDogsIds={currentLitterDogsIds}
-          ids={ids}
-          father={father}
-          filteredPuppyProposals={filteredPuppyProposals}
-          filteredFatherProposals={filteredFatherProposals}
-          litter={litter}
-        />
-        <AddPuppy
-          proposedPuppies={filteredPuppyProposals}
-          entities={entities}
-          litterId={litterid}
-          userId={userId}
-          mother={mother}
-          litter={litter}
-          currentLitterDogsIds={currentLitterDogsIds}
-        />
-        {currentLitterDogsIds?.length ? (
+        {(litter?.father && userId?.length) && 
+          <RemoveFather
+            litterMotherId={litter?.mother}
+            litterFatherId={litter?.father}
+            litterId={litterid}
+            userId={userId}
+            refetch={refetch}
+          />
+        }
+        {(!litter?.father && userId?.length) && <>
+          <ProposeFather userId={userId} litter={litter} refetchLitter={refetch} />
+          <AddFather litter={litter} userId={userId} refetch={refetch} />
+        </>}
+        {(userId?.length && litter?.children > ids?.length) && <>
+          <ProposePuppy userId={userId} litter={litter} refetchPuppies={refetchLitterPuppies} />
+          <AddPuppy userId={userId} litter={litter} refetch={refetch} />
+        </>}
+        {ids?.length ? (
           <>
             <p>
               <b>Puppies</b>
             </p>
             <br />
-            {currentLitterDogsIds
-              .map((dogId) => entities[dogId])
-              .map((dog) => (
-                <Dog key={dog.id} dogId={dog.id} />
-              ))}
+            {ids.map((id) => <Dog key={id} dogId={id} />)}
           </>
         ) : (
           <p>No puppies have been added to this litter yet</p>
         )}
-        {mother?.user === userId && <DeleteLitter litterId={litterid} />}
+        {userId?.length && <DeleteLitter litter={litter} userId={userId} />}
       </>
     );
   }

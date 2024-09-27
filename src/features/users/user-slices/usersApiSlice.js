@@ -8,18 +8,24 @@ const initialState = usersAdapter.getInitialState()
 export const usersApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getUsers: builder.query({
-            query: () => ({
+            query: ({ username, country, region }) => ({
                 url: '/users',
+                params: { username, country, region },
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
             }),
             transformResponse: responseData => {
-                const loadedUsers = responseData.map(user => {
+                const { users, totalPages, currentPage } = responseData;
+                const loadedUsers = users.map(user => {
                     user.id = user._id
                     return user
                 })
-                return usersAdapter.setAll(initialState, loadedUsers)
+                return {
+                    users: usersAdapter.setAll(initialState, loadedUsers),
+                    totalPages,
+                    currentPage
+                }
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
@@ -29,6 +35,20 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                     ]
                 } else return [{ type: 'User', id: 'LIST' }]
             }
+        }),
+        getUserById: builder.query({
+            query: ({ id }) => ({
+                url: `/users/${id}`,
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            transformResponse: responseData => {
+                return {
+                    ...responseData,
+                    id: responseData._id
+                }
+            },
         }),
         addNewUser: builder.mutation({
             query: initialUserData => ({
@@ -81,6 +101,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetUsersQuery,
+    useGetUserByIdQuery,
     useAddNewUserMutation,
     useUpdateUserMutation,
     useResetPasswordMutation,

@@ -1,24 +1,15 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useNavigate, useParams } from "react-router-dom";
 
-import {
-  useGetDogsQuery,
-  useDeleteDogMutation,
-} from "../dog-slices/dogsApiSlice";
-import { useGetUsersQuery } from "../../users/user-slices/usersApiSlice";
-import { useGetLittersQuery } from "../../litters/litter-slices/littersApiSlice";
+import { useDeleteDogMutation, useGetDogByIdQuery } from "../dog-slices/dogsApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import { alerts } from "../../../components/alerts";
 import { hasRegion } from "../../../config/utils";
-import {
-  INSTAGRAM_ICON,
-  FACEBOOK_ICON,
-  YOUTUBE_ICON,
-  TIKTOK_ICON,
-} from "../../../config/svgs";
+import { INSTAGRAM_ICON, FACEBOOK_ICON, YOUTUBE_ICON, TIKTOK_ICON } from "../../../config/svgs";
 import DogSiblings from "./DogSiblings";
 import DogLitters from "./DogLitters";
+import ParentLitter from "../../litters/litter-details/ParentLitter";
+import DogUserInfo from "../../users/user-details/DogUserInfo";
 
 const DogPage = () => {
   const navigate = useNavigate();
@@ -34,75 +25,41 @@ const DogPage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const { dog } = useGetDogsQuery("dogsList", {
-    selectFromResult: ({ data }) => ({
-      dog: data?.entities[dogid],
-    }),
-  });
-
-  const [
-    deleteDog,
-    {
-      isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
-      isError: isDelError,
-      error: delerror,
-    },
-  ] = useDeleteDogMutation();
-
-  const { user } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      user: data?.entities[dog?.user],
-    }),
-  });
-
-  const { parentLitter } = useGetLittersQuery("littersList", {
-    selectFromResult: ({ data }) => ({
-      parentLitter: data?.entities[dog?.litter],
-    }),
-  });
-
   const {
-    data: dogs,
-    isLoading: isDogsLoading,
-    isSuccess: isDogsSuccess,
-    isError: isDogsError,
-    error: dogsError,
-  } = useGetDogsQuery("dogsList", {
-    pollingInterval: 75000,
+    data: dog,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetDogByIdQuery({ id: dogid }, {
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
-  const { mother } = useGetDogsQuery("dogsList", {
-    selectFromResult: ({ data }) => ({
-      mother: data?.entities[parentLitter?.mother],
-    }),
-  });
-
-  const { father } = useGetDogsQuery("dogsList", {
-    selectFromResult: ({ data }) => ({
-      father: data?.entities[parentLitter?.father],
-    }),
-  });
+  const [deleteDog, {
+    isLoading: isDelLoading,
+    isSuccess: isDelSuccess,
+    isError: isDelError,
+    error: delError,
+  }] = useDeleteDogMutation();
 
   useEffect(() => {
-    if (isDogsLoading) alerts.loadingAlert("Fetching Dogs", "Loading...");
-    if (isDelLoading) alerts.loadingAlert("Deleting Dog", "Loading...");
-    if (!isDogsLoading && !isDelLoading) Swal.close();
-  }, [isDogsLoading, isDelLoading]);
+    if (isError) alerts.errorAlert(error?.data?.message);
+  }, [isError]);
 
-  if (!dog) return;
-  if (isDelError) alerts.errorAlert(delerror?.data?.message);
-  if (isDogsError) alerts.errorAlert(dogsError?.data?.message);
+  useEffect(() => {
+    if (isDelError) alerts.errorAlert(delError?.data?.message);
+  }, [isDelError]);
 
-  if (isDelSuccess) {
-    alerts.successAlert("Dog Deleted");
-    navigate("/dogs");
-  }
+  useEffect(() => {
+    if (isDelSuccess) navigate("/dogs");
+  }, [isDelSuccess]);
 
-  if (isDogsSuccess) {
-    const { ids: dogIds, entities: dogEntities } = dogs;
+  if (isLoading || isDelLoading) return
+
+  if (isSuccess) {
+    if (!dog) return
 
     return (
       <>
@@ -111,9 +68,7 @@ const DogPage = () => {
           {windowWidth > 600 ? null : <br />}
           <span className={windowWidth > 600 ? "nav-right" : null}>
             <b>Administered by</b>{" "}
-            <Link className="orange-link" to={`/users/${user?.id}`}>
-              <b>{user?.username}</b>
-            </Link>
+            <DogUserInfo userId={dog?.user} />
           </span>
         </p>
         <p>
@@ -244,58 +199,20 @@ const DogPage = () => {
           <b>Instant Family Tree</b>
         </p>
         <br />
-        {dog?.litter ? (
-          <>
-            <p>
-              <b>
-                Parents of {dog?.name}'s{" "}
-                <Link className="orange-link" to={`/litters/${dog?.litter}`}>
-                  <b>Litter</b>
-                </Link>
-              </b>
-            </p>
-            {parentLitter ? (
-              <>
-                <p>
-                  <b>
-                    Mother{" "}
-                    <Link className="orange-link" to={`/dogs/${mother?.id}`}>
-                      {mother?.name}
-                    </Link>
-                  </b>
-                </p>
-                {father && (
-                  <p>
-                    <b>
-                      Father{" "}
-                      <Link className="orange-link" to={`/dogs/${father?.id}`}>
-                        {father?.name}
-                      </Link>
-                    </b>
-                  </p>
-                )}
-              </>
-            ) : (
-              <p>
-                {dog?.name} is not added to any litter and therefore has no
-                parents in the database
-              </p>
-            )}
+        {dog?.litter
+          ? <>
+            <ParentLitter dog={dog} />
+            <DogSiblings
+              dog={dog}
+            />
           </>
-        ) : (
-          <p>
+          : <p>
             {dog?.name} is not added to any litter and therefore has no parents
             or siblings in the database
           </p>
-        )}
+        }
         <br />
-        <DogSiblings
-          parentLitter={parentLitter}
-          dog={dog}
-          dogIds={dogIds}
-          dogEntities={dogEntities}
-        />
-        <DogLitters dog={dog} dogIds={dogIds} dogEntities={dogEntities} />
+        <DogLitters dog={dog} />
         {userId === dog?.user && (
           <>
             <button
@@ -326,7 +243,10 @@ const DogPage = () => {
             <button
               title="Delete as Admin"
               className="black-button three-hundred"
-              onClick={async () => await deleteDog({ id: dog?.id })}
+              onClick={async () => {
+                await deleteDog({ id: dog?.id })
+                navigate("/dogs")
+              }}
             >
               Delete as Admin
             </button>

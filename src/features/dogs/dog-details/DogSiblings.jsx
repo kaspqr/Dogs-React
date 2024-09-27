@@ -1,41 +1,48 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { alerts } from "../../../components/alerts";
+import { useGetLitterPuppiesQuery } from "../dog-slices/dogsApiSlice";
 
-const DogSiblings = ({ parentLitter, dog, dogIds, dogEntities }) => {
-  const filteredSiblingIds = dogIds?.filter(
-    (dogId) =>
-      dog?.litter?.length &&
-      dogEntities[dogId].litter === dog?.litter &&
-      dogId !== dog?.id
-  );
+const DogSiblings = ({ dog }) => {
+  const {
+    data: siblings,
+    isLoading: isSiblingsLoading,
+    isSuccess: isSiblingsSuccess,
+    isError: isSiblingsError,
+    error: siblingsError
+  } = useGetLitterPuppiesQuery({ id: dog?.litter }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
-  const siblings = filteredSiblingIds?.map((dogId) => dogEntities[dogId]);
+  useEffect(() => {
+    if (isSiblingsError) alerts.errorAlert(`${siblingsError?.data?.message}`)
+  }, [isSiblingsError])
 
-  if (!siblings?.length) {
-    if (!parentLitter) return;
+  if (isSiblingsLoading) return
+
+  if (isSiblingsSuccess) {
+    const { ids, entities } = siblings
+
+    if (ids?.length < 2) return
+
     return (
       <>
-        <p>
-          {dog?.name} is not connected to any siblings through it's litter in
-          the database
-        </p>
+        {ids.filter((id) => id !== dog?.id).map((siblingId) => (
+          <p key={siblingId}>
+            <b>{entities[siblingId]?.female === true ? <>Sister </> : <>Brother </>}</b>
+            <Link className="orange-link" to={`/dogs/${entities[siblingId]?.id}`}>
+              <b>{entities[siblingId]?.name}</b>
+            </Link>
+          </p>
+        ))}
         <br />
       </>
     );
   }
 
-  return (
-    <>
-      {siblings.map((sibling) => (
-        <p>
-          <b>{sibling?.female === true ? <>Sister </> : <>Brother </>}</b>
-          <Link className="orange-link" to={`/dogs/${sibling?.id}`}>
-            <b>{sibling?.name}</b>
-          </Link>
-        </p>
-      ))}
-      <br />
-    </>
-  );
+  return
 };
 
 export default DogSiblings;

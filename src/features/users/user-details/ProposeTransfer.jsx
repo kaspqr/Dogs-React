@@ -1,64 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  useAddNewDogProposeMutation,
-  useGetDogProposesQuery,
-} from "../../dogs/dog-slices/proposeDogApiSlice";
+import { useAddNewDogProposeMutation } from "../../dogs/dog-slices/proposeDogApiSlice";
 import { alerts } from "../../../components/alerts";
+import { useGetProposableDogsQuery } from "../../dogs/dog-slices/dogsApiSlice";
 
-const ProposeTransfer = ({ user, userId, ids, entities }) => {
+const ProposeTransfer = ({ user, userId }) => {
   const [selectedProposeDog, setSelectedProposeDog] = useState("");
 
-  const { data: dogproposes } = useGetDogProposesQuery("dogProposesList", {
+  const {
+    data: proposableDogs,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetProposableDogsQuery({ userId }, {
     pollingInterval: 75000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
-  const [addNewDogPropose, { isError, error }] = useAddNewDogProposeMutation();
+  const [addNewDogPropose, {
+    isLoading: isAddNewDogProposeLoading,
+    isError: isAddNewDogProposeError,
+    error: addNewDogProposeError
+  }] = useAddNewDogProposeMutation();
 
-  const { ids: proposeIds, entities: proposeEntities } = dogproposes;
+  useEffect(() => {
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
 
-  const handleProposeDog = async () => {
-    await addNewDogPropose({ dog: selectedProposeDog, user: user?.id });
-    setSelectedProposeDog("");
-  };
+  useEffect(() => {
+    if (isAddNewDogProposeError) alerts.errorAlert(`${addNewDogProposeError?.data?.message}`);
+  }, [isAddNewDogProposeError])
 
-  const userReceivedProposalIds = proposeIds?.filter(
-    (proposeId) => proposeEntities[proposeId]?.user === user?.id
-  );
+  if (isLoading || isAddNewDogProposeLoading) return
 
-  const dogsProposedToUser = userReceivedProposalIds?.map(
-    (proposeId) => proposeEntities[proposeId]?.dog
-  );
+  if (isSuccess) {
+    const { ids, entities } = proposableDogs;
 
-  const proposableDogIds =
-    userId?.length && user?.id !== userId
-      ? ids?.filter((dogId) => entities[dogId]?.user === userId)
-      : null;
+    if (!ids?.length) return;
 
-  const filteredProposableDogIds = proposableDogIds?.filter(
-    (dogId) => !dogsProposedToUser?.includes(dogId)
-  );
-
-  const filteredProposableDogs = filteredProposableDogIds?.map(
-    (id) => entities[id]
-  );
-
-  const proposableDogOptions = filteredProposableDogs?.map((dog) => (
-    <option value={dog?.id} key={dog?.id}>
-      {dog?.name}
-    </option>
-  ));
-
-  if (!filteredProposableDogs?.length) return;
-
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Proposing Dog");
-
-  return (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
+    return (
+      <>
         <label htmlFor="transfer-selected-dog">
           <b>Transfer Dog to {user?.username}</b>
         </label>
@@ -69,7 +52,11 @@ const ProposeTransfer = ({ user, userId, ids, entities }) => {
           onChange={(e) => setSelectedProposeDog(e.target.value)}
         >
           <option value="">--</option>
-          {proposableDogOptions}
+          {ids?.map((id) => (
+            <option value={id} key={id}>
+              {entities[id]?.name}
+            </option>
+          ))}
         </select>
         <br />
         <br />
@@ -77,20 +64,21 @@ const ProposeTransfer = ({ user, userId, ids, entities }) => {
           title="Propose Transferring Selected Dog to User"
           className="black-button three-hundred"
           disabled={!selectedProposeDog?.length}
-          style={
-            !selectedProposeDog?.length
-              ? { backgroundColor: "grey", cursor: "default" }
-              : null
-          }
-          onClick={handleProposeDog}
+          style={!selectedProposeDog?.length ? { backgroundColor: "grey", cursor: "default" } : null}
+          onClick={async () => {
+            await addNewDogPropose({ dog: selectedProposeDog, user: user?.id });
+            setSelectedProposeDog("");
+          }}
         >
           Propose Transfer
         </button>
         <br />
         <br />
-      </form>
-    </>
-  );
+      </>
+    );
+  }
+
+  return
 };
 
 export default ProposeTransfer;

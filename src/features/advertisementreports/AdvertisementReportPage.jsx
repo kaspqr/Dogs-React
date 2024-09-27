@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import Swal from "sweetalert2";
 
-import { useGetAdvertisementsQuery } from "../advertisements/advertisement-slices/advertisementsApiSlice";
+import { useGetAdvertisementByIdQuery } from "../advertisements/advertisement-slices/advertisementsApiSlice";
 import { useAddNewAdvertisementReportMutation } from "./advertisementReportsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import { alerts } from "../../components/alerts";
@@ -15,88 +14,96 @@ const AdvertisementReportPage = () => {
   const [report, setReport] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const { advertisement } = useGetAdvertisementsQuery("advertisementsList", {
-    selectFromResult: ({ data }) => ({
-      advertisement: data?.entities[advertisementid],
-    }),
+  const {
+    data: advertisement,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetAdvertisementByIdQuery({ id: advertisementid }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
   });
 
-  const [addNewAdvertisementReport, { isLoading, isSuccess, isError, error }] =
-    useAddNewAdvertisementReportMutation();
+  const [addNewAdvertisementReport, {
+    isLoading: isAddReportLoading,
+    isSuccess: isAddReportSuccess,
+    isError: isAddReportError,
+    error: addReportError
+  }] = useAddNewAdvertisementReportMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddReportSuccess) {
       setReport("");
       setSuccessMsg("Thank You! We have received your report.");
     }
-  }, [isSuccess]);
+  }, [isAddReportSuccess]);
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Sending report");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.loadingAlert(`${error?.data?.message}`);
+  }, [isError]);
 
-  if (advertisement?.poster === userId)
-    return <p>You cannot report your own advertisement.</p>;
+  useEffect(() => {
+    if (isAddReportError) alerts.loadingAlert(`${addReportError?.data?.message}`);
+  }, [isAddReportError]);
 
-  const canReport = report?.length > 1;
+  if (isLoading || isAddReportLoading) return
 
-  if (isError)
-    alerts.errorAlert(
-      `${error?.data?.message}`,
-      "Error Reporting Advertisement"
+  if (isSuccess) {
+    if (advertisement?.poster === userId) return <p>You cannot report your own advertisement.</p>
+
+    if (successMsg?.length) return <p>{successMsg}</p>
+
+    return (
+      <>
+        <form onSubmit={(e) => e.preventDefault()}>
+          <label htmlFor="report">
+            <b>
+              Reason for reporting advertisement{" "}
+              <Link
+                target="_blank"
+                className="orange-link"
+                to={`/advertisements/${advertisement?.id}`}
+              >
+                {advertisement?.title}
+              </Link>
+            </b>
+          </label>
+          <br />
+          <textarea
+            className="top-spacer three-hundred"
+            value={report}
+            onChange={(e) => setReport(e.target.value)}
+            name="report"
+            id="report"
+            maxLength="900"
+            cols="30"
+            rows="10"
+          />
+          <br />
+          <br />
+          <button
+            title="Report Advertisement"
+            className="black-button three-hundred"
+            onClick={async () =>
+              await addNewAdvertisementReport({
+                advertisement: advertisementid,
+                reporter: userId,
+                text: report,
+              })
+            }
+            disabled={report?.length <= 1}
+            style={report?.length > 1 ? null : DISABLED_BUTTON_STYLE}
+          >
+            Report
+          </button>
+        </form>
+      </>
     );
+  }
 
-  const content = successMsg?.length ? (
-    <p>{successMsg}</p>
-  ) : (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <label htmlFor="report">
-          <b>
-            Reason for reporting advertisement{" "}
-            <Link
-              target="_blank"
-              className="orange-link"
-              to={`/advertisements/${advertisement?.id}`}
-            >
-              {advertisement?.title}
-            </Link>
-          </b>
-        </label>
-        <br />
-        <textarea
-          className="top-spacer three-hundred"
-          value={report}
-          onChange={(e) => setReport(e.target.value)}
-          name="report"
-          id="report"
-          maxLength="900"
-          cols="30"
-          rows="10"
-        />
-        <br />
-        <br />
-        <button
-          title="Report Advertisement"
-          className="black-button three-hundred"
-          onClick={async () =>
-            await addNewAdvertisementReport({
-              advertisement: advertisementid,
-              reporter: userId,
-              text: report,
-            })
-          }
-          disabled={!canReport}
-          style={canReport ? null : DISABLED_BUTTON_STYLE}
-        >
-          Report
-        </button>
-      </form>
-    </>
-  );
-
-  return content;
+  return
 };
 
 export default AdvertisementReportPage;

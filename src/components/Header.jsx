@@ -11,21 +11,22 @@ import { alerts } from "./alerts";
 const Header = ({ dropdownVisible, setDropdownVisible, windowWidth }) => {
   const navigate = useNavigate();
 
-  const [sendLogout, { isLoading, isSuccess, isError, error }] =
-    useSendLogoutMutation();
+  const [sendLogout, { isLoading, isSuccess, isError, error }] = useSendLogoutMutation();
 
   useEffect(() => {
     if (isSuccess) navigate("/");
   }, [isSuccess, navigate]);
 
   const onMobileLinkClicked = () => setDropdownVisible(false);
+
   const onLogoutClicked = () => {
     sendLogout();
     if (windowWidth <= 600) onMobileLinkClicked();
   };
 
-  if (isLoading) return;
   if (isError) alerts.errorAlert(`${error.data?.message}`, "Error Logging Out");
+  
+  if (isLoading) return;
 
   return (
     <header

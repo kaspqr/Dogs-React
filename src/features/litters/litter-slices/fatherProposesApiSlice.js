@@ -8,8 +8,8 @@ const initialState = fatherProposesAdapter.getInitialState()
 export const fatherProposesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getFatherProposes: builder.query({
-            query: () => ({
-                url: '/fatherproposes',
+            query: ({ id }) => ({
+                url: `/fatherproposes/${id}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },

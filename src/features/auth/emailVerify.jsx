@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 
-import { useGetTokensQuery } from "./auth-slices/tokensApiSlice";
-import { useGetUsersQuery } from "../users/user-slices/usersApiSlice";
+import { useGetTokenQuery } from "./auth-slices/tokensApiSlice";
+import { useGetUserByIdQuery } from "../users/user-slices/usersApiSlice";
 import useAuth from "../../hooks/useAuth";
 import { alerts } from "../../components/alerts";
 
@@ -12,39 +11,38 @@ const EmailVerify = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { user } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      user: data?.entities[params.id],
-    }),
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isSuccess: isUserSuccess,
+    isError: isUserError,
+    error: userError
+  } = useGetUserByIdQuery({ id: params?.id }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
   });
 
   const {
-    data: tokens,
+    data: token,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetTokensQuery("tokensList", {
-    pollingInterval: 75000,
+  } = useGetTokenQuery({ token: params?.token, user: params?.id }, {
+    pollingInterval: 600000,
     refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Fetching Tokens", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
 
-  const verifyEmailUrl = async () => {
-    try {
-      const response = await fetch(
-        `https://pawretriever-api.onrender.com/users/${params.id}/verify/${params.token}`
-      );
+  useEffect(() => {
+    if (isUserError) alerts.errorAlert(`${userError?.data?.message}`);
+  }, [isUserError])
 
-      if (response.status === 200) return successMsg;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (isLoading || isUserLoading) return
 
   const successMsg = (
     <>
@@ -57,6 +55,18 @@ const EmailVerify = () => {
       </p>
     </>
   );
+
+  const verifyEmailUrl = async () => {
+    try {
+      const response = await fetch(
+        `https://pawretriever-api.onrender.com/users/${params.id}/verify/${params.token}`
+      );
+
+      if (response.status === 200) return successMsg;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (userId?.length) return <h1>Please logout before verifying an account</h1>;
 
@@ -74,34 +84,17 @@ const EmailVerify = () => {
     );
   }
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Tokens");
+  if (isSuccess && isUserSuccess) {
+    if (!token) return <h1>Invalid Link</h1>;
 
-  if (isSuccess) {
-    const { ids, entities } = tokens;
+    if (!user?.id?.length || token?.user !== user?._id) return <h1>Invalid Link</h1>;
 
-    const filteredId = ids.find((tokenId) => {
-      return (
-        entities[tokenId].token === params?.token &&
-        entities[tokenId].user === params?.id
-      );
-    });
-
-    if (!filteredId) return <h1>Invalid Link</h1>;
-
-    if (filteredId) {
-      const token = entities[filteredId];
-
-      if (!user?.id?.length || token?.user !== user?._id) {
-        return <h1>Invalid Link</h1>;
-      }
-
-      verifyEmailUrl();
-      return successMsg;
-    }
+    verifyEmailUrl();
+    
+    return successMsg;
   }
 
-  return successMsg;
+  return;
 };
 
 export default EmailVerify;

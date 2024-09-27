@@ -7,9 +7,9 @@ const initialState = emailTokensAdapter.getInitialState()
 
 export const emailTokensApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
-    getEmailTokens: builder.query({
-      query: () => ({
-        url: '/emailtokens',
+    getEmailToken: builder.query({
+      query: ({ emailToken, user }) => ({
+        url: `/emailtokens/${emailToken}/${user}`,
         validateStatus: (response, result) => {
           return response.status === 200 && !result.isError
         },
@@ -34,18 +34,5 @@ export const emailTokensApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-  useGetEmailTokensQuery,
+  useGetEmailTokenQuery,
 } = emailTokensApiSlice
-
-export const selectEmailTokensResult = emailTokensApiSlice.endpoints.getEmailTokens.select()
-
-const selectEmailTokensData = createSelector(
-  selectEmailTokensResult,
-  emailTokensResult => emailTokensResult.data
-)
-
-export const {
-  selectAll: selectAllEmailTokens,
-  selectById: selectEmailTokenById,
-  selectIds: selectEmailTokenIds
-} = emailTokensAdapter.getSelectors(state => selectEmailTokensData(state) ?? initialState)

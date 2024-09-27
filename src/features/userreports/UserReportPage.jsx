@@ -1,8 +1,9 @@
-import { useGetUsersQuery } from "../users/user-slices/usersApiSlice";
+import { useGetUserByIdQuery } from "../users/user-slices/usersApiSlice";
 import { useParams, Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useState, useEffect } from "react";
 import { useAddNewUserReportMutation } from "./userReportsApiSlice";
+import { alerts } from "../../components/alerts";
 
 const UserReportPage = () => {
   const { userId } = useAuth();
@@ -11,40 +12,49 @@ const UserReportPage = () => {
   const [report, setReport] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const { user } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      user: data?.entities[userid],
-    }),
+  const {
+    data: user,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetUserByIdQuery({ id: userid }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
   });
 
-  const [addNewUserReport, { isLoading, isSuccess, isError, error }] =
-    useAddNewUserReportMutation();
+  const [addNewUserReport, {
+    isLoading: isAddReportLoading,
+    isSuccess: isAddReportSuccess,
+    isError: isAddReportError,
+    error: addReportError
+  }] = useAddNewUserReportMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddReportSuccess) {
       setReport("");
       setSuccessMsg("Thank You! We have received your report.");
     }
-  }, [isSuccess]);
+  }, [isAddReportSuccess]);
+
+  useEffect(() => {
+    if (isError) alerts.errorAlert(`${error?.data?.message}`)
+  }, [isError])
+
+  useEffect(() => {
+    if (isAddReportError) alerts.errorAlert(`${addReportError?.data?.message}`)
+  }, [isAddReportError])
 
   if (userid === userId) return <p>You cannot report yourself.</p>;
 
-  const handleReportClicked = async () => {
-    await addNewUserReport({
-      reportee: userid,
-      reporter: userId,
-      text: report,
-    });
-  };
+  if (isLoading || isAddReportLoading) return
 
-  if (isLoading) return;
-  if (isError) return <p>{error?.data?.message}</p>;
+  if (isSuccess) {
+    if (successMsg?.length) return <p>{successMsg}</p>
 
-  const content = successMsg?.length ? (
-    <p>{successMsg}</p>
-  ) : (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
+    return (
+      <>
         <label htmlFor="report">
           <b>
             Reason for reporting user{" "}
@@ -73,21 +83,17 @@ const UserReportPage = () => {
         <button
           title="Report User"
           className="black-button three-hundred"
-          onClick={handleReportClicked}
+          onClick={async () => await addNewUserReport({ reportee: userid, reporter: userId, text: report })}
           disabled={report?.length < 1}
-          style={
-            report?.length < 1
-              ? { backgroundColor: "grey", cursor: "default" }
-              : null
-          }
+          style={report?.length < 1 ? { backgroundColor: "grey", cursor: "default" } : null}
         >
           Report
         </button>
-      </form>
-    </>
-  );
+      </>
+    );
+  }
 
-  return content;
+  return
 };
 
 export default UserReportPage;

@@ -1,77 +1,74 @@
 import { useState, useEffect } from "react";
 
-import { useUpdateDogMutation } from "../../dogs/dog-slices/dogsApiSlice";
+import { useGetDogByIdQuery, useGetProposablePuppiesQuery, useUpdateDogMutation } from "../../dogs/dog-slices/dogsApiSlice";
 import { alerts } from "../../../components/alerts";
-import Swal from "sweetalert2";
 import { useAddNewPuppyProposeMutation } from "../litter-slices/puppyProposesApiSlice";
-import { DAY } from "../../../config/consts";
 
-const ProposePuppy = ({
-  entities,
-  userId,
-  mother,
-  litterId,
-  litter,
-  currentLitterDogsIds,
-  ids,
-  father,
-  filteredPuppyProposals,
-  filteredFatherProposals,
-}) => {
+const ProposePuppy = ({ userId, litter, refetchPuppies }) => {
   const [selectedDog, setSelectedDog] = useState(undefined);
 
-  const [
-    updateDog,
-    { isLoading: isUpdateLoading, isError: isUpdateError, error: updateError },
-  ] = useUpdateDogMutation();
+  const {
+    data: proposablePuppies,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    refetch
+  } = useGetProposablePuppiesQuery({ userId, litterId: litter?.id }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
-  const [
-    addNewPuppyPropose,
-    {
-      isLoading: isAddPuppyProposeLoading,
-      isError: isAddPuppyProposeError,
-      error: addPuppyProposeError,
-    },
-  ] = useAddNewPuppyProposeMutation();
+  const {
+    data: mother,
+    isLoading: isMotherLoading,
+    isSuccess: isMotherSuccess,
+    isError: isMotherError,
+    error: motherError
+  } = useGetDogByIdQuery({ id: litter?.mother }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
+
+  const [updateDog, {
+    isLoading: isUpdateLoading,
+    isError: isUpdateError,
+    error: updateError
+  }] = useUpdateDogMutation();
+
+  const [addNewPuppyPropose, {
+    isLoading: isAddPuppyProposeLoading,
+    isError: isAddPuppyProposeError,
+    error: addPuppyProposeError,
+  }] = useAddNewPuppyProposeMutation();
 
   useEffect(() => {
-    if (isUpdateLoading || isAddPuppyProposeLoading)
-      alerts.loadingAlert("Updating Litter", "Loading...");
-    else Swal.close();
-  }, [isUpdateLoading, isAddPuppyProposeLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
 
-  const filteredUserDogIds = ids.filter(
-    (dogId) =>
-      entities[dogId].user === userId &&
-      entities[dogId].id !== mother?.id &&
-      entities[dogId].id !== father?.id &&
-      entities[dogId].breed === litter?.breed &&
-      new Date(entities[dogId].birth).getTime() >=
-        new Date(litter?.born).getTime() &&
-      new Date(entities[dogId].birth).getTime() <=
-        new Date(new Date(litter?.born).getTime() + 7 * DAY).getTime() &&
-      !filteredPuppyProposals?.includes(entities[dogId].id) &&
-      !filteredFatherProposals?.includes(entities[dogId].id) &&
-      !currentLitterDogsIds.includes(entities[dogId].id)
-  );
+  useEffect(() => {
+    if (isMotherError) alerts.errorAlert(`${motherError?.data?.message}`);
+  }, [isMotherError])
 
-  if (
-    !filteredUserDogIds?.length ||
-    litter?.children <= currentLitterDogsIds?.length
-  )
-    return;
+  useEffect(() => {
+    if (isUpdateError) alerts.errorAlert(`${updateError?.data?.message}`);
+  }, [isUpdateError])
 
-  if (isUpdateError)
-    alerts.errorAlert(`${updateError?.data?.message}`, "Error Updating Dog");
-  if (isAddPuppyProposeError)
-    alerts.errorAlert(
-      `${addPuppyProposeError?.data?.message}`,
-      "Error Proposing Puppy"
-    );
+  useEffect(() => {
+    if (isAddPuppyProposeError) alerts.errorAlert(`${addPuppyProposeError?.data?.message}`);
+  }, [isAddPuppyProposeError])
 
-  return (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
+  if (isLoading || isUpdateLoading || isAddPuppyProposeLoading || isMotherLoading) return
+
+  if (isSuccess && isMotherSuccess) {
+    const { ids, entities } = proposablePuppies
+
+    if (!ids?.length) return
+
+    return (
+      <>
         <label htmlFor="pick-dog">
           <b>{userId === mother?.user ? "Add " : "Propose "}Puppy to Litter</b>
         </label>
@@ -82,7 +79,7 @@ const ProposePuppy = ({
           onChange={(e) => setSelectedDog(e.target.value)}
         >
           <option value="">Pick Your Dog</option>
-          {filteredUserDogIds.map((id) => (
+          {ids.map((id) => (
             <option value={id} key={id}>
               {entities[id].name}
             </option>
@@ -91,36 +88,34 @@ const ProposePuppy = ({
         <br />
         <br />
         <button
-          title={userId === mother?.user ? "Add Dog" : "Propose Dog"}
+          title={`${userId === mother?.user ? "Add" : "Propose"} Dog`}
           className="black-button three-hundred"
           disabled={selectedDog?.length ? false : true}
-          style={
-            selectedDog?.length
-              ? null
-              : { backgroundColor: "grey", cursor: "default" }
-          }
-          onClick={
-            userId === mother?.user
-              ? async () => {
-                  await updateDog({ id: selectedDog, litter: litterId });
-                  setSelectedDog("");
-                }
-              : async () => {
-                  await addNewPuppyPropose({
-                    litter: litterId,
-                    puppy: selectedDog,
-                  });
-                  setSelectedDog("");
-                }
+          style={selectedDog?.length ? null : { backgroundColor: "grey", cursor: "default" }}
+          onClick={userId === mother?.user
+            ? async () => {
+              await updateDog({ id: selectedDog, litter: litter?.id });
+              setSelectedDog("");
+              refetch()
+              refetchPuppies()
+            }
+            : async () => {
+              await addNewPuppyPropose({ litter: litter?.id, puppy: selectedDog  });
+              setSelectedDog("");
+              refetch()
+              refetchPuppies()
+            }
           }
         >
           {userId === mother?.user ? "Add " : "Propose "}Puppy
         </button>
         <br />
         <br />
-      </form>
-    </>
-  );
+      </>
+    );
+  }
+
+  return
 };
 
 export default ProposePuppy;

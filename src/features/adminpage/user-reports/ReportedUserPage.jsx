@@ -1,12 +1,8 @@
 import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 
-import {
-  useGetUserReportsQuery,
-  useDeleteUserReportMutation,
-} from "../../userreports/userReportsApiSlice";
-import { useGetUsersQuery } from "../../users/user-slices/usersApiSlice";
+import { useGetUserReportsQuery, useDeleteUserReportMutation } from "../../userreports/userReportsApiSlice";
+import { useGetUserByIdQuery } from "../../users/user-slices/usersApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import { alerts } from "../../../components/alerts";
 
@@ -21,63 +17,72 @@ const ReportedUserPage = () => {
     }),
   });
 
-  const [
-    deleteUserReport,
-    {
-      isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
-      isError: isDelError,
-      error: delError,
-    },
-  ] = useDeleteUserReportMutation();
+  const [deleteUserReport, {
+    isLoading: isDelLoading,
+    isSuccess: isDelSuccess,
+    isError: isDelError,
+    error: delError,
+  }] = useDeleteUserReportMutation();
 
-  const { user } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      user: data?.entities[userReport?.reportee],
-    }),
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isSuccess: isUserSuccess,
+    isError: isUserError,
+    error: userError
+  } = useGetUserByIdQuery({ id: userReport?.reportee }, {
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false,
   });
 
   useEffect(() => {
-    if (isDelLoading) alerts.loadingAlert("Deleting Report", "Loading...");
-    else Swal.close();
-  }, [isDelLoading]);
+    if (isDelSuccess) navigate("/userreports");
+  }, [isDelSuccess]);
 
-  if (!isAdmin && !isSuperAdmin)
-    return <p>You are not logged in as an admin.</p>;
-  if (!userReport) return;
+  useEffect(() => {
+    if (isDelError) alerts.errorAlert(`${delError?.data?.message}`);
+  }, [isDelError]);
 
-  if (isDelError)
-    alerts.errorAlert(`${delError?.data?.message}`, "Error Deleting Report");
-  if (isDelSuccess) navigate("/userreports");
+  useEffect(() => {
+    if (isUserError) alerts.errorAlert(`${userError?.data?.message}`);
+  }, [isUserError]);
 
-  return (
-    <>
-      <p>
-        <b>Report ID {userReport?.id}</b>
-      </p>
-      <p>
-        <b>
-          Reportee{" "}
-          <Link className="orange-link" to={`/users/${user?.id}`}>
-            {user?.username}
-          </Link>
-        </b>
-      </p>
-      <p>
-        <b>Reason for reporting</b>
-      </p>
-      <p>{userReport?.text}</p>
-      <br />
-      <button
-        onClick={async () => {
-          await deleteUserReport({ id: userReport?.id });
-        }}
-        className="black-button"
-      >
-        Delete Report
-      </button>
-    </>
-  );
+  if (!isAdmin && !isSuperAdmin) return <p>You are not logged in as an admin.</p>;
+
+  if (isDelLoading || isUserLoading || !userReport) return
+
+  if (isUserSuccess) {
+    return (
+      <>
+        <p>
+          <b>Report ID {userReport?.id}</b>
+        </p>
+        <p>
+          <b>
+            Reportee{" "}
+            <Link className="orange-link" to={`/users/${user?.id}`}>
+              {user?.username}
+            </Link>
+          </b>
+        </p>
+        <p>
+          <b>Reason for reporting</b>
+        </p>
+        <p>{userReport?.text}</p>
+        <br />
+        <button
+          onClick={async () => {
+            await deleteUserReport({ id: userReport?.id });
+          }}
+          className="black-button"
+        >
+          Delete Report
+        </button>
+      </>
+    );
+  }
+
+  return
 };
 
 export default ReportedUserPage;

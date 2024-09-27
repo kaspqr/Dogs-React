@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import Swal from "sweetalert2";
 
 import { useGetDogReportsQuery } from "../../dogreports/dogReportsApiSlice";
 import DogReport from "./DogReport";
@@ -19,29 +18,21 @@ const DogReportsList = () => {
   });
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Fetching Dog Reports", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError]);
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Dog Reports");
+  if (isLoading) return
 
   if (isSuccess) {
     const { ids } = dogReports;
 
-    const tableContent = ids?.length
-      ? ids.map((dogReportId) => (
-          <DogReport key={dogReportId} dogReportId={dogReportId} />
-        ))
-      : null;
+    if (!ids?.length) return <p>There are no dog reports</p>
 
-    const content = ids?.length ? (
-      tableContent
-    ) : (
-      <p>There are no dog reports</p>
-    );
-
-    return content;
+    return (
+      <>
+        {ids.map((id) => <DogReport key={id} dogReportId={id} />)}
+      </>
+    )
   }
 
   return;

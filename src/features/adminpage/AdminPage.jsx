@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
 
 import useAuth from "../../hooks/useAuth";
 import { useGetAdvertisementReportsQuery } from "../advertisementreports/advertisementReportsApiSlice";
@@ -15,144 +14,135 @@ const AdminPage = () => {
   const {
     data: advertisementReports,
     isLoading,
+    isSuccess,
     isError,
     error,
   } = useGetAdvertisementReportsQuery("advertisementReportsList", {
-    pollingInterval: 75000,
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
-
-  const amountOfAdvertisementReports = advertisementReports?.ids?.length;
 
   const {
     data: messageReports,
     isLoading: isMsgLoading,
+    isSuccess: isMsgSuccess,
     isError: isMsgError,
     error: msgError,
   } = useGetMessageReportsQuery("messageReportsList", {
-    pollingInterval: 75000,
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
-
-  const amountOfMessageReports = messageReports?.ids?.length;
 
   const {
     data: dogReports,
     isLoading: isDogLoading,
+    isSuccess: isDogSuccess,
     isError: isDogError,
     error: dogError,
   } = useGetDogReportsQuery("dogReportsList", {
-    pollingInterval: 75000,
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
-  const amountOfDogReports = dogReports?.ids?.length;
-
   const {
     data: userReports,
     isLoading: isUserLoading,
+    isSuccess: isUserSuccess,
     isError: isUserError,
     error: userError,
   } = useGetUserReportsQuery("userReportsList", {
-    pollingInterval: 75000,
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
-    if (isLoading || isMsgLoading || isDogLoading || isUserLoading)
-      alerts.loadingAlert("Fetching Reports", "Loading...");
-    else Swal.close();
-  }, [isLoading, isMsgLoading, isDogLoading, isUserLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
 
-  const amountOfUserReports = userReports?.ids?.length;
+  useEffect(() => {
+    if (isMsgError) alerts.errorAlert(`${msgError?.data?.message}`);
+  }, [isMsgError])
+
+  useEffect(() => {
+    if (isDogError) alerts.errorAlert(`${dogError?.data?.message}`);
+  }, [isDogError])
+
+  useEffect(() => {
+    if (isUserError) alerts.errorAlert(`${userError?.data?.message}`);
+  }, [isUserError])
+
+  if (isLoading || isMsgLoading || isDogLoading || isUserLoading) return
 
   if (!isAdmin && !isSuperAdmin) return <p>You're not logged in as an admin</p>;
 
-  if (isError)
-    alerts.errorAlert(
-      `${error?.data?.message}`,
-      "Error Fetching Advertisement Reports"
+  if (isSuccess && isMsgSuccess && isDogSuccess && isUserSuccess) {
+    return (
+      <>
+        {advertisementReports?.ids?.length < 1 ? (
+          <p>
+            <b>No Advertisement Reports</b>
+          </p>
+        ) : (
+          <p>
+            <b>
+              <Link className="orange-link" to={"/advertisementreports"}>
+                View {advertisementReports?.ids?.length} Advertisement Report
+                {advertisementReports?.ids?.length === 1 ? null : "s"}
+              </Link>
+            </b>
+          </p>
+        )}
+        {messageReports?.ids?.length < 1 ? (
+          <p>
+            <b>No Message Reports</b>
+          </p>
+        ) : (
+          <p>
+            <b>
+              <Link className="orange-link" to={"/messagereports"}>
+                View {messageReports?.ids?.length} Message Report
+                {messageReports?.ids?.length === 1 ? null : "s"}
+              </Link>
+            </b>
+          </p>
+        )}
+        {dogReports?.ids?.length < 1 ? (
+          <p>
+            <b>No Dog Reports</b>
+          </p>
+        ) : (
+          <p>
+            <b>
+              <Link className="orange-link" to={"/dogreports"}>
+                View {dogReports?.ids?.length} Dog Report
+                {dogReports?.ids?.length === 1 ? null : "s"}
+              </Link>
+            </b>
+          </p>
+        )}
+        {userReports?.ids?.length < 1 ? (
+          <p>
+            <b>No User Reports</b>
+          </p>
+        ) : (
+          <p>
+            <b>
+              <Link className="orange-link" to={"/userreports"}>
+                View {userReports?.ids?.length} User Report
+                {userReports?.ids?.length === 1 ? null : "s"}
+              </Link>
+            </b>
+          </p>
+        )}
+      </>
     );
-  if (isMsgError)
-    alerts.errorAlert(
-      `${msgError?.data?.message}`,
-      "Error Fetching Message Reports"
-    );
-  if (isDogError)
-    alerts.errorAlert(
-      `${dogError?.data?.message}`,
-      "Error Fetching Dog Reports"
-    );
-  if (isUserError)
-    alerts.errorAlert(
-      `${userError?.data?.message}`,
-      "Error Fetching User Reports"
-    );
+  }
 
-  return (
-    <>
-      {amountOfAdvertisementReports < 1 ? (
-        <p>
-          <b>No Advertisement Reports</b>
-        </p>
-      ) : (
-        <p>
-          <b>
-            <Link className="orange-link" to={"/advertisementreports"}>
-              View {amountOfAdvertisementReports} Advertisement Report
-              {amountOfAdvertisementReports === 1 ? null : "s"}
-            </Link>
-          </b>
-        </p>
-      )}
-      {amountOfMessageReports < 1 ? (
-        <p>
-          <b>No Message Reports</b>
-        </p>
-      ) : (
-        <p>
-          <b>
-            <Link className="orange-link" to={"/messagereports"}>
-              View {amountOfMessageReports} Message Report
-              {amountOfMessageReports === 1 ? null : "s"}
-            </Link>
-          </b>
-        </p>
-      )}
-      {amountOfDogReports < 1 ? (
-        <p>
-          <b>No Dog Reports</b>
-        </p>
-      ) : (
-        <p>
-          <b>
-            <Link className="orange-link" to={"/dogreports"}>
-              View {amountOfDogReports} Dog Report
-              {amountOfDogReports === 1 ? null : "s"}
-            </Link>
-          </b>
-        </p>
-      )}
-      {amountOfUserReports < 1 ? (
-        <p>
-          <b>No User Reports</b>
-        </p>
-      ) : (
-        <p>
-          <b>
-            <Link className="orange-link" to={"/userreports"}>
-              View {amountOfUserReports} User Report
-              {amountOfUserReports === 1 ? null : "s"}
-            </Link>
-          </b>
-        </p>
-      )}
-    </>
-  );
+  return
 };
 
 export default AdminPage;

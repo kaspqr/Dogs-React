@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import Swal from "sweetalert2";
 
-import { useGetDogsQuery } from "../dogs/dog-slices/dogsApiSlice";
+import { useGetDogByIdQuery } from "../dogs/dog-slices/dogsApiSlice";
 import { useAddNewDogReportMutation } from "./dogReportsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import { alerts } from "../../components/alerts";
@@ -15,43 +14,49 @@ const DogReportPage = () => {
   const [report, setReport] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const { dog } = useGetDogsQuery("dogsList", {
-    selectFromResult: ({ data }) => ({
-      dog: data?.entities[dogid],
-    }),
+  const {
+    data: dog,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetDogByIdQuery({ id: dogid }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
   });
 
-  const [addNewDogReport, { isLoading, isSuccess, isError, error }] =
-    useAddNewDogReportMutation();
+  const [addNewDogReport, {
+    isLoading: isAddReportLoading,
+    isSuccess: isAddReportSuccess,
+    isError: isAddReportError,
+    error: addReportError
+  }] = useAddNewDogReportMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddReportSuccess) {
       setReport("");
       setSuccessMsg("Thank You! We have received your report.");
     }
-  }, [isSuccess]);
+  }, [isAddReportSuccess]);
 
   useEffect(() => {
-    if (isLoading) alerts.loadingAlert("Reporting Dog", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError]);
 
-  if (dog?.user === userId) return <p>You cannot report your own dog.</p>;
+  useEffect(() => {
+    if (isAddReportError) alerts.errorAlert(`${addReportError?.data?.message}`);
+  }, [isAddReportError]);
 
-  const handleReportClicked = async () =>
-    await addNewDogReport({ dog: dogid, reporter: userId, text: report });
+  if (isLoading || isAddReportLoading) return
 
-  const buttonDisabled = report?.length < 1;
-  const buttonStyle = buttonDisabled ? DISABLED_BUTTON_STYLE : null;
+  if (isSuccess) {
+    if (dog?.user === userId) return <p>You cannot report your own dog.</p>;
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Reporting Dog");
+    if (successMsg?.length) return <p>{successMsg}</p>;
 
-  if (successMsg?.length) return <p>{successMsg}</p>;
-
-  return (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
+    return (
+      <>
         <label htmlFor="report">
           <b>
             Reason for reporting dog{" "}
@@ -80,15 +85,17 @@ const DogReportPage = () => {
         <button
           title="Report Dog"
           className="black-button three-hundred"
-          onClick={handleReportClicked}
-          disabled={buttonDisabled}
-          style={buttonStyle}
+          onClick={async () => await addNewDogReport({ dog: dogid, reporter: userId, text: report })}
+          disabled={report?.length < 1}
+          style={report?.length < 1 ? DISABLED_BUTTON_STYLE : null}
         >
           Report
         </button>
-      </form>
-    </>
-  );
+      </>
+    );
+  }
+
+  return
 };
 
 export default DogReportPage;

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import Swal from "sweetalert2";
 
 import { useGetMessageReportsQuery } from "../../messagereports/messageReportsApiSlice";
 import MessageReport from "./MessageReport";
@@ -19,36 +18,21 @@ const MessageReportsList = () => {
   });
 
   useEffect(() => {
-    if (isLoading)
-      alerts.loadingAlert("Fetching Message Reports", "Loading...");
-    else Swal.close();
-  }, [isLoading]);
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError]);
 
-  if (isError)
-    alerts.errorAlert(
-      `${error?.data?.message}`,
-      "Error Fetching Message Reports"
-    );
+  if (isLoading) return
 
   if (isSuccess) {
     const { ids } = messageReports;
 
-    const tableContent = ids?.length
-      ? ids.map((messageReportId) => (
-          <MessageReport
-            key={messageReportId}
-            messageReportId={messageReportId}
-          />
-        ))
-      : null;
+    if (!ids?.length) return <p>There are no message reports</p>
 
-    const content = ids?.length ? (
-      tableContent
-    ) : (
-      <p>There are no message reports</p>
-    );
-
-    return content;
+    return (
+      <> 
+        {ids?.map((id) => <MessageReport key={id} messageReportId={id} />)}
+      </>
+    )
   }
 
   return;

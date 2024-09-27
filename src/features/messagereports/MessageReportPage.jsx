@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { useGetMessagesQuery } from "../messages/messagesApiSlice";
+import { useGetMessageByIdQuery } from "../messages/messagesApiSlice";
 import useAuth from "../../hooks/useAuth";
 import { useAddNewMessageReportMutation } from "./messageReportsApiSlice";
+import { alerts } from "../../components/alerts";
 
 const MessageReportPage = () => {
   const { userId } = useAuth();
@@ -12,41 +13,49 @@ const MessageReportPage = () => {
   const [report, setReport] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const { message } = useGetMessagesQuery("messagesList", {
-    selectFromResult: ({ data }) => ({
-      message: data?.entities[messageid],
-    }),
+  const {
+    data: message,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetMessageByIdQuery({ id: messageid }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
   });
 
-  const [addNewMessageReport, { isLoading, isSuccess, isError, error }] =
-    useAddNewMessageReportMutation();
+  const [addNewMessageReport, {
+    isLoading: isAddReportLoading,
+    isSuccess: isAddReportSuccess,
+    isError: isAddReportError,
+    error: addReportError
+  }] = useAddNewMessageReportMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddReportSuccess) {
       setReport("");
       setSuccessMsg("Thank You! We have received your report.");
     }
-  }, [isSuccess]);
+  }, [isAddReportSuccess]);
 
-  if (message?.poster === userId)
-    return <p>You cannot report your own message.</p>;
+  useEffect(() => {
+    if (isError) alerts.errorAlert(`${error?.data?.message}`)
+  }, [isError])
 
-  const handleReportClicked = async () => {
-    await addNewMessageReport({
-      message: messageid,
-      reporter: userId,
-      text: report,
-    });
-  };
+  useEffect(() => {
+    if (isAddReportError) alerts.errorAlert(`${addReportError?.data?.message}`)
+  }, [isAddReportError])
 
-  if (isLoading) return;
-  if (isError) return <p>{error?.data?.message}</p>;
+  if (isLoading || isAddReportLoading) return;
 
-  const content = successMsg?.length ? (
-    <p>{successMsg}</p>
-  ) : (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
+  if (isSuccess) {
+    if (message?.poster === userId) return <p>You cannot report your own message.</p>
+
+    if (successMsg?.length) return <p>{successMsg}</p>
+
+    return (
+      <>
         <label htmlFor="report">
           <b>
             Reason for reporting message <span>"{message?.text}"</span>
@@ -68,21 +77,17 @@ const MessageReportPage = () => {
         <button
           title="Report Message"
           className="black-button three-hundred"
-          onClick={handleReportClicked}
+          onClick={async () => await addNewMessageReport({ message: messageid, reporter: userId, text: report })}
           disabled={report?.length < 1}
-          style={
-            report?.length < 1
-              ? { backgroundColor: "grey", cursor: "default" }
-              : null
-          }
+          style={report?.length < 1 ? { backgroundColor: "grey", cursor: "default" } : null}
         >
           Report
         </button>
-      </form>
-    </>
-  );
+      </>
+    )
+  }
 
-  return content;
+  return
 };
 
 export default MessageReportPage;

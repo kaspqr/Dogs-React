@@ -8,8 +8,31 @@ const initialState = dogProposesAdapter.getInitialState()
 export const dogProposesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getDogProposes: builder.query({
-            query: () => ({
-                url: '/dogproposes',
+            query: ({ id }) => ({
+                url: `/dogproposes/${id}`,
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            transformResponse: responseData => {
+                const loadedDogProposes = responseData.map(dogPropose => {
+                    dogPropose.id = dogPropose._id
+                    return dogPropose
+                })
+                return dogProposesAdapter.setAll(initialState, loadedDogProposes)
+            },
+            providesTags: (result, error, arg) => {
+                if (result?.ids) {
+                    return [
+                        { type: 'DogPropose', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'DogPropose', id }))
+                    ]
+                } else return [{ type: 'DogPropose', id: 'LIST' }]
+            }
+        }),
+        getProposedDogs: builder.query({
+            query: ({ id }) => ({
+                url: `/dogproposes/proposeddogs/${id}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
@@ -57,6 +80,7 @@ export const dogProposesApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetDogProposesQuery,
+    useGetProposedDogsQuery,
     useAddNewDogProposeMutation,
     useDeleteDogProposeMutation,
 } = dogProposesApiSlice

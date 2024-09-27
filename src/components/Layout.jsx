@@ -3,10 +3,9 @@ import { Outlet } from "react-router-dom";
 
 import Header from "./Header";
 import useAuth from "../hooks/useAuth";
-import { useGetUsersQuery } from "../features/users/user-slices/usersApiSlice";
 
 const Layout = () => {
-  const { userId } = useAuth();
+  const { userId, active } = useAuth();
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -20,12 +19,6 @@ const Layout = () => {
     if (windowWidth > 600 && dropdownVisible === true)
       setDropdownVisible(false);
   }, [windowWidth, dropdownVisible]);
-
-  const { user } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      user: data?.entities[userId],
-    }),
-  });
 
   const handleResize = () => setWindowWidth(window.innerWidth);
 
@@ -45,10 +38,10 @@ const Layout = () => {
       >
         <div></div>
         <div>
-          {!userId?.length || user?.active === true ? (
+          {!userId?.length || active === true ? (
             <Outlet />
           ) : (
-            <p>You account has been banned.</p>
+            <p>Your account has been banned.</p>
           )}
         </div>
         <div></div>

@@ -1,80 +1,77 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 
 import { alerts } from "../../../components/alerts";
 import { useAddNewFatherProposeMutation } from "../litter-slices/fatherProposesApiSlice";
 import { useUpdateLitterMutation } from "../litter-slices/littersApiSlice";
-import { DAY } from "../../../config/consts";
+import { useGetDogByIdQuery, useGetProposableFatherDogsQuery } from "../../dogs/dog-slices/dogsApiSlice";
 
-const ProposeFather = ({
-  entities,
-  isLoading,
-  userId,
-  mother,
-  litterId,
-  father,
-  ids,
-  litter,
-  currentLitterDogsIds,
-  filteredPuppyProposals,
-  filteredFatherProposals,
-}) => {
+const ProposeFather = ({ userId, litter, refetchLitter }) => {
   const [selectedFather, setSelectedFather] = useState("");
 
-  const [
-    addNewFatherPropose,
-    {
-      isLoading: isAddFatherProposeLoading,
-      isError: isAddFatherProposeError,
-      error: addFatherProposeError,
-    },
-  ] = useAddNewFatherProposeMutation();
+  const {
+    data: proposableFatherDogs,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    refetch
+  } = useGetProposableFatherDogsQuery({ userId, litterId: litter?.id }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
-  const [
-    updateLitter,
-    { isLoading: isLitterLoading, isError: isLitterError, error: litterError },
-  ] = useUpdateLitterMutation();
+  const {
+    data: mother,
+    isLoading: isMotherLoading,
+    isSuccess: isMotherSuccess,
+    isError: isMotherError,
+    error: motherError
+  } = useGetDogByIdQuery({ id: litter?.mother }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
+
+  const [addNewFatherPropose, {
+    isLoading: isAddFatherProposeLoading,
+    isError: isAddFatherProposeError,
+    error: addFatherProposeError
+  }] = useAddNewFatherProposeMutation();
+
+  const [updateLitter, {
+    isLoading: isLitterLoading,
+    isError: isLitterError,
+    error: litterError
+  }] = useUpdateLitterMutation();
 
   useEffect(() => {
-    if (isAddFatherProposeLoading || isLitterLoading)
-      alerts.loadingAlert("Updating Litter", "Loading...");
-    else Swal.close();
-  }, [isAddFatherProposeLoading, isLitterLoading]);
+    if (isError) alerts.loadingAlert(`${error?.data?.message}`);
+  }, [isError]);
 
-  const fatherIds = ids?.filter(
-    (dogId) =>
-      entities[dogId].user === userId &&
-      entities[dogId].id !== father?.id &&
-      entities[dogId].female === false &&
-      new Date(entities[dogId].birth).getTime() <
-        new Date(new Date(litter?.born).getTime() - 30 * DAY) &&
-      !filteredFatherProposals?.includes(entities[dogId].id) &&
-      !filteredPuppyProposals?.includes(entities[dogId].id) &&
-      ((entities[dogId].breed !== "Mixed breed" &&
-        entities[dogId].breed !== mother?.breed &&
-        litter?.breed === "Mixed breed") ||
-        (entities[dogId].breed === "Mixed breed" &&
-          litter?.breed === "Mixed breed") ||
-        (entities[dogId].breed === litter?.breed &&
-          litter?.breed === mother?.breed)) &&
-      !currentLitterDogsIds.includes(entities[dogId].id)
-  );
+  useEffect(() => {
+    if (isMotherError) alerts.loadingAlert(`${motherError?.data?.message}`);
+  }, [isMotherError]);
 
-  if (isLitterError)
-    alerts.errorAlert(`${litterError?.data?.message}`, "Error Updating Litter");
-  if (isAddFatherProposeError)
-    alerts.errorAlert(
-      `${addFatherProposeError?.data?.message}`,
-      "Error Proposing Father"
-    );
+  useEffect(() => {
+    if (isAddFatherProposeError) alerts.loadingAlert(`${addFatherProposeError?.data?.message}`);
+  }, [isAddFatherProposeError]);
 
-  if (father?.id?.length || !fatherIds?.length) return;
+  useEffect(() => {
+    if (isLitterError) alerts.loadingAlert(`${litterError?.data?.message}`);
+  }, [isLitterError]);
 
-  const canSaveFather = selectedFather?.length && !isLoading;
+  if (isLoading || isAddFatherProposeLoading || isLitterLoading || isMotherLoading) return
 
-  return (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
+  if (isSuccess && isMotherSuccess) {
+    const { ids, entities } = proposableFatherDogs
+
+    if (!ids?.length) return
+
+    const canSaveFather = selectedFather?.length;
+
+    return (
+      <>
         <label htmlFor="pick-your-dog">
           <b>
             {userId === mother?.user ? "Add " : "Propose "}
@@ -88,7 +85,7 @@ const ProposeFather = ({
           onChange={(e) => setSelectedFather(e.target.value)}
         >
           <option value="">Pick Your Dog</option>
-          {fatherIds.map((id) => (
+          {ids.map((id) => (
             <option value={id} key={id}>
               {entities[id].name}
             </option>
@@ -99,34 +96,32 @@ const ProposeFather = ({
         <button
           title={userId === mother?.user ? "Add Father" : "Propose Father"}
           className="black-button three-hundred"
-          style={
-            !canSaveFather
-              ? { backgroundColor: "grey", cursor: "default" }
-              : null
-          }
+          style={!canSaveFather ? { backgroundColor: "grey", cursor: "default" } : null}
           disabled={!canSaveFather}
-          onClick={
-            userId === mother?.user
-              ? async () => {
-                  await updateLitter({ id: litterId, father: selectedFather });
-                  setSelectedFather("");
-                }
-              : async () => {
-                  await addNewFatherPropose({
-                    litter: litterId,
-                    father: selectedFather,
-                  });
-                  setSelectedFather("");
-                }
+          onClick={userId === mother?.user
+            ? async () => {
+              await updateLitter({ id: litter?.id, father: selectedFather });
+              setSelectedFather("");
+              refetchLitter()
+              refetch()
+            }
+            : async () => {
+              await addNewFatherPropose({ litter: litter?.id, father: selectedFather });
+              setSelectedFather("");
+              refetchLitter()
+              refetch()
+            }
           }
         >
           {userId === mother?.user ? "Add " : "Propose "}Father
         </button>
         <br />
         <br />
-      </form>
-    </>
-  );
+      </>
+    );
+  }
+
+  return
 };
 
 export default ProposeFather;

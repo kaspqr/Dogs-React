@@ -8,8 +8,8 @@ const initialState = conversationsAdapter.getInitialState()
 export const conversationsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getConversations: builder.query({
-            query: () => ({
-                url: '/conversations',
+            query: ({ id }) => ({
+                url: `/conversations/user/${id}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
@@ -30,6 +30,20 @@ export const conversationsApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'Conversation', id: 'LIST' }]
             }
         }),
+        getConversationById: builder.query({
+            query: ({ id }) => ({
+                url: `/conversations/${id}`,
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            transformResponse: responseData => {
+                return {
+                    ...responseData,
+                    id: responseData._id
+                }
+            },
+        }),
         addNewConversation: builder.mutation({
             query: initialConversation => ({
                 url: '/conversations',
@@ -42,23 +56,13 @@ export const conversationsApiSlice = apiSlice.injectEndpoints({
                 { type: 'Conversation', id: "LIST" }
             ]
         }),
-        deleteConversation: builder.mutation({
-            query: ({ id }) => ({
-                url: '/conversations',
-                method: 'DELETE',
-                body: { id }
-            }),
-            invalidatesTags: (result, error, arg) => [
-                { type: 'Conversation', id: arg.id }
-            ]
-        }),
     }),
 })
 
 export const {
     useGetConversationsQuery,
+    useGetConversationByIdQuery,
     useAddNewConversationMutation,
-    useDeleteConversationMutation,
 } = conversationsApiSlice
 
 export const selectConversationsResult = conversationsApiSlice.endpoints.getConversations.select()

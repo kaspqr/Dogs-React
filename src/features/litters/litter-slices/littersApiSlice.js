@@ -8,8 +8,56 @@ const initialState = littersAdapter.getInitialState()
 export const littersApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getLitters: builder.query({
-            query: () => ({
+            query: ({
+                bornEarliest,
+                bornLatest,
+                breed,
+                country,
+                region,
+                lowestPuppies,
+                highestPuppies,
+                currentPage
+            }) => ({
                 url: '/litters',
+                params: {
+                    bornEarliest,
+                    bornLatest,
+                    breed,
+                    country,
+                    region,
+                    lowestPuppies,
+                    highestPuppies,
+                    page: currentPage
+                },
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            transformResponse: responseData => {
+                const { litters, totalPages, currentPage } = responseData;
+                const loadedLitters = litters.map(litter => {
+                    litter.id = litter._id
+                    return litter
+                })
+                
+                return {
+                    litters: littersAdapter.setAll(initialState, loadedLitters),
+                    totalPages,
+                    currentPage
+                }
+            },
+            providesTags: (result, error, arg) => {
+                if (result?.ids) {
+                    return [
+                        { type: 'Litter', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'Litter', id }))
+                    ]
+                } else return [{ type: 'Litter', id: 'LIST' }]
+            }
+        }),
+        getDogLitters: builder.query({
+            query: ({ id }) => ({
+                url: `/litters/dog/${id}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
@@ -29,6 +77,20 @@ export const littersApiSlice = apiSlice.injectEndpoints({
                     ]
                 } else return [{ type: 'Litter', id: 'LIST' }]
             }
+        }),
+        getLitterById: builder.query({
+            query: ({ id }) => ({
+                url: `/litters/${id}`,
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            transformResponse: responseData => {
+                return {
+                    ...responseData,
+                    id: responseData._id
+                }
+            },
         }),
         addNewLitter: builder.mutation({
             query: initialLitter => ({
@@ -69,6 +131,8 @@ export const littersApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetLittersQuery,
+    useGetDogLittersQuery,
+    useGetLitterByIdQuery,
     useAddNewLitterMutation,
     useUpdateLitterMutation,
     useDeleteLitterMutation,

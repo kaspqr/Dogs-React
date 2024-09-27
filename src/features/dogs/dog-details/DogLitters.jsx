@@ -1,76 +1,56 @@
+import { useEffect } from "react";
+
 import DogLitter from "./DogLitter";
-import { useGetLittersQuery } from "../../litters/litter-slices/littersApiSlice";
+
+import { useGetDogLittersQuery } from "../../litters/litter-slices/littersApiSlice";
 import { alerts } from "../../../components/alerts";
 
-const DogLitters = ({ dog, dogIds, dogEntities }) => {
+const DogLitters = ({ dog }) => {
   const {
     data: litters,
     isLoading,
+    isSuccess,
     isError,
     error,
-  } = useGetLittersQuery("littersList", {
-    pollingInterval: 75000,
+  } = useGetDogLittersQuery({ id: dog?.id }, {
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Fetching Litters");
+  useEffect(() => {
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
+
   if (isLoading) return;
 
-  const { ids: childrenLitterIds, entities: litterEntities } = litters;
+  if (isSuccess) {
+    const { ids } = litters
 
-  const filteredLitterIds =
-    dog?.female === true
-      ? childrenLitterIds.filter(
-          (litterId) => litterEntities[litterId].mother === dog?.id
-        )
-      : childrenLitterIds.filter(
-          (litterId) => litterEntities[litterId].father === dog?.id
-        );
+    return (
+      <>
+        {ids?.length ? (
+          <>
+            <p>
+              <b>{dog?.name}'s litters and each litter's puppies</b>
+            </p>
+            <br />
+            {ids?.map((litterId) => (
+              <DogLitter key={litterId} dog={dog} litterId={litterId} />
+            ))}
+          </>
+        ) : (
+          <>
+            {dog?.name} doesn't have any litters added
+            <br />
+            <br />
+          </>
+        )}
+      </>
+    );
+  }
 
-  const filteredLitters = filteredLitterIds.map(
-    (litterId) => litterEntities[litterId]
-  );
-
-  const filteredDogIds = dogIds?.filter((dogId) =>
-    childrenLitterIds?.includes(dogEntities[dogId].litter)
-  );
-  const allChildren = filteredDogIds?.map((dogId) => dogEntities[dogId]);
-  const filteredParents = filteredLitters?.map((litter) => {
-    return dog?.female === true ? litter?.father : litter?.mother;
-  });
-
-  const parentDogs = filteredParents?.map((dogId) => dogEntities[dogId]);
-
-  const littersContent = filteredLitters?.map((litter) => (
-    <DogLitter
-      litter={litter}
-      parentDogs={parentDogs}
-      allChildren={allChildren}
-      dog={dog}
-    />
-  ));
-
-  return (
-    <>
-      {filteredLitters?.length ? (
-        <>
-          <p>
-            <b>{dog?.name}'s litters and each litter's puppies</b>
-          </p>
-          <br />
-          {littersContent}
-        </>
-      ) : (
-        <>
-          {dog?.name} doesn't have any litters added
-          <br />
-          <br />
-        </>
-      )}
-    </>
-  );
+  return
 };
 
 export default DogLitters;

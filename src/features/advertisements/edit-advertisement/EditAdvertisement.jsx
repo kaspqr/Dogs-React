@@ -1,30 +1,41 @@
 import { useParams } from "react-router-dom";
 
 import EditAdvertisementForm from "./EditAdvertisementForm";
-import { useGetAdvertisementsQuery } from "../advertisement-slices/advertisementsApiSlice";
-import { useGetUsersQuery } from "../../users/user-slices/usersApiSlice";
+import { useGetAdvertisementByIdQuery } from "../advertisement-slices/advertisementsApiSlice";
 import useAuth from "../../../hooks/useAuth";
+import { useEffect } from "react";
+import { alerts } from "../../../components/alerts";
 
 const EditAdvertisement = () => {
   const { id } = useParams();
   const { userId } = useAuth();
 
-  const { advertisement } = useGetAdvertisementsQuery("advertisementsList", {
-    selectFromResult: ({ data }) => ({
-      advertisement: data?.entities[id],
-    }),
+  const {
+    data: advertisement,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetAdvertisementByIdQuery({ id }, {
+    pollingInterval: 600000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
   });
 
-  const { users } = useGetUsersQuery("usersList", {
-    selectFromResult: ({ data }) => ({
-      users: data?.ids.map((id) => data?.entities[id]),
-    }),
-  });
+  useEffect(() => {
+    if (isError) alerts.errorAlert(`${error?.data?.message}`)
+  }, [isError])
 
-  if (advertisement.poster !== userId)
-    return <p>This is not your advertisement</p>;
+  if (isLoading) return
 
-  return <EditAdvertisementForm advertisement={advertisement} users={users} />;
+  if (isSuccess) {
+    if (!advertisement) return
+
+    if (advertisement?.poster !== userId)
+      return <p>This is not your advertisement</p>;
+
+    return <EditAdvertisementForm advertisement={advertisement} />;
+  }
 };
 
 export default EditAdvertisement;

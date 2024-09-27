@@ -1,52 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useUpdateDogMutation } from "../../dogs/dog-slices/dogsApiSlice";
 import { alerts } from "../../../components/alerts";
+import { useGetProposedDogsQuery } from "../../dogs/dog-slices/proposeDogApiSlice";
 
-const ReceivedProposals = ({
-  user,
-  userId,
-  proposeIds,
-  entities,
-  proposeEntities,
-  filteredIds,
-}) => {
+const ReceivedProposals = ({ user, userId, dogs }) => {
   const [selectedAcceptDog, setSelectedAcceptDog] = useState("");
 
-  const [updateDog, { isError, error }] = useUpdateDogMutation();
+  const {
+    data: proposedDogs,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetProposedDogsQuery({ id: userId }, {
+    pollingInterval: 600000,
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false,
+  });
 
-  const filteredMyProposeIds =
-    userId !== user?.id
-      ? proposeIds?.filter(
-          (proposeId) => proposeEntities[proposeId]?.user === userId
-        )
-      : null;
+  const [updateDog, {
+    isLoading: isUpdateLoading,
+    isError: isUpdateError,
+    error: updateError
+  }] = useUpdateDogMutation();
 
-  const receivedProposalIds = filteredMyProposeIds?.filter((proposal) =>
-    filteredIds?.includes(proposeEntities[proposal]?.dog)
-  );
+  useEffect(() => {
+    if (isError) alerts.errorAlert(`${error?.data?.message}`);
+  }, [isError])
 
-  if (!receivedProposalIds?.length) return;
+  useEffect(() => {
+    if (isUpdateError) alerts.errorAlert(`${updateError?.data?.message}`);
+  }, [isUpdateError])
 
-  const receivedProposals = receivedProposalIds?.map(
-    (proposal) => entities[proposeEntities[proposal]?.dog]
-  );
+  if (isLoading || isUpdateLoading) return
 
-  const acceptDogs = receivedProposals?.map((dog) => (
-    <option value={dog?.id} key={dog?.id}>
-      {dog?.name}
-    </option>
-  ));
+  if (isSuccess) {
+    const { ids } = proposedDogs
+    const { ids: dogIds, entities: dogEntities } = dogs
 
-  if (isError)
-    alerts.errorAlert(`${error?.data?.message}`, "Error Updating Dog");
+    if (!ids?.length || !dogIds?.length) return
 
-  return (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
+    const dogIdsProposedByUser = dogIds?.filter((id) => ids.includes(id))
+
+    return (
+      <>
         <label htmlFor="accept-selected-dog">
           <b>
-            Accept Dog{receivedProposals?.length > 1 ? "s" : null} Offered by{" "}
+            Accept Dog{ids?.length > 1 ? "s" : null} Offered by{" "}
             {user?.username}
           </b>
         </label>
@@ -57,7 +58,11 @@ const ReceivedProposals = ({
           onChange={(e) => setSelectedAcceptDog(e.target.value)}
         >
           <option value="">--</option>
-          {acceptDogs}
+          {dogIdsProposedByUser?.map((id) => (
+            <option value={id} key={id}>
+              {dogEntities[id]?.name}
+            </option>
+          ))}
         </select>
         <br />
         <br />
@@ -65,11 +70,7 @@ const ReceivedProposals = ({
           title="Accept Ownership of Selected Dog's Account"
           className="black-button three-hundred"
           disabled={!selectedAcceptDog?.length}
-          style={
-            !selectedAcceptDog?.length
-              ? { backgroundColor: "grey", cursor: "default" }
-              : null
-          }
+          style={!selectedAcceptDog?.length ? { backgroundColor: "grey", cursor: "default" } : null}
           onClick={async () => {
             await updateDog({ id: selectedAcceptDog, user: userId });
             setSelectedAcceptDog("");
@@ -79,9 +80,11 @@ const ReceivedProposals = ({
         </button>
         <br />
         <br />
-      </form>
-    </>
-  );
+      </>
+    );
+  }
+
+  return
 };
 
 export default ReceivedProposals;
