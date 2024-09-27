@@ -42,7 +42,7 @@ const UserPage = () => {
     isError: isDogsError,
     error: dogsError,
   } = useGetUserDogsQuery({ id }, {
-    pollingInterval: 75000,
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });

@@ -14,7 +14,7 @@ const ProposeTransfer = ({ user, userId }) => {
     isError,
     error
   } = useGetProposableDogsQuery({ userId }, {
-    pollingInterval: 75000,
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });

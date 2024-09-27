@@ -12,7 +12,7 @@ const AdvertisementReportsList = () => {
     isError,
     error,
   } = useGetAdvertisementReportsQuery("advertisementReportsList", {
-    pollingInterval: 75000,
+    pollingInterval: 600000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
